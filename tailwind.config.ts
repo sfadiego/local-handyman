@@ -13,6 +13,10 @@ const config: Config = {
       },
     },
     extend: {
+      fontFamily: {
+        syne: ['var(--font-syne)'],
+        instrument: ['var(--font-instrument)'],
+      },
       colors: {
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',

@@ -1,8 +1,22 @@
 import { AuthProvider } from '@/contexts/auth-context';
-import { Inter } from 'next/font/google';
-import './globals.css';
+import { Instrument_Sans, Syne } from 'next/font/google';
+import './css/dashboard.css';
+import './css/globals.css';
 
-const inter = Inter({ subsets: ['latin'] });
+// Configuramos Syne
+const syne = Syne({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700', '800'],
+  variable: '--font-syne',
+});
+
+// Configuramos Instrument Sans
+const instrumentSans = Instrument_Sans({
+  subsets: ['latin'],
+  weight: ['400', '500', '600'],
+  style: ['normal', 'italic'],
+  variable: '--font-instrument',
+});
 
 export const metadata = {
   title: 'Local Handyman - Servicios locales cerca de ti',
@@ -12,9 +26,8 @@ export const metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="es">
-      <body className={inter.className}>
+      <body className={`${syne.variable} ${instrumentSans.variable}`}>
         <AuthProvider>{children}</AuthProvider>
-        {/* <script src="/dashboard/animations.js" /> */}
       </body>
     </html>
   );

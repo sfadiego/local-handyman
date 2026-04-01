@@ -7,7 +7,6 @@ export const useHomePage = () => {
 
   useEffect(() => {
     setIsMounted(true);
-
     if (window.innerWidth > 768 && heroRef.current) {
       heroRef.current.style.display = 'block';
     }
