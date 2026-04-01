@@ -1,317 +1,1239 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { mockServices, categories, mockUser } from "@/lib/mock-data";
-import {
-  Search,
-  MapPin,
-  Star,
-  Shield,
-  Clock,
-  ArrowRight,
-  Users,
-  Zap,
-  Award,
-  CheckCircle
-} from "lucide-react";
-import Link from "next/link";
+import PageWrapper from '@/components/layout/pageWrapper';
+import Section from '@/components/ui/section';
+import { Title } from '@/components/ui/titles';
+import { Search } from 'lucide-react';
+import { useHomePage } from './useHomePage';
 
 export default function HomePage() {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-
-  const filteredServices = mockServices.filter(service => {
-    const matchesSearch = service.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         service.description.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory = !selectedCategory || service.category.toLowerCase().includes(selectedCategory.toLowerCase());
-    return matchesSearch && matchesCategory;
-  });
+  const { isMounted } = useHomePage();
 
   return (
-    <div className="min-h-screen bg-white">
+    <PageWrapper>
+      <Section className="hero">
+        {/* BG circles */}
+        <div
+          className="hero-bg-circle"
+          style={{
+            width: '600px',
+            height: '600px',
+            top: '-100px',
+            right: '-150px',
+          }}
+        ></div>
+        <div
+          className="hero-bg-circle"
+          style={{
+            width: '300px',
+            height: '300px',
+            bottom: '50px',
+            left: '-80px',
+            opacity: '0.6',
+          }}
+        ></div>
 
-      {/* Hero Section */}
-      <section className="bg-white py-20 lg:py-32">
-        <div className="mx-auto max-w-7xl px-6 lg:px-8">
-          <div className="mx-auto max-w-4xl text-center">
-            <h1 className="text-5xl font-bold tracking-tight text-gray-900 sm:text-7xl">
-              Encuentra el mejor
-              <span className="block text-black">servicio cerca de ti</span>
-            </h1>
-            <p className="mt-8 text-xl leading-8 text-gray-600 max-w-2xl mx-auto">
-              Conectamos personas que necesitan servicios con profesionales verificados en tu área.
-              Rápido, confiable y cerca de casa.
+        <div
+          style={{
+            maxWidth: '1200px',
+            margin: '0 auto',
+            width: '100%',
+            display: 'grid',
+            gridTemplateColumns: '1fr 1fr',
+            gap: '4rem',
+            alignItems: 'center',
+          }}
+        >
+          {/* Left */}
+          <div>
+            <div className="hero-tag animate-slide-up opacity-0-start">
+              <span>✦</span> Servicios cerca de ti
+            </div>
+            <Title type="h1" className="animate-slide-up opacity-0-start delay-100">
+              El maestro
+              <br />
+              que necesitas,
+              <br />
+              <em>hoy mismo.</em>
+            </Title>
+
+            <p className="hero-sub animate-slide-up opacity-0-start delay-200">
+              Conectamos a personas que necesitan un servicio con los mejores maestros verificados de su zona. Rápido, seguro y sin complicaciones.
             </p>
 
-            {/* Search Section */}
-            <div className="mt-12">
-              <div className="mx-auto max-w-2xl">
-                <div className="flex flex-col sm:flex-row gap-4 p-2 bg-gray-50 rounded-2xl">
-                  <div className="relative flex-1">
-                    <Search className="absolute left-4 top-4 h-5 w-5 text-gray-400" />
-                    <input
-                      type="text"
-                      placeholder="¿Qué servicio necesitas?"
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      className="w-full rounded-xl bg-white border border-gray-200 py-4 pl-12 pr-4 text-gray-900 placeholder-gray-500 focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900"
-                    />
-                  </div>
-                  <div className="relative flex-1">
-                    <MapPin className="absolute left-4 top-4 h-5 w-5 text-gray-400" />
-                    <input
-                      type="text"
-                      placeholder="Tu ubicación"
-                      defaultValue={mockUser.location.address}
-                      className="w-full rounded-xl bg-white border border-gray-200 py-4 pl-12 pr-4 text-gray-900 placeholder-gray-500 focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900"
-                    />
-                  </div>
-                  <Link href="/search">
-                    <Button
-                      size="lg"
-                      className="bg-black hover:bg-gray-800 text-white px-8 py-4 rounded-xl font-semibold"
-                    >
-                      Buscar
-                    </Button>
-                  </Link>
+            {/* <!-- Search --> */}
+            <div className="animate-slide-up opacity-0-start delay-300" style={{ marginBottom: '1.5rem' }}>
+              <div className="search-bar">
+                <Search style={{ width: '18px', height: '18px', fill: 'none' }} />
+                <input type="text" placeholder="¿Qué servicio necesitas? Ej: plomería..." />
+                <button className="btn-primary" style={{ padding: '0.5rem 1rem', fontSize: '0.8rem' }}>
+                  Buscar
+                </button>
+              </div>
+            </div>
+
+            <div className="hero-actions animate-slide-up opacity-0-start delay-400">
+              <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+                <div className="stat-pill">
+                  <span style={{ fontSize: '1rem' }}>🔨</span>
+                  <span>
+                    <strong>2,400+</strong> maestros
+                  </span>
+                </div>
+                <div className="stat-pill">
+                  <span style={{ fontSize: '1rem' }}>⭐</span>
+                  <span>
+                    <strong>4.9</strong> promedio
+                  </span>
+                </div>
+                <div className="stat-pill">
+                  <span style={{ fontSize: '1rem' }}>✅</span>
+                  <span>100% verificados</span>
                 </div>
               </div>
             </div>
+          </div>
 
-            {/* Stats */}
-            <div className="mt-16 grid grid-cols-3 gap-8 mx-auto max-w-2xl">
-              <div className="text-center">
-                <div className="text-4xl font-bold text-black">500+</div>
-                <div className="text-sm text-gray-600 mt-1">Profesionales</div>
+          {/* Right: floating cards */}
+          <div
+            style={{
+              display: isMounted && typeof window !== 'undefined' && window.innerWidth > 768 ? 'block' : 'none',
+              position: 'relative',
+              height: '480px',
+            }}
+            id="heroCards"
+          >
+            {/* Main profile card */}
+            <div
+              className="float-card"
+              style={{
+                position: 'absolute',
+                top: '40px',
+                left: '20px',
+                width: '260px',
+              }}
+            >
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.75rem',
+                  marginBottom: '1rem',
+                }}
+              >
+                <div
+                  style={{
+                    width: '44px',
+                    height: '44px',
+                    background: 'linear-gradient(135deg,#F59E0B,#D97706)',
+                    borderRadius: '50%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '1.2rem',
+                    color: 'white',
+                    fontWeight: '700',
+                  }}
+                >
+                  JM
+                </div>
+                <div>
+                  <div
+                    style={{
+                      fontFamily: "'Syne',sans-serif",
+                      fontWeight: '700',
+                      fontSize: '0.95rem',
+                    }}
+                  >
+                    Juan Morales
+                  </div>
+                  <div style={{ fontSize: '0.78rem', color: 'var(--warm-gray)' }}>Plomero · 8 años exp.</div>
+                </div>
+                <div className="online-dot" style={{ marginLeft: 'auto' }}></div>
               </div>
-              <div className="text-center">
-                <div className="text-4xl font-bold text-black">10K+</div>
-                <div className="text-sm text-gray-600 mt-1">Servicios realizados</div>
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.4rem',
+                  marginBottom: '0.75rem',
+                }}
+              >
+                <span className="star">★★★★★</span>
+                <span style={{ fontSize: '0.82rem', fontWeight: '600' }}>4.97</span>
+                <span style={{ fontSize: '0.78rem', color: 'var(--warm-gray)' }}>(143 reseñas)</span>
               </div>
-              <div className="text-center">
-                <div className="text-4xl font-bold text-black">4.9</div>
-                <div className="text-sm text-gray-600 mt-1">Calificación promedio</div>
+              <div className="badge-verified">✓ Maestro Verificado</div>
+              <div
+                style={{
+                  marginTop: '1rem',
+                  paddingTop: '1rem',
+                  borderTop: '1px solid rgba(0,0,0,0.06)',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                }}
+              >
+                <span
+                  style={{
+                    fontFamily: "'Syne',sans-serif",
+                    fontSize: '1.1rem',
+                    fontWeight: '700',
+                  }}
+                >
+                  $250
+                  <span
+                    style={{
+                      fontSize: '0.75rem',
+                      fontWeight: '400',
+                      color: 'var(--warm-gray)',
+                    }}
+                  >
+                    /hr
+                  </span>
+                </span>
+                <button className="btn-amber" style={{ padding: '0.45rem 1rem', fontSize: '0.8rem' }}>
+                  Contratar
+                </button>
               </div>
+            </div>
+
+            {/* <!-- Notification card --> */}
+            <div
+              style={{
+                position: 'absolute',
+                top: '0',
+                right: '10px',
+                background: 'var(--charcoal)',
+                color: 'white',
+                borderRadius: '16px',
+                padding: '0.9rem 1.2rem',
+                width: '200px',
+                boxShadow: '0 12px 40px rgba(0,0,0,0.2)',
+              }}
+            >
+              <div
+                style={{
+                  fontSize: '0.75rem',
+                  opacity: 0.6,
+                  marginBottom: '0.3rem',
+                }}
+              >
+                Nueva solicitud
+              </div>
+              <div
+                style={{
+                  fontFamily: "'Syne',sans-serif",
+                  fontWeight: '700',
+                  fontSize: '0.9rem',
+                }}
+              >
+                Fuga de agua 🚰
+              </div>
+              <div
+                style={{
+                  fontSize: '0.78rem',
+                  opacity: 0.7,
+                  marginTop: '0.25rem',
+                }}
+              >
+                Hace 2 min · 1.2km
+              </div>
+            </div>
+
+            {/* Rating notification */}
+            <div
+              style={{
+                position: 'absolute',
+                bottom: '80px',
+                right: '0px',
+                background: 'white',
+                borderRadius: '16px',
+                padding: '0.9rem 1.2rem',
+                boxShadow: '0 8px 30px rgba(0,0,0,0.1)',
+                width: '185px',
+              }}
+            >
+              <div
+                style={{
+                  fontSize: '0.75rem',
+                  color: 'var(--warm-gray)',
+                  marginBottom: '0.3rem',
+                }}
+              >
+                Reseña nueva ⭐
+              </div>
+              <div style={{ fontSize: '0.82rem', fontWeight: '500' }}>"Excelente trabajo, muy puntual"</div>
+              <div style={{ marginTop: '0.5rem', display: 'flex', gap: '0.2rem' }}>
+                <span style={{ fontSize: '1rem' }}>★★★★★</span>
+              </div>
+            </div>
+
+            {/* Map ping */}
+            <div
+              style={{
+                position: 'absolute',
+                bottom: '60px',
+                left: '30px',
+                background: 'var(--amber)',
+                color: 'var(--charcoal)',
+                borderRadius: '12px',
+                padding: '0.6rem 1rem',
+                fontSize: '0.82rem',
+                fontWeight: '700',
+                fontFamily: "'Syne',sans-serif",
+                boxShadow: '0 4px 15px rgba(245,158,11,0.4)',
+              }}
+            >
+              📍 3 maestros cerca
             </div>
           </div>
         </div>
-      </section>
+      </Section>
 
-      {/* Categories Section */}
-      <section className="py-20 bg-gray-50">
-        <div className="mx-auto max-w-7xl px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900">
-              ¿Qué servicio necesitas?
-            </h2>
-            <p className="mt-4 text-lg text-gray-600">
-              Explora nuestras categorías más populares
+      {/* MARQUEE: servicios */}
+      <div
+        style={{
+          background: 'white',
+          borderTop: '1px solid rgba(0,0,0,0.06)',
+          borderBottom: '1px solid rgba(0,0,0,0.06)',
+        }}
+      >
+        <div className="marquee-wrapper">
+          <div className="marquee-track">
+            <div className="marquee-item">🔧 Plomería</div>
+            <div className="marquee-item">⚡ Electricidad</div>
+            <div className="marquee-item">🪵 Carpintería</div>
+            <div className="marquee-item">🎨 Pintura</div>
+            <div className="marquee-item">🧱 Albañilería</div>
+            <div className="marquee-item">❄️ Aire acondicionado</div>
+            <div className="marquee-item">🔑 Cerrajería</div>
+            <div className="marquee-item">🌿 Jardinería</div>
+            <div className="marquee-item">🪟 Vidriería</div>
+            <div className="marquee-item">🛁 Remodelaciones</div>
+            {/* <!-- duplicado para loop --> */}
+            <div className="marquee-item">🔧 Plomería</div>
+            <div className="marquee-item">⚡ Electricidad</div>
+            <div className="marquee-item">🪵 Carpintería</div>
+            <div className="marquee-item">🎨 Pintura</div>
+            <div className="marquee-item">🧱 Albañilería</div>
+            <div className="marquee-item">❄️ Aire acondicionado</div>
+            <div className="marquee-item">🔑 Cerrajería</div>
+            <div className="marquee-item">🌿 Jardinería</div>
+            <div className="marquee-item">🪟 Vidriería</div>
+            <div className="marquee-item">🛁 Remodelaciones</div>
+          </div>
+        </div>
+      </div>
+
+      {/* CÓMO FUNCIONA */}
+      <section style={{ maxWidth: '1100px', margin: '0 auto' }}>
+        <div style={{ textAlign: 'center', marginBottom: '3.5rem' }}>
+          <div className="section-label">Proceso</div>
+          <h2 className="section-title">
+            Tan fácil como
+            <br />
+            pedir un taxi
+          </h2>
+        </div>
+
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit,minmax(230px,1fr))',
+            gap: '1.5rem',
+          }}
+        >
+          <div className="step-card">
+            <div className="step-num">01</div>
+            <div
+              style={{
+                width: '44px',
+                height: '44px',
+                background: 'rgba(245,158,11,0.12)',
+                borderRadius: '12px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '1.3rem',
+                marginBottom: '1rem',
+              }}
+            >
+              🔍
+            </div>
+            <h3
+              style={{
+                fontFamily: "'Syne',sans-serif",
+                fontWeight: '700',
+                marginBottom: '0.5rem',
+              }}
+            >
+              Describe tu problema
+            </h3>
+            <p
+              style={{
+                fontSize: '0.9rem',
+                color: 'var(--warm-gray)',
+                lineHeight: '1.6',
+              }}
+            >
+              Cuéntanos qué necesitas. Puede ser tan simple como "se me fue el agua" o "se fundió un foco".
             </p>
           </div>
 
-          <div className="grid grid-cols-2 gap-6 sm:grid-cols-4">
-            {categories.map((category) => (
-              <button
-                key={category.id}
-                onClick={() => setSelectedCategory(
-                  selectedCategory === category.name ? null : category.name
-                )}
-                className={`group relative bg-white rounded-2xl p-8 text-center transition-all hover:shadow-lg hover:-translate-y-1 ${
-                  selectedCategory === category.name
-                    ? 'ring-2 ring-black shadow-lg -translate-y-1'
-                    : 'border border-gray-200'
-                }`}
-              >
-                <div className="text-4xl mb-4">{category.icon}</div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">{category.name}</h3>
-                <p className="text-sm text-gray-500">{category.count} servicios</p>
-              </button>
-            ))}
+          <div className="step-card">
+            <div className="step-num">02</div>
+            <div
+              style={{
+                width: '44px',
+                height: '44px',
+                background: 'rgba(245,158,11,0.12)',
+                borderRadius: '12px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '1.3rem',
+                marginBottom: '1rem',
+              }}
+            >
+              📍
+            </div>
+            <h3
+              style={{
+                fontFamily: "'Syne',sans-serif",
+                fontWeight: '700',
+                marginBottom: '0.5rem',
+              }}
+            >
+              Encuentra maestros cerca
+            </h3>
+            <p
+              style={{
+                fontSize: '0.9rem',
+                color: 'var(--warm-gray)',
+                lineHeight: '1.6',
+              }}
+            >
+              Te mostramos maestros verificados en tu zona con disponibilidad inmediata, reseñas y precio estimado.
+            </p>
+          </div>
+
+          <div className="step-card">
+            <div className="step-num">03</div>
+            <div
+              style={{
+                width: '44px',
+                height: '44px',
+                background: 'rgba(245,158,11,0.12)',
+                borderRadius: '12px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '1.3rem',
+                marginBottom: '1rem',
+              }}
+            >
+              💬
+            </div>
+            <h3
+              style={{
+                fontFamily: "'Syne',sans-serif",
+                fontWeight: '700',
+                marginBottom: '0.5rem',
+              }}
+            >
+              Acuerda y agenda
+            </h3>
+            <p
+              style={{
+                fontSize: '0.9rem',
+                color: 'var(--warm-gray)',
+                lineHeight: '1.6',
+              }}
+            >
+              Chatea directamente con el maestro, acuerda el precio y agenda la visita desde la app.
+            </p>
+          </div>
+
+          <div className="step-card">
+            <div className="step-num">04</div>
+            <div
+              style={{
+                width: '44px',
+                height: '44px',
+                background: 'rgba(245,158,11,0.12)',
+                borderRadius: '12px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '1.3rem',
+                marginBottom: '1rem',
+              }}
+            >
+              ⭐
+            </div>
+            <h3
+              style={{
+                fontFamily: "'Syne',sans-serif",
+                fontWeight: '700',
+                marginBottom: '0.5rem',
+              }}
+            >
+              Paga y califica
+            </h3>
+            <p
+              style={{
+                fontSize: '0.9rem',
+                color: 'var(--warm-gray)',
+                lineHeight: '1.6',
+              }}
+            >
+              Paga de forma segura a través de la plataforma y deja tu reseña para ayudar a la comunidad.
+            </p>
           </div>
         </div>
       </section>
 
-      {/* Featured Services */}
-      <section className="py-20 bg-white">
-        <div className="mx-auto max-w-7xl px-6 lg:px-8">
-          <div className="flex justify-between items-center mb-12">
+      {/* <!-- SERVICIOS POPULARES --> */}
+      <section style={{ background: 'white', padding: '5rem 2rem' }}>
+        <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'flex-end',
+              justifyContent: 'space-between',
+              marginBottom: '3rem',
+              flexWrap: 'wrap',
+              gap: '1rem',
+            }}
+          >
             <div>
-              <h2 className="text-4xl font-bold text-gray-900">
-                Servicios destacados
+              <div className="section-label">Categorías</div>
+              <h2 className="section-title">
+                Servicios más
+                <br />
+                solicitados
               </h2>
-              <p className="mt-2 text-lg text-gray-600">
-                {filteredServices.length} profesionales cerca de ti
-              </p>
             </div>
-            {selectedCategory && (
-              <Button
-                variant="outline"
-                onClick={() => setSelectedCategory(null)}
-                className="border-gray-300 text-gray-700 hover:bg-gray-50"
-              >
-                Limpiar filtros
-              </Button>
-            )}
+            <a
+              href="#"
+              style={{
+                fontSize: '0.9rem',
+                fontWeight: '600',
+                color: 'var(--amber-dark)',
+                textDecoration: 'none',
+              }}
+            >
+              Ver todos →
+            </a>
           </div>
 
-          <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-            {filteredServices.slice(0, 6).map((service) => (
-              <Card key={service.id} className="border-gray-200 hover:shadow-lg transition-shadow">
-                <div className="aspect-w-16 aspect-h-9">
-                  <img
-                    src={service.images[0]}
-                    alt={service.title}
-                    className="h-48 w-full object-cover rounded-t-lg"
-                  />
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fill,minmax(280px,1fr))',
+              gap: '1rem',
+            }}
+          >
+            <div className="service-card">
+              <div className="service-icon" style={{ background: 'rgba(59,130,246,0.1)' }}>
+                🔧
+              </div>
+              <div>
+                <div
+                  style={{
+                    fontFamily: "'Syne',sans-serif",
+                    fontWeight: '700',
+                    marginBottom: '0.25rem',
+                  }}
+                >
+                  Plomería
                 </div>
-                <CardHeader className="pb-4">
-                  <div className="flex justify-between items-start mb-2">
-                    <CardTitle className="text-xl text-gray-900">{service.title}</CardTitle>
-                    <span className="text-xs bg-gray-100 text-gray-700 px-3 py-1 rounded-full font-medium">
-                      {service.category}
-                    </span>
-                  </div>
-                  <CardDescription className="text-gray-600 line-clamp-2">
-                    {service.description}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="pt-0">
-                  {/* Provider Info */}
-                  <div className="flex items-center space-x-3 mb-4">
-                    <img
-                      src={service.provider.avatar}
-                      alt={service.provider.name}
-                      className="h-10 w-10 rounded-full"
-                    />
-                    <div className="flex-1">
-                      <div className="flex items-center space-x-2">
-                        <span className="font-medium text-gray-900">{service.provider.name}</span>
-                        {service.provider.verified && (
-                          <CheckCircle className="h-4 w-4 text-gray-900" />
-                        )}
-                      </div>
-                      <div className="flex items-center space-x-1 text-sm text-gray-500">
-                        <Star className="h-3 w-3 fill-gray-900 text-gray-900" />
-                        <span>{service.provider.rating}</span>
-                        <span>({service.provider.reviewCount})</span>
-                      </div>
-                    </div>
-                  </div>
+                <div style={{ fontSize: '0.83rem', color: 'var(--warm-gray)' }}>Fugas, instalaciones, drenajes</div>
+                <div
+                  style={{
+                    fontSize: '0.8rem',
+                    fontWeight: '600',
+                    color: 'var(--amber-dark)',
+                    marginTop: '0.5rem',
+                  }}
+                >
+                  247 maestros disponibles
+                </div>
+              </div>
+            </div>
 
-                  {/* Price and Location */}
-                  <div className="flex justify-between items-center mb-4">
-                    <div>
-                      <span className="text-xl font-bold text-gray-900">
-                        ${service.price.min} - ${service.price.max}
-                      </span>
-                      <span className="text-sm text-gray-500 ml-1">{service.price.unit}</span>
-                    </div>
-                    <div className="flex items-center text-sm text-gray-500">
-                      <MapPin className="h-3 w-3 mr-1" />
-                      {service.location.distance} km
-                    </div>
-                  </div>
+            <div className="service-card">
+              <div className="service-icon" style={{ background: 'rgba(234,179,8,0.1)' }}>
+                ⚡
+              </div>
+              <div>
+                <div
+                  style={{
+                    fontFamily: "'Syne',sans-serif",
+                    fontWeight: '700',
+                    marginBottom: '0.25rem',
+                  }}
+                >
+                  Electricidad
+                </div>
+                <div style={{ fontSize: '0.83rem', color: 'var(--warm-gray)' }}>Instalaciones, cortocircuitos</div>
+                <div
+                  style={{
+                    fontSize: '0.8rem',
+                    fontWeight: '600',
+                    color: 'var(--amber-dark)',
+                    marginTop: '0.5rem',
+                  }}
+                >
+                  189 maestros disponibles
+                </div>
+              </div>
+            </div>
 
-                  <Button className="w-full bg-black hover:bg-gray-800 text-white">
-                    Contactar
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </Button>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+            <div className="service-card">
+              <div className="service-icon" style={{ background: 'rgba(180,83,9,0.1)' }}>
+                🪵
+              </div>
+              <div>
+                <div
+                  style={{
+                    fontFamily: "'Syne',sans-serif",
+                    fontWeight: '700',
+                    marginBottom: '0.25rem',
+                  }}
+                >
+                  Carpintería
+                </div>
+                <div style={{ fontSize: '0.83rem', color: 'var(--warm-gray)' }}>Muebles, puertas, closets</div>
+                <div
+                  style={{
+                    fontSize: '0.8rem',
+                    fontWeight: '600',
+                    color: 'var(--amber-dark)',
+                    marginTop: '0.5rem',
+                  }}
+                >
+                  132 maestros disponibles
+                </div>
+              </div>
+            </div>
 
-          <div className="text-center mt-12">
-            <Link href="/search">
-              <Button
-                variant="outline"
-                size="lg"
-                className="border-gray-300 text-gray-700 hover:bg-gray-50"
-              >
-                Ver todos los servicios
-              </Button>
-            </Link>
+            <div className="service-card">
+              <div className="service-icon" style={{ background: 'rgba(239,68,68,0.1)' }}>
+                🎨
+              </div>
+              <div>
+                <div
+                  style={{
+                    fontFamily: "'Syne',sans-serif",
+                    fontWeight: '700',
+                    marginBottom: '0.25rem',
+                  }}
+                >
+                  Pintura
+                </div>
+                <div style={{ fontSize: '0.83rem', color: 'var(--warm-gray)' }}>Interior, exterior, acabados</div>
+                <div
+                  style={{
+                    fontSize: '0.8rem',
+                    fontWeight: '600',
+                    color: 'var(--amber-dark)',
+                    marginTop: '0.5rem',
+                  }}
+                >
+                  310 maestros disponibles
+                </div>
+              </div>
+            </div>
+
+            <div className="service-card">
+              <div className="service-icon" style={{ background: 'rgba(34,197,94,0.1)' }}>
+                🌿
+              </div>
+              <div>
+                <div
+                  style={{
+                    fontFamily: "'Syne',sans-serif",
+                    fontWeight: '700',
+                    marginBottom: '0.25rem',
+                  }}
+                >
+                  Jardinería
+                </div>
+                <div style={{ fontSize: '0.83rem', color: 'var(--warm-gray)' }}>Poda, diseño, mantenimiento</div>
+                <div
+                  style={{
+                    fontSize: '0.8rem',
+                    fontWeight: '600',
+                    color: 'var(--amber-dark)',
+                    marginTop: '0.5rem',
+                  }}
+                >
+                  98 maestros disponibles
+                </div>
+              </div>
+            </div>
+
+            <div className="service-card">
+              <div className="service-icon" style={{ background: 'rgba(100,116,139,0.1)' }}>
+                ❄️
+              </div>
+              <div>
+                <div
+                  style={{
+                    fontFamily: "'Syne',sans-serif",
+                    fontWeight: '700',
+                    marginBottom: '0.25rem',
+                  }}
+                >
+                  Aire acondicionado
+                </div>
+                <div style={{ fontSize: '0.83rem', color: 'var(--warm-gray)' }}>Instalación, limpieza, recarga</div>
+                <div
+                  style={{
+                    fontSize: '0.8rem',
+                    fontWeight: '600',
+                    color: 'var(--amber-dark)',
+                    marginTop: '0.5rem',
+                  }}
+                >
+                  76 maestros disponibles
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* How it Works */}
-      <section className="py-20 bg-gray-50">
-        <div className="mx-auto max-w-7xl px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900">
-              ¿Cómo funciona?
-            </h2>
-            <p className="mt-4 text-lg text-gray-600">
-              Es muy fácil encontrar y contratar el servicio que necesitas
+      {/* <!-- MAESTROS DESTACADOS --> */}
+      <section style={{ maxWidth: '1100px', margin: '0 auto' }}>
+        <div style={{ textAlign: 'center', marginBottom: '3.5rem' }}>
+          <div className="section-label">Comunidad</div>
+          <h2 className="section-title">
+            Maestros mejor
+            <br />
+            calificados
+          </h2>
+        </div>
+
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill,minmax(260px,1fr))',
+            gap: '1.5rem',
+          }}
+        >
+          {/* <!-- Card 1 --> */}
+          <div className="profile-card">
+            <div
+              style={{
+                height: '90px',
+                background: 'linear-gradient(135deg,#1C1917,#44403C)',
+                position: 'relative',
+              }}
+            >
+              <div
+                style={{
+                  position: 'absolute',
+                  bottom: '-28px',
+                  left: '1.5rem',
+                  width: '56px',
+                  height: '56px',
+                  background: 'linear-gradient(135deg,#F59E0B,#D97706)',
+                  borderRadius: '50%',
+                  border: '3px solid white',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '1.3rem',
+                  color: 'white',
+                  fontWeight: '800',
+                }}
+              >
+                JM
+              </div>
+            </div>
+            <div style={{ padding: '2.25rem 1.5rem 1.5rem' }}>
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  marginBottom: '0.25rem',
+                }}
+              >
+                <div style={{ fontFamily: "'Syne',sans-serif", fontWeight: '700' }}>Juan Morales</div>
+                <div className="online-dot"></div>
+              </div>
+              <div
+                style={{
+                  fontSize: '0.82rem',
+                  color: 'var(--warm-gray)',
+                  marginBottom: '0.6rem',
+                }}
+              >
+                Plomero · Colima, Col.
+              </div>
+              <div className="badge-verified" style={{ marginBottom: '0.75rem' }}>
+                ✓ Verificado
+              </div>
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.4rem',
+                  marginBottom: '1rem',
+                }}
+              >
+                <span className="star">★★★★★</span>
+                <span style={{ fontSize: '0.82rem', fontWeight: '700' }}>4.97</span>
+                <span style={{ fontSize: '0.78rem', color: 'var(--warm-gray)' }}>· 143 trabajos</span>
+              </div>
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  paddingTop: '0.75rem',
+                  borderTop: '1px solid rgba(0,0,0,0.06)',
+                }}
+              >
+                <span style={{ fontFamily: "'Syne',sans-serif", fontWeight: '700' }}>
+                  $250
+                  <span
+                    style={{
+                      fontSize: '0.78rem',
+                      fontWeight: '400',
+                      color: 'var(--warm-gray)',
+                    }}
+                  >
+                    /hr
+                  </span>
+                </span>
+                <button className="btn-primary" style={{ fontSize: '0.8rem', padding: '0.45rem 1rem' }}>
+                  Ver perfil
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Card 2 */}
+          <div className="profile-card">
+            <div
+              style={{
+                height: '90px',
+                background: 'linear-gradient(135deg,#1D4ED8,#1E40AF)',
+                position: 'relative',
+              }}
+            >
+              <div
+                style={{
+                  position: 'absolute',
+                  bottom: '-28px',
+                  left: '1.5rem',
+                  width: '56px',
+                  height: '56px',
+                  background: 'linear-gradient(135deg,#3B82F6,#2563EB)',
+                  borderRadius: '50%',
+                  border: '3px solid white',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '1.3rem',
+                  color: 'white',
+                  fontWeight: '800',
+                }}
+              >
+                RG
+              </div>
+            </div>
+            <div style={{ padding: '2.25rem 1.5rem 1.5rem' }}>
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  marginBottom: '0.25rem',
+                }}
+              >
+                <div style={{ fontFamily: "'Syne',sans-serif", fontWeight: '700' }}>Rosa García</div>
+                <div className="online-dot"></div>
+              </div>
+              <div
+                style={{
+                  fontSize: '0.82rem',
+                  color: 'var(--warm-gray)',
+                  marginBottom: '0.6rem',
+                }}
+              >
+                Electricista · Manzanillo
+              </div>
+              <div className="badge-verified" style={{ marginBottom: '0.75rem' }}>
+                ✓ Verificado
+              </div>
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.4rem',
+                  marginBottom: '1rem',
+                }}
+              >
+                <span className="star">★★★★★</span>
+                <span style={{ fontSize: '0.82rem', fontWeight: '700' }}>4.95</span>
+                <span style={{ fontSize: '0.78rem', color: 'var(--warm-gray)' }}>· 98 trabajos</span>
+              </div>
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  paddingTop: '0.75rem',
+                  borderTop: '1px solid rgba(0,0,0,0.06)',
+                }}
+              >
+                <span style={{ fontFamily: "'Syne',sans-serif", fontWeight: '700' }}>
+                  $300
+                  <span
+                    style={{
+                      fontSize: '0.78rem',
+                      fontWeight: '400',
+                      color: 'var(--warm-gray)',
+                    }}
+                  >
+                    /hr
+                  </span>
+                </span>
+                <button className="btn-primary" style={{ fontSize: '0.8rem', padding: '0.45rem 1rem' }}>
+                  Ver perfil
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* <!-- Card 3 --> */}
+          <div className="profile-card">
+            <div
+              style={{
+                height: '90px',
+                background: 'linear-gradient(135deg,#065F46,#047857)',
+                position: 'relative',
+              }}
+            >
+              <div
+                style={{
+                  position: 'absolute',
+                  bottom: '-28px',
+                  left: '1.5rem',
+                  width: '56px',
+                  height: '56px',
+                  background: 'linear-gradient(135deg,#10B981,#059669)',
+                  borderRadius: '50%',
+                  border: '3px solid white',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '1.3rem',
+                  color: 'white',
+                  fontWeight: '800',
+                }}
+              >
+                CA
+              </div>
+            </div>
+            <div style={{ padding: '2.25rem 1.5rem 1.5rem' }}>
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  marginBottom: '0.25rem',
+                }}
+              >
+                <div style={{ fontFamily: "'Syne',sans-serif", fontWeight: '700' }}>Carlos Ávila</div>
+                <div
+                  style={{
+                    width: '10px',
+                    height: '10px',
+                    background: '#94A3B8',
+                    borderRadius: '50%',
+                  }}
+                ></div>
+              </div>
+              <div
+                style={{
+                  fontSize: '0.82rem',
+                  color: 'var(--warm-gray)',
+                  marginBottom: '0.6rem',
+                }}
+              >
+                Carpintero · Villa de Álvarez
+              </div>
+              <div className="badge-verified" style={{ marginBottom: '0.75rem' }}>
+                ✓ Verificado
+              </div>
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.4rem',
+                  marginBottom: '1rem',
+                }}
+              >
+                <span className="star">★★★★★</span>
+                <span style={{ fontSize: '0.82rem', fontWeight: '700' }}>4.93</span>
+                <span style={{ fontSize: '0.78rem', color: 'var(--warm-gray)' }}>· 211 trabajos</span>
+              </div>
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  paddingTop: '0.75rem',
+                  borderTop: '1px solid rgba(0,0,0,0.06)',
+                }}
+              >
+                <span style={{ fontFamily: "'Syne',sans-serif", fontWeight: '700' }}>
+                  $200
+                  <span
+                    style={{
+                      fontSize: '0.78rem',
+                      fontWeight: '400',
+                      color: 'var(--warm-gray)',
+                    }}
+                  >
+                    /hr
+                  </span>
+                </span>
+                <button className="btn-primary" style={{ fontSize: '0.8rem', padding: '0.45rem 1rem' }}>
+                  Ver perfil
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* <!-- DOS PERFILES --> */}
+      <section style={{ background: 'white', padding: '5rem 2rem' }}>
+        <div
+          style={{
+            maxWidth: '1100px',
+            margin: '0 auto',
+            display: 'grid',
+            gridTemplateColumns: '1fr 1fr',
+            gap: '2rem',
+            alignItems: 'start',
+          }}
+        >
+          <div
+            style={{
+              background: 'var(--cream)',
+              border: '1px solid rgba(0,0,0,0.07)',
+              borderRadius: '28px',
+              padding: '2.5rem',
+            }}
+          >
+            <div
+              style={{
+                width: '52px',
+                height: '52px',
+                background: 'rgba(245,158,11,0.12)',
+                borderRadius: '16px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '1.5rem',
+                marginBottom: '1.5rem',
+              }}
+            >
+              🏠
+            </div>
+            <h3
+              style={{
+                fontFamily: "'Syne',sans-serif",
+                fontSize: '1.6rem',
+                fontWeight: 800,
+                marginBottom: '0.75rem',
+              }}
+            >
+              Soy cliente
+            </h3>
+            <p
+              style={{
+                color: 'var(--warm-gray)',
+                lineHeight: 1.7,
+                marginBottom: '1.5rem',
+              }}
+            >
+              Encuentra al maestro correcto en minutos. Compara precios, lee reseñas reales y agenda cuando tú quieras, sin llamadas ni esperas.
             </p>
+            <ul
+              style={{
+                listStyle: 'none',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '0.6rem',
+                marginBottom: '2rem',
+              }}
+            >
+              <li style={{ fontSize: '0.9rem', display: 'flex', gap: '0.5rem' }}>
+                <span style={{ color: 'var(--amber)' }}>✓</span> Perfil con fotos del trabajo previo
+              </li>
+              <li style={{ fontSize: '0.9rem', display: 'flex', gap: '0.5rem' }}>
+                <span style={{ color: 'var(--amber)' }}>✓</span> Chat directo con el maestro
+              </li>
+              <li style={{ fontSize: '0.9rem', display: 'flex', gap: '0.5rem' }}>
+                <span style={{ color: 'var(--amber)' }}>✓</span> Pago seguro en la app
+              </li>
+              <li style={{ fontSize: '0.9rem', display: 'flex', gap: '0.5rem' }}>
+                <span style={{ color: 'var(--amber)' }}>✓</span> Garantía de satisfacción
+              </li>
+            </ul>
+            <a href="#" className="btn-amber">
+              Buscar un maestro
+            </a>
           </div>
 
-          <div className="grid grid-cols-1 gap-8 sm:grid-cols-3">
-            <div className="text-center">
-              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-gray-900 mb-6">
-                <Search className="h-8 w-8 text-white" />
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">1. Busca</h3>
-              <p className="text-gray-600">
-                Busca el servicio que necesitas en tu área local
-              </p>
+          <div
+            style={{
+              background: 'var(--charcoal)',
+              borderRadius: '28px',
+              padding: '2.5rem',
+              color: 'white',
+            }}
+          >
+            <div
+              style={{
+                width: '52px',
+                height: '52px',
+                background: 'rgba(255,255,255,0.1)',
+                borderRadius: '16px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '1.5rem',
+                marginBottom: '1.5rem',
+              }}
+            >
+              🔧
             </div>
-
-            <div className="text-center">
-              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-gray-900 mb-6">
-                <Star className="h-8 w-8 text-white" />
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">2. Compara</h3>
-              <p className="text-gray-600">
-                Revisa perfiles, calificaciones y precios
-              </p>
-            </div>
-
-            <div className="text-center">
-              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-gray-900 mb-6">
-                <CheckCircle className="h-8 w-8 text-white" />
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">3. Contrata</h3>
-              <p className="text-gray-600">
-                Contacta al profesional y agenda tu servicio
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-20 bg-black">
-        <div className="mx-auto max-w-7xl px-6 lg:px-8">
-          <div className="text-center">
-            <h2 className="text-4xl font-bold text-white">
-              ¿Eres un profesional?
-            </h2>
-            <p className="mt-4 text-lg text-gray-300 max-w-2xl mx-auto">
-              Únete a nuestra plataforma y conecta con clientes en tu área
+            <h3
+              style={{
+                fontFamily: "'Syne',sans-serif",
+                fontSize: '1.6rem',
+                fontWeight: 800,
+                marginBottom: '0.75rem',
+              }}
+            >
+              Soy maestro
+            </h3>
+            <p
+              style={{
+                color: 'rgba(255,255,255,0.65)',
+                lineHeight: 1.7,
+                marginBottom: '1.5rem',
+              }}
+            >
+              Deja de depender del boca a boca. Crea tu perfil, define tus horarios y recibe clientes de tu zona directamente en tu celular.
             </p>
-            <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
-              <Button
-                size="lg"
-                className="bg-white text-black hover:bg-gray-100 font-semibold"
-              >
-                Registrar mi servicio
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                className="border-white text-white hover:bg-white hover:text-black"
-              >
-                Saber más
-              </Button>
-            </div>
+            <ul
+              style={{
+                listStyle: 'none',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '0.6rem',
+                marginBottom: '2rem',
+              }}
+            >
+              <li style={{ fontSize: '0.9rem', display: 'flex', gap: '0.5rem' }}>
+                <span style={{ color: 'var(--amber)' }}>✓</span> Gratis para registrarse
+              </li>
+              <li style={{ fontSize: '0.9rem', display: 'flex', gap: '0.5rem' }}>
+                <span style={{ color: 'var(--amber)' }}>✓</span> Tú pones tus precios
+              </li>
+              <li style={{ fontSize: '0.9rem', display: 'flex', gap: '0.5rem' }}>
+                <span style={{ color: 'var(--amber)' }}>✓</span> Acepta o rechaza solicitudes
+              </li>
+              <li style={{ fontSize: '0.9rem', display: 'flex', gap: '0.5rem' }}>
+                <span style={{ color: 'var(--amber)' }}>✓</span> Cobra más con el sello verificado
+              </li>
+            </ul>
+            <a href="#" className="btn-amber">
+              Registrar mi oficio
+            </a>
           </div>
         </div>
       </section>
 
-    </div>
+      {/* <!-- CTA --> */}
+      <section
+        style={{
+          maxWidth: '1100px',
+          margin: '0 auto',
+          padding: '2rem 2rem 5rem',
+        }}
+      >
+        <div className="cta-section">
+          <div style={{ position: 'relative', zIndex: 1 }}>
+            <div className="section-label" style={{ color: 'rgba(245,158,11,0.8)', marginBottom: '1rem' }}>
+              ¿Listo?
+            </div>
+            <h2
+              style={{
+                fontFamily: "'Syne',sans-serif",
+                fontSize: 'clamp(2rem,5vw,3.5rem)',
+                fontWeight: 800,
+                letterSpacing: '-0.03em',
+                lineHeight: 1.1,
+                color: 'white',
+                marginBottom: '1rem',
+              }}
+            >
+              Tu próximo servicio
+              <br />
+              está a un clic.
+            </h2>
+            <p
+              style={{
+                color: 'rgba(255,255,255,0.6)',
+                fontSize: '1.05rem',
+                marginBottom: '2rem',
+              }}
+            >
+              Únete a miles de personas que ya encontraron su maestro de confianza.
+            </p>
+            <div
+              style={{
+                display: 'flex',
+                gap: '1rem',
+                justifyContent: 'center',
+                flexWrap: 'wrap',
+              }}
+            >
+              <a href="#" className="btn-amber">
+                Buscar servicio ahora
+              </a>
+              <a
+                href="#"
+                style={{
+                  color: 'rgba(255,255,255,0.7)',
+                  fontSize: '0.9rem',
+                  fontWeight: 500,
+                  textDecoration: 'none',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.4rem',
+                  padding: '0.85rem 0',
+                }}
+              >
+                ¿Eres maestro? Regístrate →
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </PageWrapper>
   );
 }

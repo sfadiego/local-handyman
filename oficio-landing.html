@@ -1,852 +1,1239 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Oficio — Servicios a tu puerta</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet" />
-  <style>
-    :root {
-      --amber: #F59E0B;
-      --amber-dark: #D97706;
-      --charcoal: #1C1917;
-      --warm-gray: #78716C;
-      --cream: #FAFAF9;
-      --rust: #C2410C;
-    }
-
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-
-    body {
-      font-family: 'Instrument Sans', sans-serif;
-      background: var(--cream);
-      color: var(--charcoal);
-      overflow-x: hidden;
-    }
-
-    h1, h2, h3, h4, .font-display { font-family: 'Syne', sans-serif; }
-
-    /* Grain overlay */
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-      pointer-events: none;
-      z-index: 9999;
-      opacity: 0.4;
-    }
-
-    /* Animations */
-    @keyframes slideUp {
-      from { opacity: 0; transform: translateY(30px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to   { opacity: 1; }
-    }
-    @keyframes float {
-      0%, 100% { transform: translateY(0px) rotate(-2deg); }
-      50%       { transform: translateY(-10px) rotate(-2deg); }
-    }
-    @keyframes pulse-ring {
-      0%   { transform: scale(1); opacity: 0.4; }
-      100% { transform: scale(1.6); opacity: 0; }
-    }
-    @keyframes marquee {
-      0%   { transform: translateX(0); }
-      100% { transform: translateX(-50%); }
-    }
-
-    .animate-slide-up   { animation: slideUp 0.7s ease forwards; }
-    .animate-fade       { animation: fadeIn 1s ease forwards; }
-    .delay-100 { animation-delay: 0.1s; }
-    .delay-200 { animation-delay: 0.2s; }
-    .delay-300 { animation-delay: 0.3s; }
-    .delay-400 { animation-delay: 0.4s; }
-    .delay-500 { animation-delay: 0.5s; }
-    .opacity-0-start { opacity: 0; }
-
-    /* Nav */
-    nav {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-      padding: 1.25rem 2rem;
-      display: flex; align-items: center; justify-content: space-between;
-      backdrop-filter: blur(12px);
-      background: rgba(250,250,249,0.85);
-      border-bottom: 1px solid rgba(0,0,0,0.06);
-    }
-
-    .nav-logo {
-      font-family: 'Syne', sans-serif;
-      font-weight: 800;
-      font-size: 1.4rem;
-      letter-spacing: -0.03em;
-      color: var(--charcoal);
-    }
-
-    .nav-logo span { color: var(--amber); }
-
-    .nav-links { display: flex; gap: 2rem; }
-    .nav-links a {
-      font-size: 0.875rem;
-      font-weight: 500;
-      color: var(--warm-gray);
-      text-decoration: none;
-      transition: color 0.2s;
-    }
-    .nav-links a:hover { color: var(--charcoal); }
-
-    .btn-primary {
-      background: var(--charcoal);
-      color: white;
-      font-family: 'Syne', sans-serif;
-      font-weight: 600;
-      font-size: 0.875rem;
-      padding: 0.6rem 1.4rem;
-      border-radius: 100px;
-      border: none;
-      cursor: pointer;
-      transition: background 0.2s, transform 0.15s;
-      text-decoration: none;
-      display: inline-block;
-    }
-    .btn-primary:hover { background: #2c2825; transform: translateY(-1px); }
-
-    .btn-amber {
-      background: var(--amber);
-      color: var(--charcoal);
-      font-family: 'Syne', sans-serif;
-      font-weight: 700;
-      font-size: 1rem;
-      padding: 0.85rem 2.2rem;
-      border-radius: 100px;
-      border: none;
-      cursor: pointer;
-      transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
-      text-decoration: none;
-      display: inline-block;
-    }
-    .btn-amber:hover {
-      background: var(--amber-dark);
-      transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(245,158,11,0.35);
-    }
-
-    /* Hero */
-    .hero {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      padding: 7rem 2rem 4rem;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .hero-bg-circle {
-      position: absolute;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(245,158,11,0.15) 0%, transparent 70%);
-      pointer-events: none;
-    }
-
-    .hero-tag {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      background: rgba(245,158,11,0.12);
-      border: 1px solid rgba(245,158,11,0.3);
-      color: #92400E;
-      font-size: 0.8rem;
-      font-weight: 600;
-      padding: 0.35rem 0.9rem;
-      border-radius: 100px;
-      margin-bottom: 1.5rem;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-    }
-
-    .hero h1 {
-      font-size: clamp(3rem, 7vw, 6rem);
-      font-weight: 800;
-      line-height: 1.0;
-      letter-spacing: -0.04em;
-      margin-bottom: 1.5rem;
-    }
-
-    .hero h1 em {
-      font-style: normal;
-      color: var(--amber);
-      position: relative;
-    }
-
-    .hero-sub {
-      font-size: 1.125rem;
-      color: var(--warm-gray);
-      line-height: 1.65;
-      max-width: 440px;
-      margin-bottom: 2.5rem;
-    }
-
-    .hero-actions { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
-
-    .hero-link {
-      font-size: 0.9rem;
-      font-weight: 500;
-      color: var(--charcoal);
-      text-decoration: none;
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-    }
-    .hero-link:hover { color: var(--amber-dark); }
-
-    /* Floating card */
-    .float-card {
-      animation: float 4s ease-in-out infinite;
-      background: white;
-      border-radius: 20px;
-      padding: 1.25rem 1.5rem;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06);
-    }
-
-    /* Stats row */
-    .stat-pill {
-      background: white;
-      border: 1px solid rgba(0,0,0,0.08);
-      border-radius: 100px;
-      padding: 0.5rem 1.25rem;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-size: 0.85rem;
-      font-weight: 500;
-    }
-
-    /* Marquee */
-    .marquee-wrapper { overflow: hidden; padding: 1.5rem 0; }
-    .marquee-track {
-      display: flex;
-      gap: 1.5rem;
-      width: max-content;
-      animation: marquee 20s linear infinite;
-    }
-    .marquee-item {
-      background: white;
-      border: 1px solid rgba(0,0,0,0.07);
-      border-radius: 100px;
-      padding: 0.6rem 1.4rem;
-      font-size: 0.875rem;
-      font-weight: 500;
-      white-space: nowrap;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    /* Section */
-    section { padding: 5rem 2rem; }
-
-    .section-label {
-      font-size: 0.75rem;
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--amber-dark);
-      margin-bottom: 0.75rem;
-    }
-
-    .section-title {
-      font-size: clamp(2rem, 4vw, 3rem);
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      line-height: 1.1;
-    }
-
-    /* How it works */
-    .step-card {
-      background: white;
-      border: 1px solid rgba(0,0,0,0.07);
-      border-radius: 24px;
-      padding: 2rem;
-      position: relative;
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-    .step-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 20px 50px rgba(0,0,0,0.09);
-    }
-
-    .step-num {
-      font-family: 'Syne', sans-serif;
-      font-size: 3.5rem;
-      font-weight: 800;
-      color: rgba(0,0,0,0.06);
-      line-height: 1;
-      margin-bottom: 1rem;
-    }
-
-    /* Service cards */
-    .service-card {
-      background: white;
-      border: 1px solid rgba(0,0,0,0.07);
-      border-radius: 20px;
-      padding: 1.75rem;
-      display: flex;
-      align-items: flex-start;
-      gap: 1rem;
-      transition: transform 0.2s, box-shadow 0.2s;
-      cursor: pointer;
-    }
-    .service-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 16px 40px rgba(0,0,0,0.09);
-    }
-
-    .service-icon {
-      width: 52px; height: 52px;
-      border-radius: 14px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.5rem;
-      flex-shrink: 0;
-    }
-
-    /* Profile card */
-    .profile-card {
-      background: white;
-      border-radius: 24px;
-      overflow: hidden;
-      box-shadow: 0 8px 30px rgba(0,0,0,0.08);
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-    .profile-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 20px 50px rgba(0,0,0,0.12);
-    }
-
-    /* Online dot */
-    .online-dot {
-      width: 10px; height: 10px;
-      background: #22C55E;
-      border-radius: 50%;
-      position: relative;
-    }
-    .online-dot::after {
-      content: '';
-      position: absolute;
-      inset: -3px;
-      border-radius: 50%;
-      border: 2px solid #22C55E;
-      animation: pulse-ring 1.5s ease-out infinite;
-    }
-
-    /* Stars */
-    .star { color: #F59E0B; font-size: 0.85rem; }
-
-    /* CTA section */
-    .cta-section {
-      background: var(--charcoal);
-      color: white;
-      border-radius: 32px;
-      padding: 4rem 3rem;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-    }
-    .cta-section::before {
-      content: '';
-      position: absolute;
-      top: -60%; left: 50%;
-      transform: translateX(-50%);
-      width: 600px; height: 600px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(245,158,11,0.2) 0%, transparent 70%);
-      pointer-events: none;
-    }
-
-    /* Footer */
-    footer {
-      padding: 3rem 2rem;
-      border-top: 1px solid rgba(0,0,0,0.07);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: gap-1rem;
-    }
-
-    /* Search bar */
-    .search-bar {
-      background: white;
-      border: 1.5px solid rgba(0,0,0,0.1);
-      border-radius: 100px;
-      padding: 0.75rem 1.25rem;
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      max-width: 480px;
-      width: 100%;
-      transition: border-color 0.2s, box-shadow 0.2s;
-    }
-    .search-bar:focus-within {
-      border-color: var(--amber);
-      box-shadow: 0 0 0 3px rgba(245,158,11,0.15);
-    }
-    .search-bar input {
-      border: none;
-      outline: none;
-      font-family: 'Instrument Sans', sans-serif;
-      font-size: 0.95rem;
-      color: var(--charcoal);
-      flex: 1;
-      background: transparent;
-    }
-    .search-bar input::placeholder { color: #A8A29E; }
-
-    /* Badge verified */
-    .badge-verified {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.3rem;
-      background: rgba(34,197,94,0.1);
-      color: #15803D;
-      font-size: 0.72rem;
-      font-weight: 600;
-      padding: 0.2rem 0.6rem;
-      border-radius: 100px;
-      letter-spacing: 0.04em;
-    }
-
-    @media (max-width: 768px) {
-      .nav-links { display: none; }
-      .hero { padding: 6rem 1.25rem 3rem; }
-    }
-  </style>
-</head>
-<body>
-
-<!-- NAV -->
-<nav>
-  <div class="nav-logo">oficio<span>.</span></div>
-  <div class="nav-links">
-    <a href="#">Servicios</a>
-    <a href="#">Cómo funciona</a>
-    <a href="#">Maestros</a>
-    <a href="#">Precios</a>
-  </div>
-  <div style="display:flex;gap:0.75rem;align-items:center;">
-    <a href="oficio-auth.html" style="font-size:0.875rem;font-weight:500;color:var(--warm-gray);text-decoration:none;">Iniciar sesión</a>
-    <a href="oficio-auth.html" class="btn-primary">Registrarse</a>
-  </div>
-</nav>
-
-<!-- HERO -->
-<section class="hero">
-  <!-- BG circles -->
-  <div class="hero-bg-circle" style="width:600px;height:600px;top:-100px;right:-150px;"></div>
-  <div class="hero-bg-circle" style="width:300px;height:300px;bottom:50px;left:-80px;opacity:0.6;"></div>
-
-  <div style="max-width:1200px;margin:0 auto;width:100%;display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;">
-
-    <!-- Left -->
-    <div>
-      <div class="hero-tag animate-slide-up opacity-0-start">
-        <span>✦</span> Servicios cerca de ti
-      </div>
-
-      <h1 class="animate-slide-up opacity-0-start delay-100">
-        El maestro<br>que necesitas,<br><em>hoy mismo.</em>
-      </h1>
-
-      <p class="hero-sub animate-slide-up opacity-0-start delay-200">
-        Conectamos a personas que necesitan un servicio con los mejores maestros verificados de su zona. Rápido, seguro y sin complicaciones.
-      </p>
-
-      <!-- Search -->
-      <div class="animate-slide-up opacity-0-start delay-300" style="margin-bottom:1.5rem;">
-        <div class="search-bar">
-          <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="#A8A29E" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-          <input type="text" placeholder="¿Qué servicio necesitas? Ej: plomería..." />
-          <button class="btn-primary" style="padding:0.5rem 1rem;font-size:0.8rem;">Buscar</button>
-        </div>
-      </div>
-
-      <div class="hero-actions animate-slide-up opacity-0-start delay-400">
-        <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
-          <div class="stat-pill">
-            <span style="font-size:1rem;">🔨</span>
-            <span><strong>2,400+</strong> maestros</span>
-          </div>
-          <div class="stat-pill">
-            <span style="font-size:1rem;">⭐</span>
-            <span><strong>4.9</strong> promedio</span>
-          </div>
-          <div class="stat-pill">
-            <span style="font-size:1rem;">✅</span>
-            <span>100% verificados</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Right: floating cards -->
-    <div style="position:relative;height:480px;display:none;" id="heroCards">
-
-      <!-- Main profile card -->
-      <div class="float-card" style="position:absolute;top:40px;left:20px;width:260px;">
-        <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem;">
-          <div style="width:44px;height:44px;background:linear-gradient(135deg,#F59E0B,#D97706);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:white;font-weight:700;">JM</div>
-          <div>
-            <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.95rem;">Juan Morales</div>
-            <div style="font-size:0.78rem;color:var(--warm-gray);">Plomero · 8 años exp.</div>
-          </div>
-          <div class="online-dot" style="margin-left:auto;"></div>
-        </div>
-        <div style="display:flex;align-items:center;gap:0.4rem;margin-bottom:0.75rem;">
-          <span class="star">★★★★★</span>
-          <span style="font-size:0.82rem;font-weight:600;">4.97</span>
-          <span style="font-size:0.78rem;color:var(--warm-gray);">(143 reseñas)</span>
-        </div>
-        <div class="badge-verified">✓ Maestro Verificado</div>
-        <div style="margin-top:1rem;padding-top:1rem;border-top:1px solid rgba(0,0,0,0.06);display:flex;justify-content:space-between;align-items:center;">
-          <span style="font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:700;">$250<span style="font-size:0.75rem;font-weight:400;color:var(--warm-gray);">/hr</span></span>
-          <button class="btn-amber" style="padding:0.45rem 1rem;font-size:0.8rem;">Contratar</button>
-        </div>
-      </div>
-
-      <!-- Notification card -->
-      <div style="position:absolute;top:0;right:10px;background:var(--charcoal);color:white;border-radius:16px;padding:0.9rem 1.2rem;width:200px;box-shadow:0 12px 40px rgba(0,0,0,0.2);">
-        <div style="font-size:0.75rem;opacity:0.6;margin-bottom:0.3rem;">Nueva solicitud</div>
-        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.9rem;">Fuga de agua 🚰</div>
-        <div style="font-size:0.78rem;opacity:0.7;margin-top:0.25rem;">Hace 2 min · 1.2km</div>
-      </div>
-
-      <!-- Rating notification -->
-      <div style="position:absolute;bottom:80px;right:0px;background:white;border-radius:16px;padding:0.9rem 1.2rem;box-shadow:0 8px 30px rgba(0,0,0,0.1);width:185px;">
-        <div style="font-size:0.75rem;color:var(--warm-gray);margin-bottom:0.3rem;">Reseña nueva ⭐</div>
-        <div style="font-size:0.82rem;font-weight:500;">"Excelente trabajo, muy puntual"</div>
-        <div style="margin-top:0.5rem;display:flex;gap:0.2rem;"><span class="star">★★★★★</span></div>
-      </div>
-
-      <!-- Map ping -->
-      <div style="position:absolute;bottom:60px;left:30px;background:var(--amber);color:var(--charcoal);border-radius:12px;padding:0.6rem 1rem;font-size:0.82rem;font-weight:700;font-family:'Syne',sans-serif;box-shadow:0 4px 15px rgba(245,158,11,0.4);">
-        📍 3 maestros cerca
-      </div>
-
-    </div>
-
-  </div>
-</section>
-
-<!-- MARQUEE: servicios -->
-<div style="background:white;border-top:1px solid rgba(0,0,0,0.06);border-bottom:1px solid rgba(0,0,0,0.06);">
-  <div class="marquee-wrapper">
-    <div class="marquee-track">
-      <div class="marquee-item">🔧 Plomería</div>
-      <div class="marquee-item">⚡ Electricidad</div>
-      <div class="marquee-item">🪵 Carpintería</div>
-      <div class="marquee-item">🎨 Pintura</div>
-      <div class="marquee-item">🧱 Albañilería</div>
-      <div class="marquee-item">❄️ Aire acondicionado</div>
-      <div class="marquee-item">🔑 Cerrajería</div>
-      <div class="marquee-item">🌿 Jardinería</div>
-      <div class="marquee-item">🪟 Vidriería</div>
-      <div class="marquee-item">🛁 Remodelaciones</div>
-      <!-- duplicado para loop -->
-      <div class="marquee-item">🔧 Plomería</div>
-      <div class="marquee-item">⚡ Electricidad</div>
-      <div class="marquee-item">🪵 Carpintería</div>
-      <div class="marquee-item">🎨 Pintura</div>
-      <div class="marquee-item">🧱 Albañilería</div>
-      <div class="marquee-item">❄️ Aire acondicionado</div>
-      <div class="marquee-item">🔑 Cerrajería</div>
-      <div class="marquee-item">🌿 Jardinería</div>
-      <div class="marquee-item">🪟 Vidriería</div>
-      <div class="marquee-item">🛁 Remodelaciones</div>
-    </div>
-  </div>
-</div>
-
-<!-- CÓMO FUNCIONA -->
-<section style="max-width:1100px;margin:0 auto;">
-  <div style="text-align:center;margin-bottom:3.5rem;">
-    <div class="section-label">Proceso</div>
-    <h2 class="section-title">Tan fácil como<br>pedir un taxi</h2>
-  </div>
-
-  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:1.5rem;">
-
-    <div class="step-card">
-      <div class="step-num">01</div>
-      <div style="width:44px;height:44px;background:rgba(245,158,11,0.12);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;margin-bottom:1rem;">🔍</div>
-      <h3 style="font-family:'Syne',sans-serif;font-weight:700;margin-bottom:0.5rem;">Describe tu problema</h3>
-      <p style="font-size:0.9rem;color:var(--warm-gray);line-height:1.6;">Cuéntanos qué necesitas. Puede ser tan simple como "se me fue el agua" o "se fundió un foco".</p>
-    </div>
-
-    <div class="step-card">
-      <div class="step-num">02</div>
-      <div style="width:44px;height:44px;background:rgba(245,158,11,0.12);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;margin-bottom:1rem;">📍</div>
-      <h3 style="font-family:'Syne',sans-serif;font-weight:700;margin-bottom:0.5rem;">Encuentra maestros cerca</h3>
-      <p style="font-size:0.9rem;color:var(--warm-gray);line-height:1.6;">Te mostramos maestros verificados en tu zona con disponibilidad inmediata, reseñas y precio estimado.</p>
-    </div>
-
-    <div class="step-card">
-      <div class="step-num">03</div>
-      <div style="width:44px;height:44px;background:rgba(245,158,11,0.12);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;margin-bottom:1rem;">💬</div>
-      <h3 style="font-family:'Syne',sans-serif;font-weight:700;margin-bottom:0.5rem;">Acuerda y agenda</h3>
-      <p style="font-size:0.9rem;color:var(--warm-gray);line-height:1.6;">Chatea directamente con el maestro, acuerda el precio y agenda la visita desde la app.</p>
-    </div>
-
-    <div class="step-card">
-      <div class="step-num">04</div>
-      <div style="width:44px;height:44px;background:rgba(245,158,11,0.12);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;margin-bottom:1rem;">⭐</div>
-      <h3 style="font-family:'Syne',sans-serif;font-weight:700;margin-bottom:0.5rem;">Paga y califica</h3>
-      <p style="font-size:0.9rem;color:var(--warm-gray);line-height:1.6;">Paga de forma segura a través de la plataforma y deja tu reseña para ayudar a la comunidad.</p>
-    </div>
-
-  </div>
-</section>
-
-<!-- SERVICIOS POPULARES -->
-<section style="background:white;padding:5rem 2rem;">
-  <div style="max-width:1100px;margin:0 auto;">
-    <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:3rem;flex-wrap:wrap;gap:1rem;">
-      <div>
-        <div class="section-label">Categorías</div>
-        <h2 class="section-title">Servicios más<br>solicitados</h2>
-      </div>
-      <a href="#" style="font-size:0.9rem;font-weight:600;color:var(--amber-dark);text-decoration:none;">Ver todos →</a>
-    </div>
-
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;">
-
-      <div class="service-card">
-        <div class="service-icon" style="background:rgba(59,130,246,0.1);">🔧</div>
-        <div>
-          <div style="font-family:'Syne',sans-serif;font-weight:700;margin-bottom:0.25rem;">Plomería</div>
-          <div style="font-size:0.83rem;color:var(--warm-gray);">Fugas, instalaciones, drenajes</div>
-          <div style="font-size:0.8rem;font-weight:600;color:var(--amber-dark);margin-top:0.5rem;">247 maestros disponibles</div>
-        </div>
-      </div>
-
-      <div class="service-card">
-        <div class="service-icon" style="background:rgba(234,179,8,0.1);">⚡</div>
-        <div>
-          <div style="font-family:'Syne',sans-serif;font-weight:700;margin-bottom:0.25rem;">Electricidad</div>
-          <div style="font-size:0.83rem;color:var(--warm-gray);">Instalaciones, cortocircuitos</div>
-          <div style="font-size:0.8rem;font-weight:600;color:var(--amber-dark);margin-top:0.5rem;">189 maestros disponibles</div>
-        </div>
-      </div>
-
-      <div class="service-card">
-        <div class="service-icon" style="background:rgba(180,83,9,0.1);">🪵</div>
-        <div>
-          <div style="font-family:'Syne',sans-serif;font-weight:700;margin-bottom:0.25rem;">Carpintería</div>
-          <div style="font-size:0.83rem;color:var(--warm-gray);">Muebles, puertas, closets</div>
-          <div style="font-size:0.8rem;font-weight:600;color:var(--amber-dark);margin-top:0.5rem;">132 maestros disponibles</div>
-        </div>
-      </div>
-
-      <div class="service-card">
-        <div class="service-icon" style="background:rgba(239,68,68,0.1);">🎨</div>
-        <div>
-          <div style="font-family:'Syne',sans-serif;font-weight:700;margin-bottom:0.25rem;">Pintura</div>
-          <div style="font-size:0.83rem;color:var(--warm-gray);">Interior, exterior, acabados</div>
-          <div style="font-size:0.8rem;font-weight:600;color:var(--amber-dark);margin-top:0.5rem;">310 maestros disponibles</div>
-        </div>
-      </div>
-
-      <div class="service-card">
-        <div class="service-icon" style="background:rgba(34,197,94,0.1);">🌿</div>
-        <div>
-          <div style="font-family:'Syne',sans-serif;font-weight:700;margin-bottom:0.25rem;">Jardinería</div>
-          <div style="font-size:0.83rem;color:var(--warm-gray);">Poda, diseño, mantenimiento</div>
-          <div style="font-size:0.8rem;font-weight:600;color:var(--amber-dark);margin-top:0.5rem;">98 maestros disponibles</div>
-        </div>
-      </div>
-
-      <div class="service-card">
-        <div class="service-icon" style="background:rgba(100,116,139,0.1);">❄️</div>
-        <div>
-          <div style="font-family:'Syne',sans-serif;font-weight:700;margin-bottom:0.25rem;">Aire acondicionado</div>
-          <div style="font-size:0.83rem;color:var(--warm-gray);">Instalación, limpieza, recarga</div>
-          <div style="font-size:0.8rem;font-weight:600;color:var(--amber-dark);margin-top:0.5rem;">76 maestros disponibles</div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-<!-- MAESTROS DESTACADOS -->
-<section style="max-width:1100px;margin:0 auto;">
-  <div style="text-align:center;margin-bottom:3.5rem;">
-    <div class="section-label">Comunidad</div>
-    <h2 class="section-title">Maestros mejor<br>calificados</h2>
-  </div>
-
-  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.5rem;">
-
-    <!-- Card 1 -->
-    <div class="profile-card">
-      <div style="height:90px;background:linear-gradient(135deg,#1C1917,#44403C);position:relative;">
-        <div style="position:absolute;bottom:-28px;left:1.5rem;width:56px;height:56px;background:linear-gradient(135deg,#F59E0B,#D97706);border-radius:50%;border:3px solid white;display:flex;align-items:center;justify-content:center;font-size:1.3rem;color:white;font-weight:800;">JM</div>
-      </div>
-      <div style="padding:2.25rem 1.5rem 1.5rem;">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.25rem;">
-          <div style="font-family:'Syne',sans-serif;font-weight:700;">Juan Morales</div>
-          <div class="online-dot"></div>
-        </div>
-        <div style="font-size:0.82rem;color:var(--warm-gray);margin-bottom:0.6rem;">Plomero · Colima, Col.</div>
-        <div class="badge-verified" style="margin-bottom:0.75rem;">✓ Verificado</div>
-        <div style="display:flex;align-items:center;gap:0.4rem;margin-bottom:1rem;">
-          <span class="star">★★★★★</span>
-          <span style="font-size:0.82rem;font-weight:700;">4.97</span>
-          <span style="font-size:0.78rem;color:var(--warm-gray);">· 143 trabajos</span>
-        </div>
-        <div style="display:flex;justify-content:space-between;align-items:center;padding-top:0.75rem;border-top:1px solid rgba(0,0,0,0.06);">
-          <span style="font-family:'Syne',sans-serif;font-weight:700;">$250<span style="font-size:0.78rem;font-weight:400;color:var(--warm-gray);">/hr</span></span>
-          <button class="btn-primary" style="font-size:0.8rem;padding:0.45rem 1rem;">Ver perfil</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Card 2 -->
-    <div class="profile-card">
-      <div style="height:90px;background:linear-gradient(135deg,#1D4ED8,#1E40AF);position:relative;">
-        <div style="position:absolute;bottom:-28px;left:1.5rem;width:56px;height:56px;background:linear-gradient(135deg,#3B82F6,#2563EB);border-radius:50%;border:3px solid white;display:flex;align-items:center;justify-content:center;font-size:1.3rem;color:white;font-weight:800;">RG</div>
-      </div>
-      <div style="padding:2.25rem 1.5rem 1.5rem;">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.25rem;">
-          <div style="font-family:'Syne',sans-serif;font-weight:700;">Rosa García</div>
-          <div class="online-dot"></div>
-        </div>
-        <div style="font-size:0.82rem;color:var(--warm-gray);margin-bottom:0.6rem;">Electricista · Manzanillo</div>
-        <div class="badge-verified" style="margin-bottom:0.75rem;">✓ Verificado</div>
-        <div style="display:flex;align-items:center;gap:0.4rem;margin-bottom:1rem;">
-          <span class="star">★★★★★</span>
-          <span style="font-size:0.82rem;font-weight:700;">4.95</span>
-          <span style="font-size:0.78rem;color:var(--warm-gray);">· 98 trabajos</span>
-        </div>
-        <div style="display:flex;justify-content:space-between;align-items:center;padding-top:0.75rem;border-top:1px solid rgba(0,0,0,0.06);">
-          <span style="font-family:'Syne',sans-serif;font-weight:700;">$300<span style="font-size:0.78rem;font-weight:400;color:var(--warm-gray);">/hr</span></span>
-          <button class="btn-primary" style="font-size:0.8rem;padding:0.45rem 1rem;">Ver perfil</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Card 3 -->
-    <div class="profile-card">
-      <div style="height:90px;background:linear-gradient(135deg,#065F46,#047857);position:relative;">
-        <div style="position:absolute;bottom:-28px;left:1.5rem;width:56px;height:56px;background:linear-gradient(135deg,#10B981,#059669);border-radius:50%;border:3px solid white;display:flex;align-items:center;justify-content:center;font-size:1.3rem;color:white;font-weight:800;">CA</div>
-      </div>
-      <div style="padding:2.25rem 1.5rem 1.5rem;">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.25rem;">
-          <div style="font-family:'Syne',sans-serif;font-weight:700;">Carlos Ávila</div>
-          <div style="width:10px;height:10px;background:#94A3B8;border-radius:50%;"></div>
-        </div>
-        <div style="font-size:0.82rem;color:var(--warm-gray);margin-bottom:0.6rem;">Carpintero · Villa de Álvarez</div>
-        <div class="badge-verified" style="margin-bottom:0.75rem;">✓ Verificado</div>
-        <div style="display:flex;align-items:center;gap:0.4rem;margin-bottom:1rem;">
-          <span class="star">★★★★★</span>
-          <span style="font-size:0.82rem;font-weight:700;">4.93</span>
-          <span style="font-size:0.78rem;color:var(--warm-gray);">· 211 trabajos</span>
-        </div>
-        <div style="display:flex;justify-content:space-between;align-items:center;padding-top:0.75rem;border-top:1px solid rgba(0,0,0,0.06);">
-          <span style="font-family:'Syne',sans-serif;font-weight:700;">$200<span style="font-size:0.78rem;font-weight:400;color:var(--warm-gray);">/hr</span></span>
-          <button class="btn-primary" style="font-size:0.8rem;padding:0.45rem 1rem;">Ver perfil</button>
-        </div>
-      </div>
-    </div>
-
-  </div>
-</section>
-
-<!-- DOS PERFILES -->
-<section style="background:white;padding:5rem 2rem;">
-  <div style="max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:start;">
-
-    <div style="background:var(--cream);border:1px solid rgba(0,0,0,0.07);border-radius:28px;padding:2.5rem;">
-      <div style="width:52px;height:52px;background:rgba(245,158,11,0.12);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin-bottom:1.5rem;">🏠</div>
-      <h3 style="font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;margin-bottom:0.75rem;">Soy cliente</h3>
-      <p style="color:var(--warm-gray);line-height:1.7;margin-bottom:1.5rem;">Encuentra al maestro correcto en minutos. Compara precios, lee reseñas reales y agenda cuando tú quieras, sin llamadas ni esperas.</p>
-      <ul style="list-style:none;display:flex;flex-direction:column;gap:0.6rem;margin-bottom:2rem;">
-        <li style="font-size:0.9rem;display:flex;gap:0.5rem;"><span style="color:var(--amber);">✓</span> Perfil con fotos del trabajo previo</li>
-        <li style="font-size:0.9rem;display:flex;gap:0.5rem;"><span style="color:var(--amber);">✓</span> Chat directo con el maestro</li>
-        <li style="font-size:0.9rem;display:flex;gap:0.5rem;"><span style="color:var(--amber);">✓</span> Pago seguro en la app</li>
-        <li style="font-size:0.9rem;display:flex;gap:0.5rem;"><span style="color:var(--amber);">✓</span> Garantía de satisfacción</li>
-      </ul>
-      <a href="#" class="btn-amber">Buscar un maestro</a>
-    </div>
-
-    <div style="background:var(--charcoal);border-radius:28px;padding:2.5rem;color:white;">
-      <div style="width:52px;height:52px;background:rgba(255,255,255,0.1);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin-bottom:1.5rem;">🔧</div>
-      <h3 style="font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;margin-bottom:0.75rem;">Soy maestro</h3>
-      <p style="color:rgba(255,255,255,0.65);line-height:1.7;margin-bottom:1.5rem;">Deja de depender del boca a boca. Crea tu perfil, define tus horarios y recibe clientes de tu zona directamente en tu celular.</p>
-      <ul style="list-style:none;display:flex;flex-direction:column;gap:0.6rem;margin-bottom:2rem;">
-        <li style="font-size:0.9rem;display:flex;gap:0.5rem;"><span style="color:var(--amber);">✓</span> Gratis para registrarse</li>
-        <li style="font-size:0.9rem;display:flex;gap:0.5rem;"><span style="color:var(--amber);">✓</span> Tú pones tus precios</li>
-        <li style="font-size:0.9rem;display:flex;gap:0.5rem;"><span style="color:var(--amber);">✓</span> Acepta o rechaza solicitudes</li>
-        <li style="font-size:0.9rem;display:flex;gap:0.5rem;"><span style="color:var(--amber);">✓</span> Cobra más con el sello verificado</li>
-      </ul>
-      <a href="#" class="btn-amber">Registrar mi oficio</a>
-    </div>
-
-  </div>
-</section>
-
-<!-- CTA -->
-<section style="max-width:1100px;margin:0 auto;padding:2rem 2rem 5rem;">
-  <div class="cta-section">
-    <div style="position:relative;z-index:1;">
-      <div class="section-label" style="color:rgba(245,158,11,0.8);margin-bottom:1rem;">¿Listo?</div>
-      <h2 style="font-family:'Syne',sans-serif;font-size:clamp(2rem,5vw,3.5rem);font-weight:800;letter-spacing:-0.03em;line-height:1.1;color:white;margin-bottom:1rem;">
-        Tu próximo servicio<br>está a un clic.
-      </h2>
-      <p style="color:rgba(255,255,255,0.6);font-size:1.05rem;margin-bottom:2rem;">Únete a miles de personas que ya encontraron su maestro de confianza.</p>
-      <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
-        <a href="#" class="btn-amber">Buscar servicio ahora</a>
-        <a href="#" style="color:rgba(255,255,255,0.7);font-size:0.9rem;font-weight:500;text-decoration:none;display:flex;align-items:center;gap:0.4rem;padding:0.85rem 0;">¿Eres maestro? Regístrate →</a>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- FOOTER -->
-<footer style="max-width:1100px;margin:0 auto;padding:2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;border-top:1px solid rgba(0,0,0,0.07);">
-  <div class="nav-logo">oficio<span>.</span></div>
-  <div style="font-size:0.82rem;color:var(--warm-gray);">© 2025 Oficio. Hecho con ❤️ en México.</div>
-  <div style="display:flex;gap:1.5rem;">
-    <a href="#" style="font-size:0.82rem;color:var(--warm-gray);text-decoration:none;">Privacidad</a>
-    <a href="#" style="font-size:0.82rem;color:var(--warm-gray);text-decoration:none;">Términos</a>
-    <a href="#" style="font-size:0.82rem;color:var(--warm-gray);text-decoration:none;">Contacto</a>
-  </div>
-</footer>
-
-<script>
-  // Show hero cards on desktop
-  if (window.innerWidth > 768) {
-    document.getElementById('heroCards').style.display = 'block';
-  }
-
-  // Animate elements on scroll
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.style.opacity = '1';
-        entry.target.style.transform = 'translateY(0)';
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Oficio — Servicios a tu puerta</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --amber: #f59e0b;
+        --amber-dark: #d97706;
+        --charcoal: #1c1917;
+        --warm-gray: #78716c;
+        --cream: #fafaf9;
+        --rust: #c2410c;
       }
-    });
-  }, { threshold: 0.1 });
 
-  document.querySelectorAll('.step-card, .service-card, .profile-card').forEach(el => {
-    el.style.opacity = '0';
-    el.style.transform = 'translateY(20px)';
-    el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-    observer.observe(el);
-  });
-</script>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
 
-</body>
+      body {
+        font-family: 'Instrument Sans', sans-serif;
+        background: var(--cream);
+        color: var(--charcoal);
+        overflow-x: hidden;
+      }
+
+      h1,
+      h2,
+      h3,
+      h4,
+      .font-display {
+        font-family: 'Syne', sans-serif;
+      }
+
+      /* Grain overlay */
+      body::before {
+        content: '';
+        position: fixed;
+        inset: 0;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+        pointer-events: none;
+        z-index: 9999;
+        opacity: 0.4;
+      }
+
+      /* Animations */
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0px) rotate(-2deg);
+        }
+        50% {
+          transform: translateY(-10px) rotate(-2deg);
+        }
+      }
+      @keyframes pulse-ring {
+        0% {
+          transform: scale(1);
+          opacity: 0.4;
+        }
+        100% {
+          transform: scale(1.6);
+          opacity: 0;
+        }
+      }
+      @keyframes marquee {
+        0% {
+          transform: translateX(0);
+        }
+        100% {
+          transform: translateX(-50%);
+        }
+      }
+
+      .animate-slide-up {
+        animation: slideUp 0.7s ease forwards;
+      }
+      .animate-fade {
+        animation: fadeIn 1s ease forwards;
+      }
+      .delay-100 {
+        animation-delay: 0.1s;
+      }
+      .delay-200 {
+        animation-delay: 0.2s;
+      }
+      .delay-300 {
+        animation-delay: 0.3s;
+      }
+      .delay-400 {
+        animation-delay: 0.4s;
+      }
+      .delay-500 {
+        animation-delay: 0.5s;
+      }
+      .opacity-0-start {
+        opacity: 0;
+      }
+
+      /* Nav */
+      nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 100;
+        padding: 1.25rem 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        backdrop-filter: blur(12px);
+        background: rgba(250, 250, 249, 0.85);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+      }
+
+      .nav-logo {
+        font-family: 'Syne', sans-serif;
+        font-weight: 800;
+        font-size: 1.4rem;
+        letter-spacing: -0.03em;
+        color: var(--charcoal);
+      }
+
+      .nav-logo span {
+        color: var(--amber);
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 2rem;
+      }
+      .nav-links a {
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: var(--warm-gray);
+        text-decoration: none;
+        transition: color 0.2s;
+      }
+      .nav-links a:hover {
+        color: var(--charcoal);
+      }
+
+      .btn-primary {
+        background: var(--charcoal);
+        color: white;
+        font-family: 'Syne', sans-serif;
+        font-weight: 600;
+        font-size: 0.875rem;
+        padding: 0.6rem 1.4rem;
+        border-radius: 100px;
+        border: none;
+        cursor: pointer;
+        transition:
+          background 0.2s,
+          transform 0.15s;
+        text-decoration: none;
+        display: inline-block;
+      }
+      .btn-primary:hover {
+        background: #2c2825;
+        transform: translateY(-1px);
+      }
+
+      .btn-amber {
+        background: var(--amber);
+        color: var(--charcoal);
+        font-family: 'Syne', sans-serif;
+        font-weight: 700;
+        font-size: 1rem;
+        padding: 0.85rem 2.2rem;
+        border-radius: 100px;
+        border: none;
+        cursor: pointer;
+        transition:
+          background 0.2s,
+          transform 0.15s,
+          box-shadow 0.2s;
+        text-decoration: none;
+        display: inline-block;
+      }
+      .btn-amber:hover {
+        background: var(--amber-dark);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(245, 158, 11, 0.35);
+      }
+
+      /* Hero */
+      .hero {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        padding: 7rem 2rem 4rem;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .hero-bg-circle {
+        position: absolute;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(245, 158, 11, 0.15) 0%, transparent 70%);
+        pointer-events: none;
+      }
+
+      .hero-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: rgba(245, 158, 11, 0.12);
+        border: 1px solid rgba(245, 158, 11, 0.3);
+        color: #92400e;
+        font-size: 0.8rem;
+        font-weight: 600;
+        padding: 0.35rem 0.9rem;
+        border-radius: 100px;
+        margin-bottom: 1.5rem;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+      }
+
+      .hero h1 {
+        font-size: clamp(3rem, 7vw, 6rem);
+        font-weight: 800;
+        line-height: 1;
+        letter-spacing: -0.04em;
+        margin-bottom: 1.5rem;
+      }
+
+      .hero h1 em {
+        font-style: normal;
+        color: var(--amber);
+        position: relative;
+      }
+
+      .hero-sub {
+        font-size: 1.125rem;
+        color: var(--warm-gray);
+        line-height: 1.65;
+        max-width: 440px;
+        margin-bottom: 2.5rem;
+      }
+
+      .hero-actions {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+
+      .hero-link {
+        font-size: 0.9rem;
+        font-weight: 500;
+        color: var(--charcoal);
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+      }
+      .hero-link:hover {
+        color: var(--amber-dark);
+      }
+
+      /* Floating card */
+      .float-card {
+        animation: float 4s ease-in-out infinite;
+        background: white;
+        border-radius: 20px;
+        padding: 1.25rem 1.5rem;
+        box-shadow:
+          0 20px 60px rgba(0, 0, 0, 0.12),
+          0 2px 8px rgba(0, 0, 0, 0.06);
+      }
+
+      /* Stats row */
+      .stat-pill {
+        background: white;
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        border-radius: 100px;
+        padding: 0.5rem 1.25rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.85rem;
+        font-weight: 500;
+      }
+
+      /* Marquee */
+      .marquee-wrapper {
+        overflow: hidden;
+        padding: 1.5rem 0;
+      }
+      .marquee-track {
+        display: flex;
+        gap: 1.5rem;
+        width: max-content;
+        animation: marquee 20s linear infinite;
+      }
+      .marquee-item {
+        background: white;
+        border: 1px solid rgba(0, 0, 0, 0.07);
+        border-radius: 100px;
+        padding: 0.6rem 1.4rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+        white-space: nowrap;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      /* Section */
+      section {
+        padding: 5rem 2rem;
+      }
+
+      .section-label {
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--amber-dark);
+        margin-bottom: 0.75rem;
+      }
+
+      .section-title {
+        font-size: clamp(2rem, 4vw, 3rem);
+        font-weight: 800;
+        letter-spacing: -0.03em;
+        line-height: 1.1;
+      }
+
+      /* How it works */
+      .step-card {
+        background: white;
+        border: 1px solid rgba(0, 0, 0, 0.07);
+        border-radius: 24px;
+        padding: 2rem;
+        position: relative;
+        transition:
+          transform 0.2s,
+          box-shadow 0.2s;
+      }
+      .step-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.09);
+      }
+
+      .step-num {
+        font-family: 'Syne', sans-serif;
+        font-size: 3.5rem;
+        font-weight: 800;
+        color: rgba(0, 0, 0, 0.06);
+        line-height: 1;
+        margin-bottom: 1rem;
+      }
+
+      /* Service cards */
+      .service-card {
+        background: white;
+        border: 1px solid rgba(0, 0, 0, 0.07);
+        border-radius: 20px;
+        padding: 1.75rem;
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+        transition:
+          transform 0.2s,
+          box-shadow 0.2s;
+        cursor: pointer;
+      }
+      .service-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.09);
+      }
+
+      .service-icon {
+        width: 52px;
+        height: 52px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        flex-shrink: 0;
+      }
+
+      /* Profile card */
+      .profile-card {
+        background: white;
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+        transition:
+          transform 0.2s,
+          box-shadow 0.2s;
+      }
+      .profile-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.12);
+      }
+
+      /* Online dot */
+      .online-dot {
+        width: 10px;
+        height: 10px;
+        background: #22c55e;
+        border-radius: 50%;
+        position: relative;
+      }
+      .online-dot::after {
+        content: '';
+        position: absolute;
+        inset: -3px;
+        border-radius: 50%;
+        border: 2px solid #22c55e;
+        animation: pulse-ring 1.5s ease-out infinite;
+      }
+
+      /* Stars */
+      .star {
+        color: #f59e0b;
+        font-size: 0.85rem;
+      }
+
+      /* CTA section */
+      .cta-section {
+        background: var(--charcoal);
+        color: white;
+        border-radius: 32px;
+        padding: 4rem 3rem;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+      }
+      .cta-section::before {
+        content: '';
+        position: absolute;
+        top: -60%;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 600px;
+        height: 600px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(245, 158, 11, 0.2) 0%, transparent 70%);
+        pointer-events: none;
+      }
+
+      /* Footer */
+      footer {
+        padding: 3rem 2rem;
+        border-top: 1px solid rgba(0, 0, 0, 0.07);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: gap-1rem;
+      }
+
+      /* Search bar */
+      .search-bar {
+        background: white;
+        border: 1.5px solid rgba(0, 0, 0, 0.1);
+        border-radius: 100px;
+        padding: 0.75rem 1.25rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        max-width: 480px;
+        width: 100%;
+        transition:
+          border-color 0.2s,
+          box-shadow 0.2s;
+      }
+      .search-bar:focus-within {
+        border-color: var(--amber);
+        box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.15);
+      }
+      .search-bar input {
+        border: none;
+        outline: none;
+        font-family: 'Instrument Sans', sans-serif;
+        font-size: 0.95rem;
+        color: var(--charcoal);
+        flex: 1;
+        background: transparent;
+      }
+      .search-bar input::placeholder {
+        color: #a8a29e;
+      }
+
+      /* Badge verified */
+      .badge-verified {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+        background: rgba(34, 197, 94, 0.1);
+        color: #15803d;
+        font-size: 0.72rem;
+        font-weight: 600;
+        padding: 0.2rem 0.6rem;
+        border-radius: 100px;
+        letter-spacing: 0.04em;
+      }
+
+      @media (max-width: 768px) {
+        .nav-links {
+          display: none;
+        }
+        .hero {
+          padding: 6rem 1.25rem 3rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- NAV -->
+    <nav>
+      <div class="nav-logo">oficio<span>.</span></div>
+      <div class="nav-links">
+        <a href="#">Servicios</a>
+        <a href="#">Cómo funciona</a>
+        <a href="#">Maestros</a>
+        <a href="#">Precios</a>
+      </div>
+      <div style="display: flex; gap: 0.75rem; align-items: center">
+        <a href="oficio-auth.html" style="font-size: 0.875rem; font-weight: 500; color: var(--warm-gray); text-decoration: none">Iniciar sesión</a>
+        <a href="oficio-auth.html" class="btn-primary">Registrarse</a>
+      </div>
+    </nav>
+
+    <!-- HERO -->
+    <section class="hero">
+      <!-- BG circles -->
+      <div class="hero-bg-circle" style="width: 600px; height: 600px; top: -100px; right: -150px"></div>
+      <div class="hero-bg-circle" style="width: 300px; height: 300px; bottom: 50px; left: -80px; opacity: 0.6"></div>
+
+      <div style="max-width: 1200px; margin: 0 auto; width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center">
+        <!-- Left -->
+        <div>
+          <div class="hero-tag animate-slide-up opacity-0-start"><span>✦</span> Servicios cerca de ti</div>
+
+          <h1 class="animate-slide-up opacity-0-start delay-100">El maestro<br />que necesitas,<br /><em>hoy mismo.</em></h1>
+
+          <p class="hero-sub animate-slide-up opacity-0-start delay-200">
+            Conectamos a personas que necesitan un servicio con los mejores maestros verificados de su zona. Rápido, seguro y sin complicaciones.
+          </p>
+
+          <!-- Search -->
+          <div class="animate-slide-up opacity-0-start delay-300" style="margin-bottom: 1.5rem">
+            <div class="search-bar">
+              <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="#A8A29E" stroke-width="2">
+                <circle cx="11" cy="11" r="8" />
+                <path d="M21 21l-4.35-4.35" />
+              </svg>
+              <input type="text" placeholder="¿Qué servicio necesitas? Ej: plomería..." />
+              <button class="btn-primary" style="padding: 0.5rem 1rem; font-size: 0.8rem">Buscar</button>
+            </div>
+          </div>
+
+          <div class="hero-actions animate-slide-up opacity-0-start delay-400">
+            <div style="display: flex; gap: 0.75rem; flex-wrap: wrap">
+              <div class="stat-pill">
+                <span style="font-size: 1rem">🔨</span>
+                <span><strong>2,400+</strong> maestros</span>
+              </div>
+              <div class="stat-pill">
+                <span style="font-size: 1rem">⭐</span>
+                <span><strong>4.9</strong> promedio</span>
+              </div>
+              <div class="stat-pill">
+                <span style="font-size: 1rem">✅</span>
+                <span>100% verificados</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: floating cards -->
+        <div style="position: relative; height: 480px; display: none" id="heroCards">
+          <!-- Main profile card -->
+          <div class="float-card" style="position: absolute; top: 40px; left: 20px; width: 260px">
+            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem">
+              <div
+                style="
+                  width: 44px;
+                  height: 44px;
+                  background: linear-gradient(135deg, #f59e0b, #d97706);
+                  border-radius: 50%;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  font-size: 1.2rem;
+                  color: white;
+                  font-weight: 700;
+                "
+              >
+                JM
+              </div>
+              <div>
+                <div style="font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.95rem">Juan Morales</div>
+                <div style="font-size: 0.78rem; color: var(--warm-gray)">Plomero · 8 años exp.</div>
+              </div>
+              <div class="online-dot" style="margin-left: auto"></div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.4rem; margin-bottom: 0.75rem">
+              <span class="star">★★★★★</span>
+              <span style="font-size: 0.82rem; font-weight: 600">4.97</span>
+              <span style="font-size: 0.78rem; color: var(--warm-gray)">(143 reseñas)</span>
+            </div>
+            <div class="badge-verified">✓ Maestro Verificado</div>
+            <div
+              style="
+                margin-top: 1rem;
+                padding-top: 1rem;
+                border-top: 1px solid rgba(0, 0, 0, 0.06);
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+              "
+            >
+              <span style="font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700"
+                >$250<span style="font-size: 0.75rem; font-weight: 400; color: var(--warm-gray)">/hr</span></span
+              >
+              <button class="btn-amber" style="padding: 0.45rem 1rem; font-size: 0.8rem">Contratar</button>
+            </div>
+          </div>
+
+          <!-- Notification card -->
+          <div
+            style="
+              position: absolute;
+              top: 0;
+              right: 10px;
+              background: var(--charcoal);
+              color: white;
+              border-radius: 16px;
+              padding: 0.9rem 1.2rem;
+              width: 200px;
+              box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+            "
+          >
+            <div style="font-size: 0.75rem; opacity: 0.6; margin-bottom: 0.3rem">Nueva solicitud</div>
+            <div style="font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.9rem">Fuga de agua 🚰</div>
+            <div style="font-size: 0.78rem; opacity: 0.7; margin-top: 0.25rem">Hace 2 min · 1.2km</div>
+          </div>
+
+          <!-- Rating notification -->
+          <div
+            style="
+              position: absolute;
+              bottom: 80px;
+              right: 0px;
+              background: white;
+              border-radius: 16px;
+              padding: 0.9rem 1.2rem;
+              box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+              width: 185px;
+            "
+          >
+            <div style="font-size: 0.75rem; color: var(--warm-gray); margin-bottom: 0.3rem">Reseña nueva ⭐</div>
+            <div style="font-size: 0.82rem; font-weight: 500">"Excelente trabajo, muy puntual"</div>
+            <div style="margin-top: 0.5rem; display: flex; gap: 0.2rem"><span class="star">★★★★★</span></div>
+          </div>
+
+          <!-- Map ping -->
+          <div
+            style="
+              position: absolute;
+              bottom: 60px;
+              left: 30px;
+              background: var(--amber);
+              color: var(--charcoal);
+              border-radius: 12px;
+              padding: 0.6rem 1rem;
+              font-size: 0.82rem;
+              font-weight: 700;
+              font-family: 'Syne', sans-serif;
+              box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
+            "
+          >
+            📍 3 maestros cerca
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MARQUEE: servicios -->
+    <div style="background: white; border-top: 1px solid rgba(0, 0, 0, 0.06); border-bottom: 1px solid rgba(0, 0, 0, 0.06)">
+      <div class="marquee-wrapper">
+        <div class="marquee-track">
+          <div class="marquee-item">🔧 Plomería</div>
+          <div class="marquee-item">⚡ Electricidad</div>
+          <div class="marquee-item">🪵 Carpintería</div>
+          <div class="marquee-item">🎨 Pintura</div>
+          <div class="marquee-item">🧱 Albañilería</div>
+          <div class="marquee-item">❄️ Aire acondicionado</div>
+          <div class="marquee-item">🔑 Cerrajería</div>
+          <div class="marquee-item">🌿 Jardinería</div>
+          <div class="marquee-item">🪟 Vidriería</div>
+          <div class="marquee-item">🛁 Remodelaciones</div>
+          <!-- duplicado para loop -->
+          <div class="marquee-item">🔧 Plomería</div>
+          <div class="marquee-item">⚡ Electricidad</div>
+          <div class="marquee-item">🪵 Carpintería</div>
+          <div class="marquee-item">🎨 Pintura</div>
+          <div class="marquee-item">🧱 Albañilería</div>
+          <div class="marquee-item">❄️ Aire acondicionado</div>
+          <div class="marquee-item">🔑 Cerrajería</div>
+          <div class="marquee-item">🌿 Jardinería</div>
+          <div class="marquee-item">🪟 Vidriería</div>
+          <div class="marquee-item">🛁 Remodelaciones</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CÓMO FUNCIONA -->
+    <section style="max-width: 1100px; margin: 0 auto">
+      <div style="text-align: center; margin-bottom: 3.5rem">
+        <div class="section-label">Proceso</div>
+        <h2 class="section-title">Tan fácil como<br />pedir un taxi</h2>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 1.5rem">
+        <div class="step-card">
+          <div class="step-num">01</div>
+          <div
+            style="
+              width: 44px;
+              height: 44px;
+              background: rgba(245, 158, 11, 0.12);
+              border-radius: 12px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-size: 1.3rem;
+              margin-bottom: 1rem;
+            "
+          >
+            🔍
+          </div>
+          <h3 style="font-family: 'Syne', sans-serif; font-weight: 700; margin-bottom: 0.5rem">Describe tu problema</h3>
+          <p style="font-size: 0.9rem; color: var(--warm-gray); line-height: 1.6">
+            Cuéntanos qué necesitas. Puede ser tan simple como "se me fue el agua" o "se fundió un foco".
+          </p>
+        </div>
+
+        <div class="step-card">
+          <div class="step-num">02</div>
+          <div
+            style="
+              width: 44px;
+              height: 44px;
+              background: rgba(245, 158, 11, 0.12);
+              border-radius: 12px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-size: 1.3rem;
+              margin-bottom: 1rem;
+            "
+          >
+            📍
+          </div>
+          <h3 style="font-family: 'Syne', sans-serif; font-weight: 700; margin-bottom: 0.5rem">Encuentra maestros cerca</h3>
+          <p style="font-size: 0.9rem; color: var(--warm-gray); line-height: 1.6">
+            Te mostramos maestros verificados en tu zona con disponibilidad inmediata, reseñas y precio estimado.
+          </p>
+        </div>
+
+        <div class="step-card">
+          <div class="step-num">03</div>
+          <div
+            style="
+              width: 44px;
+              height: 44px;
+              background: rgba(245, 158, 11, 0.12);
+              border-radius: 12px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-size: 1.3rem;
+              margin-bottom: 1rem;
+            "
+          >
+            💬
+          </div>
+          <h3 style="font-family: 'Syne', sans-serif; font-weight: 700; margin-bottom: 0.5rem">Acuerda y agenda</h3>
+          <p style="font-size: 0.9rem; color: var(--warm-gray); line-height: 1.6">
+            Chatea directamente con el maestro, acuerda el precio y agenda la visita desde la app.
+          </p>
+        </div>
+
+        <div class="step-card">
+          <div class="step-num">04</div>
+          <div
+            style="
+              width: 44px;
+              height: 44px;
+              background: rgba(245, 158, 11, 0.12);
+              border-radius: 12px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-size: 1.3rem;
+              margin-bottom: 1rem;
+            "
+          >
+            ⭐
+          </div>
+          <h3 style="font-family: 'Syne', sans-serif; font-weight: 700; margin-bottom: 0.5rem">Paga y califica</h3>
+          <p style="font-size: 0.9rem; color: var(--warm-gray); line-height: 1.6">
+            Paga de forma segura a través de la plataforma y deja tu reseña para ayudar a la comunidad.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SERVICIOS POPULARES -->
+    <section style="background: white; padding: 5rem 2rem">
+      <div style="max-width: 1100px; margin: 0 auto">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 3rem; flex-wrap: wrap; gap: 1rem">
+          <div>
+            <div class="section-label">Categorías</div>
+            <h2 class="section-title">Servicios más<br />solicitados</h2>
+          </div>
+          <a href="#" style="font-size: 0.9rem; font-weight: 600; color: var(--amber-dark); text-decoration: none">Ver todos →</a>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem">
+          <div class="service-card">
+            <div class="service-icon" style="background: rgba(59, 130, 246, 0.1)">🔧</div>
+            <div>
+              <div style="font-family: 'Syne', sans-serif; font-weight: 700; margin-bottom: 0.25rem">Plomería</div>
+              <div style="font-size: 0.83rem; color: var(--warm-gray)">Fugas, instalaciones, drenajes</div>
+              <div style="font-size: 0.8rem; font-weight: 600; color: var(--amber-dark); margin-top: 0.5rem">247 maestros disponibles</div>
+            </div>
+          </div>
+
+          <div class="service-card">
+            <div class="service-icon" style="background: rgba(234, 179, 8, 0.1)">⚡</div>
+            <div>
+              <div style="font-family: 'Syne', sans-serif; font-weight: 700; margin-bottom: 0.25rem">Electricidad</div>
+              <div style="font-size: 0.83rem; color: var(--warm-gray)">Instalaciones, cortocircuitos</div>
+              <div style="font-size: 0.8rem; font-weight: 600; color: var(--amber-dark); margin-top: 0.5rem">189 maestros disponibles</div>
+            </div>
+          </div>
+
+          <div class="service-card">
+            <div class="service-icon" style="background: rgba(180, 83, 9, 0.1)">🪵</div>
+            <div>
+              <div style="font-family: 'Syne', sans-serif; font-weight: 700; margin-bottom: 0.25rem">Carpintería</div>
+              <div style="font-size: 0.83rem; color: var(--warm-gray)">Muebles, puertas, closets</div>
+              <div style="font-size: 0.8rem; font-weight: 600; color: var(--amber-dark); margin-top: 0.5rem">132 maestros disponibles</div>
+            </div>
+          </div>
+
+          <div class="service-card">
+            <div class="service-icon" style="background: rgba(239, 68, 68, 0.1)">🎨</div>
+            <div>
+              <div style="font-family: 'Syne', sans-serif; font-weight: 700; margin-bottom: 0.25rem">Pintura</div>
+              <div style="font-size: 0.83rem; color: var(--warm-gray)">Interior, exterior, acabados</div>
+              <div style="font-size: 0.8rem; font-weight: 600; color: var(--amber-dark); margin-top: 0.5rem">310 maestros disponibles</div>
+            </div>
+          </div>
+
+          <div class="service-card">
+            <div class="service-icon" style="background: rgba(34, 197, 94, 0.1)">🌿</div>
+            <div>
+              <div style="font-family: 'Syne', sans-serif; font-weight: 700; margin-bottom: 0.25rem">Jardinería</div>
+              <div style="font-size: 0.83rem; color: var(--warm-gray)">Poda, diseño, mantenimiento</div>
+              <div style="font-size: 0.8rem; font-weight: 600; color: var(--amber-dark); margin-top: 0.5rem">98 maestros disponibles</div>
+            </div>
+          </div>
+
+          <div class="service-card">
+            <div class="service-icon" style="background: rgba(100, 116, 139, 0.1)">❄️</div>
+            <div>
+              <div style="font-family: 'Syne', sans-serif; font-weight: 700; margin-bottom: 0.25rem">Aire acondicionado</div>
+              <div style="font-size: 0.83rem; color: var(--warm-gray)">Instalación, limpieza, recarga</div>
+              <div style="font-size: 0.8rem; font-weight: 600; color: var(--amber-dark); margin-top: 0.5rem">76 maestros disponibles</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MAESTROS DESTACADOS -->
+    <section style="max-width: 1100px; margin: 0 auto">
+      <div style="text-align: center; margin-bottom: 3.5rem">
+        <div class="section-label">Comunidad</div>
+        <h2 class="section-title">Maestros mejor<br />calificados</h2>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1.5rem">
+        <!-- Card 1 -->
+        <div class="profile-card">
+          <div style="height: 90px; background: linear-gradient(135deg, #1c1917, #44403c); position: relative">
+            <div
+              style="
+                position: absolute;
+                bottom: -28px;
+                left: 1.5rem;
+                width: 56px;
+                height: 56px;
+                background: linear-gradient(135deg, #f59e0b, #d97706);
+                border-radius: 50%;
+                border: 3px solid white;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1.3rem;
+                color: white;
+                font-weight: 800;
+              "
+            >
+              JM
+            </div>
+          </div>
+          <div style="padding: 2.25rem 1.5rem 1.5rem">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.25rem">
+              <div style="font-family: 'Syne', sans-serif; font-weight: 700">Juan Morales</div>
+              <div class="online-dot"></div>
+            </div>
+            <div style="font-size: 0.82rem; color: var(--warm-gray); margin-bottom: 0.6rem">Plomero · Colima, Col.</div>
+            <div class="badge-verified" style="margin-bottom: 0.75rem">✓ Verificado</div>
+            <div style="display: flex; align-items: center; gap: 0.4rem; margin-bottom: 1rem">
+              <span class="star">★★★★★</span>
+              <span style="font-size: 0.82rem; font-weight: 700">4.97</span>
+              <span style="font-size: 0.78rem; color: var(--warm-gray)">· 143 trabajos</span>
+            </div>
+            <div
+              style="
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding-top: 0.75rem;
+                border-top: 1px solid rgba(0, 0, 0, 0.06);
+              "
+            >
+              <span style="font-family: 'Syne', sans-serif; font-weight: 700"
+                >$250<span style="font-size: 0.78rem; font-weight: 400; color: var(--warm-gray)">/hr</span></span
+              >
+              <button class="btn-primary" style="font-size: 0.8rem; padding: 0.45rem 1rem">Ver perfil</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="profile-card">
+          <div style="height: 90px; background: linear-gradient(135deg, #1d4ed8, #1e40af); position: relative">
+            <div
+              style="
+                position: absolute;
+                bottom: -28px;
+                left: 1.5rem;
+                width: 56px;
+                height: 56px;
+                background: linear-gradient(135deg, #3b82f6, #2563eb);
+                border-radius: 50%;
+                border: 3px solid white;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1.3rem;
+                color: white;
+                font-weight: 800;
+              "
+            >
+              RG
+            </div>
+          </div>
+          <div style="padding: 2.25rem 1.5rem 1.5rem">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.25rem">
+              <div style="font-family: 'Syne', sans-serif; font-weight: 700">Rosa García</div>
+              <div class="online-dot"></div>
+            </div>
+            <div style="font-size: 0.82rem; color: var(--warm-gray); margin-bottom: 0.6rem">Electricista · Manzanillo</div>
+            <div class="badge-verified" style="margin-bottom: 0.75rem">✓ Verificado</div>
+            <div style="display: flex; align-items: center; gap: 0.4rem; margin-bottom: 1rem">
+              <span class="star">★★★★★</span>
+              <span style="font-size: 0.82rem; font-weight: 700">4.95</span>
+              <span style="font-size: 0.78rem; color: var(--warm-gray)">· 98 trabajos</span>
+            </div>
+            <div
+              style="
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding-top: 0.75rem;
+                border-top: 1px solid rgba(0, 0, 0, 0.06);
+              "
+            >
+              <span style="font-family: 'Syne', sans-serif; font-weight: 700"
+                >$300<span style="font-size: 0.78rem; font-weight: 400; color: var(--warm-gray)">/hr</span></span
+              >
+              <button class="btn-primary" style="font-size: 0.8rem; padding: 0.45rem 1rem">Ver perfil</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="profile-card">
+          <div style="height: 90px; background: linear-gradient(135deg, #065f46, #047857); position: relative">
+            <div
+              style="
+                position: absolute;
+                bottom: -28px;
+                left: 1.5rem;
+                width: 56px;
+                height: 56px;
+                background: linear-gradient(135deg, #10b981, #059669);
+                border-radius: 50%;
+                border: 3px solid white;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1.3rem;
+                color: white;
+                font-weight: 800;
+              "
+            >
+              CA
+            </div>
+          </div>
+          <div style="padding: 2.25rem 1.5rem 1.5rem">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.25rem">
+              <div style="font-family: 'Syne', sans-serif; font-weight: 700">Carlos Ávila</div>
+              <div style="width: 10px; height: 10px; background: #94a3b8; border-radius: 50%"></div>
+            </div>
+            <div style="font-size: 0.82rem; color: var(--warm-gray); margin-bottom: 0.6rem">Carpintero · Villa de Álvarez</div>
+            <div class="badge-verified" style="margin-bottom: 0.75rem">✓ Verificado</div>
+            <div style="display: flex; align-items: center; gap: 0.4rem; margin-bottom: 1rem">
+              <span class="star">★★★★★</span>
+              <span style="font-size: 0.82rem; font-weight: 700">4.93</span>
+              <span style="font-size: 0.78rem; color: var(--warm-gray)">· 211 trabajos</span>
+            </div>
+            <div
+              style="
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding-top: 0.75rem;
+                border-top: 1px solid rgba(0, 0, 0, 0.06);
+              "
+            >
+              <span style="font-family: 'Syne', sans-serif; font-weight: 700"
+                >$200<span style="font-size: 0.78rem; font-weight: 400; color: var(--warm-gray)">/hr</span></span
+              >
+              <button class="btn-primary" style="font-size: 0.8rem; padding: 0.45rem 1rem">Ver perfil</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DOS PERFILES -->
+    <section style="background: white; padding: 5rem 2rem">
+      <div style="max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: start">
+        <div style="background: var(--cream); border: 1px solid rgba(0, 0, 0, 0.07); border-radius: 28px; padding: 2.5rem">
+          <div
+            style="
+              width: 52px;
+              height: 52px;
+              background: rgba(245, 158, 11, 0.12);
+              border-radius: 16px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-size: 1.5rem;
+              margin-bottom: 1.5rem;
+            "
+          >
+            🏠
+          </div>
+          <h3 style="font-family: 'Syne', sans-serif; font-size: 1.6rem; font-weight: 800; margin-bottom: 0.75rem">Soy cliente</h3>
+          <p style="color: var(--warm-gray); line-height: 1.7; margin-bottom: 1.5rem">
+            Encuentra al maestro correcto en minutos. Compara precios, lee reseñas reales y agenda cuando tú quieras, sin llamadas ni esperas.
+          </p>
+          <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 2rem">
+            <li style="font-size: 0.9rem; display: flex; gap: 0.5rem">
+              <span style="color: var(--amber)">✓</span> Perfil con fotos del trabajo previo
+            </li>
+            <li style="font-size: 0.9rem; display: flex; gap: 0.5rem"><span style="color: var(--amber)">✓</span> Chat directo con el maestro</li>
+            <li style="font-size: 0.9rem; display: flex; gap: 0.5rem"><span style="color: var(--amber)">✓</span> Pago seguro en la app</li>
+            <li style="font-size: 0.9rem; display: flex; gap: 0.5rem"><span style="color: var(--amber)">✓</span> Garantía de satisfacción</li>
+          </ul>
+          <a href="#" class="btn-amber">Buscar un maestro</a>
+        </div>
+
+        <div style="background: var(--charcoal); border-radius: 28px; padding: 2.5rem; color: white">
+          <div
+            style="
+              width: 52px;
+              height: 52px;
+              background: rgba(255, 255, 255, 0.1);
+              border-radius: 16px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-size: 1.5rem;
+              margin-bottom: 1.5rem;
+            "
+          >
+            🔧
+          </div>
+          <h3 style="font-family: 'Syne', sans-serif; font-size: 1.6rem; font-weight: 800; margin-bottom: 0.75rem">Soy maestro</h3>
+          <p style="color: rgba(255, 255, 255, 0.65); line-height: 1.7; margin-bottom: 1.5rem">
+            Deja de depender del boca a boca. Crea tu perfil, define tus horarios y recibe clientes de tu zona directamente en tu celular.
+          </p>
+          <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 2rem">
+            <li style="font-size: 0.9rem; display: flex; gap: 0.5rem"><span style="color: var(--amber)">✓</span> Gratis para registrarse</li>
+            <li style="font-size: 0.9rem; display: flex; gap: 0.5rem"><span style="color: var(--amber)">✓</span> Tú pones tus precios</li>
+            <li style="font-size: 0.9rem; display: flex; gap: 0.5rem"><span style="color: var(--amber)">✓</span> Acepta o rechaza solicitudes</li>
+            <li style="font-size: 0.9rem; display: flex; gap: 0.5rem">
+              <span style="color: var(--amber)">✓</span> Cobra más con el sello verificado
+            </li>
+          </ul>
+          <a href="#" class="btn-amber">Registrar mi oficio</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section style="max-width: 1100px; margin: 0 auto; padding: 2rem 2rem 5rem">
+      <div class="cta-section">
+        <div style="position: relative; z-index: 1">
+          <div class="section-label" style="color: rgba(245, 158, 11, 0.8); margin-bottom: 1rem">¿Listo?</div>
+          <h2
+            style="
+              font-family: 'Syne', sans-serif;
+              font-size: clamp(2rem, 5vw, 3.5rem);
+              font-weight: 800;
+              letter-spacing: -0.03em;
+              line-height: 1.1;
+              color: white;
+              margin-bottom: 1rem;
+            "
+          >
+            Tu próximo servicio<br />está a un clic.
+          </h2>
+          <p style="color: rgba(255, 255, 255, 0.6); font-size: 1.05rem; margin-bottom: 2rem">
+            Únete a miles de personas que ya encontraron su maestro de confianza.
+          </p>
+          <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap">
+            <a href="#" class="btn-amber">Buscar servicio ahora</a>
+            <a
+              href="#"
+              style="
+                color: rgba(255, 255, 255, 0.7);
+                font-size: 0.9rem;
+                font-weight: 500;
+                text-decoration: none;
+                display: flex;
+                align-items: center;
+                gap: 0.4rem;
+                padding: 0.85rem 0;
+              "
+              >¿Eres maestro? Regístrate →</a
+            >
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer
+      style="
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 1rem;
+        border-top: 1px solid rgba(0, 0, 0, 0.07);
+      "
+    >
+      <div class="nav-logo">oficio<span>.</span></div>
+      <div style="font-size: 0.82rem; color: var(--warm-gray)">© 2025 Oficio. Hecho con ❤️ en México.</div>
+      <div style="display: flex; gap: 1.5rem">
+        <a href="#" style="font-size: 0.82rem; color: var(--warm-gray); text-decoration: none">Privacidad</a>
+        <a href="#" style="font-size: 0.82rem; color: var(--warm-gray); text-decoration: none">Términos</a>
+        <a href="#" style="font-size: 0.82rem; color: var(--warm-gray); text-decoration: none">Contacto</a>
+      </div>
+    </footer>
+
+    <script>
+      // Show hero cards on desktop
+      if (window.innerWidth > 768) {
+        document.getElementById('heroCards').style.display = 'block';
+      }
+
+      // Animate elements on scroll
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.style.opacity = '1';
+              entry.target.style.transform = 'translateY(0)';
+            }
+          });
+        },
+        { threshold: 0.1 },
+      );
+
+      document.querySelectorAll('.step-card, .service-card, .profile-card').forEach((el) => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(20px)';
+        el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+        observer.observe(el);
+      });
+    </script>
+  </body>
 </html>

@@ -1,1221 +1,1965 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Oficio — Mi Dashboard</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet" />
-  <style>
-    :root {
-      --amber: #F59E0B;
-      --amber-light: rgba(245,158,11,0.10);
-      --amber-dark: #D97706;
-      --charcoal: #1C1917;
-      --stone: #44403C;
-      --warm-gray: #78716C;
-      --muted: #A8A29E;
-      --cream: #FAFAF9;
-      --white: #FFFFFF;
-      --border: rgba(0,0,0,0.07);
-      --sidebar-w: 240px;
-      --green: #22C55E;
-      --blue: #3B82F6;
-      --red: #EF4444;
-      --orange: #F97316;
-    }
-
-    * { margin:0; padding:0; box-sizing:border-box; }
-
-    body {
-      font-family: 'Instrument Sans', sans-serif;
-      background: #F5F4F2;
-      color: var(--charcoal);
-      display: flex;
-      min-height: 100vh;
-      overflow-x: hidden;
-    }
-
-    .syne { font-family: 'Syne', sans-serif; }
-
-    /* ── Grain ── */
-    body::after {
-      content:'';
-      position:fixed; inset:0;
-      background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
-      pointer-events:none; z-index:9999; opacity:.45;
-    }
-
-    /* ── Animations ── */
-    @keyframes fadeUp   { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
-    @keyframes fadeIn   { from{opacity:0} to{opacity:1} }
-    @keyframes slideRight { from{opacity:0;transform:translateX(-16px)} to{opacity:1;transform:translateX(0)} }
-    @keyframes pulse-ring { 0%{transform:scale(1);opacity:.5} 100%{transform:scale(1.7);opacity:0} }
-    @keyframes spin { to{transform:rotate(360deg)} }
-    @keyframes shimmer { 0%{background-position:-400px 0} 100%{background-position:400px 0} }
-    @keyframes popIn { from{opacity:0;transform:scale(.88)} to{opacity:1;transform:scale(1)} }
-
-    .fu  { animation: fadeUp   .5s ease both; }
-    .fi  { animation: fadeIn   .4s ease both; }
-    .sr  { animation: slideRight .45s ease both; }
-    .pi  { animation: popIn .4s cubic-bezier(.34,1.56,.64,1) both; }
-    .d1{animation-delay:.04s}.d2{animation-delay:.09s}.d3{animation-delay:.14s}
-    .d4{animation-delay:.19s}.d5{animation-delay:.24s}.d6{animation-delay:.29s}
-    .d7{animation-delay:.34s}.d8{animation-delay:.39s}
-
-    /* ══════════ SIDEBAR ══════════ */
-    .sidebar {
-      width: var(--sidebar-w);
-      background: var(--charcoal);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      position: fixed;
-      top: 0; left: 0; bottom: 0;
-      z-index: 200;
-      padding: 0;
-      overflow: hidden;
-    }
-
-    /* Sidebar background texture */
-    .sidebar::before {
-      content:'';
-      position:absolute; inset:0;
-      background-image:
-        linear-gradient(rgba(255,255,255,.02) 1px,transparent 1px),
-        linear-gradient(90deg,rgba(255,255,255,.02) 1px,transparent 1px);
-      background-size:40px 40px;
-      pointer-events:none;
-    }
-    .sidebar::after {
-      content:'';
-      position:absolute;
-      width:280px; height:280px;
-      border-radius:50%;
-      background:radial-gradient(circle,rgba(245,158,11,.14) 0%,transparent 70%);
-      bottom:-60px; left:-60px;
-      pointer-events:none;
-    }
-
-    .sidebar-logo {
-      padding: 1.6rem 1.4rem 1.2rem;
-      font-family:'Syne',sans-serif;
-      font-weight:800; font-size:1.4rem;
-      letter-spacing:-.04em; color:white;
-      text-decoration:none;
-      display:block; position:relative; z-index:1;
-    }
-    .sidebar-logo span { color:var(--amber); }
-
-    .sidebar-section {
-      font-size:.65rem;
-      font-weight:700;
-      letter-spacing:.1em;
-      text-transform:uppercase;
-      color:rgba(255,255,255,.28);
-      padding:.9rem 1.4rem .4rem;
-      position:relative; z-index:1;
-    }
-
-    .nav-item {
-      display:flex; align-items:center; gap:.7rem;
-      padding:.62rem 1.4rem;
-      color:rgba(255,255,255,.5);
-      text-decoration:none;
-      font-size:.875rem; font-weight:500;
-      border-radius:0;
-      cursor:pointer;
-      transition:all .18s;
-      position:relative; z-index:1;
-      border:none; background:none; width:100%; text-align:left;
-    }
-    .nav-item:hover { color:rgba(255,255,255,.85); background:rgba(255,255,255,.05); }
-    .nav-item.active {
-      color:white; background:rgba(245,158,11,.15);
-      border-right:2.5px solid var(--amber);
-      font-weight:600;
-    }
-    .nav-item.active .nav-icon { color:var(--amber); }
-    .nav-icon { width:16px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
-
-    .nav-badge {
-      margin-left:auto;
-      background:var(--amber);
-      color:var(--charcoal);
-      font-family:'Syne',sans-serif;
-      font-weight:700; font-size:.65rem;
-      padding:.1rem .45rem;
-      border-radius:100px;
-      min-width:18px; text-align:center;
-    }
-
-    .sidebar-bottom {
-      margin-top:auto;
-      padding:1.2rem 1.4rem;
-      border-top:1px solid rgba(255,255,255,.07);
-      position:relative; z-index:1;
-    }
-
-    .user-pill {
-      display:flex; align-items:center; gap:.65rem;
-      padding:.6rem .75rem;
-      border-radius:12px;
-      background:rgba(255,255,255,.06);
-      cursor:pointer;
-      transition:background .18s;
-    }
-    .user-pill:hover { background:rgba(255,255,255,.1); }
-
-    .user-avatar {
-      width:34px; height:34px; border-radius:50%;
-      background:linear-gradient(135deg,#F59E0B,#D97706);
-      display:flex; align-items:center; justify-content:center;
-      font-family:'Syne',sans-serif; font-weight:700; font-size:.8rem; color:white;
-      flex-shrink:0;
-    }
-
-    .user-name { font-family:'Syne',sans-serif; font-size:.82rem; font-weight:700; color:white; }
-    .user-role { font-size:.7rem; color:rgba(255,255,255,.4); }
-
-    /* ══════════ MAIN ══════════ */
-    .main {
-      margin-left: var(--sidebar-w);
-      flex:1;
-      display:flex;
-      flex-direction:column;
-      min-height:100vh;
-    }
-
-    /* ── Topbar ── */
-    .topbar {
-      background:white;
-      border-bottom:1px solid var(--border);
-      padding:.9rem 2rem;
-      display:flex; align-items:center; gap:1rem;
-      position:sticky; top:0; z-index:100;
-    }
-
-    .topbar-search {
-      flex:1; max-width:360px;
-      background:#F5F4F2;
-      border:1.5px solid transparent;
-      border-radius:10px;
-      padding:.55rem .9rem;
-      display:flex; align-items:center; gap:.6rem;
-      transition:border-color .2s, box-shadow .2s;
-    }
-    .topbar-search:focus-within {
-      border-color:var(--amber);
-      box-shadow:0 0 0 3px rgba(245,158,11,.1);
-      background:white;
-    }
-    .topbar-search input {
-      border:none; outline:none; background:transparent;
-      font-family:'Instrument Sans',sans-serif; font-size:.875rem;
-      color:var(--charcoal); flex:1;
-    }
-    .topbar-search input::placeholder { color:var(--muted); }
-
-    .topbar-actions { margin-left:auto; display:flex; align-items:center; gap:.75rem; }
-
-    .icon-btn {
-      width:36px; height:36px;
-      border-radius:10px;
-      border:1.5px solid var(--border);
-      background:white;
-      display:flex; align-items:center; justify-content:center;
-      cursor:pointer; color:var(--warm-gray);
-      transition:all .18s;
-      position:relative;
-    }
-    .icon-btn:hover { border-color:var(--amber); color:var(--charcoal); background:#FFFBF0; }
-
-    .notif-dot {
-      position:absolute; top:6px; right:6px;
-      width:7px; height:7px; border-radius:50%;
-      background:var(--red); border:1.5px solid white;
-    }
-
-    .online-dot {
-      width:9px; height:9px; border-radius:50%; background:var(--green);
-      position:relative;
-    }
-    .online-dot::after {
-      content:''; position:absolute; inset:-3px; border-radius:50%;
-      border:2px solid var(--green);
-      animation:pulse-ring 1.5s ease-out infinite;
-    }
-
-    /* ── Content area ── */
-    .content { padding:2rem; flex:1; }
-
-    /* ── Page header ── */
-    .page-header {
-      display:flex; align-items:flex-start; justify-content:space-between;
-      margin-bottom:1.75rem; flex-wrap:wrap; gap:1rem;
-    }
-
-    .greeting-label {
-      font-size:.72rem; font-weight:700; letter-spacing:.1em;
-      text-transform:uppercase; color:var(--amber-dark);
-      margin-bottom:.25rem;
-    }
-
-    .greeting-title {
-      font-family:'Syne',sans-serif;
-      font-size:1.65rem; font-weight:800;
-      letter-spacing:-.03em; line-height:1.1;
-    }
-
-    .greeting-sub { font-size:.875rem; color:var(--warm-gray); margin-top:.25rem; }
-
-    /* ── Stat cards ── */
-    .stats-grid {
-      display:grid;
-      grid-template-columns:repeat(4,1fr);
-      gap:1rem;
-      margin-bottom:1.75rem;
-    }
-
-    .stat-card {
-      background:white;
-      border:1px solid var(--border);
-      border-radius:18px;
-      padding:1.3rem 1.4rem;
-      transition:transform .2s, box-shadow .2s;
-    }
-    .stat-card:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(0,0,0,.07); }
-
-    .stat-card.accent {
-      background:var(--charcoal);
-      border-color:transparent;
-    }
-
-    .stat-icon-wrap {
-      width:38px; height:38px; border-radius:10px;
-      display:flex; align-items:center; justify-content:center;
-      font-size:1.1rem; margin-bottom:.9rem;
-    }
-
-    .stat-num {
-      font-family:'Syne',sans-serif; font-size:1.75rem; font-weight:800;
-      line-height:1; margin-bottom:.2rem;
-    }
-
-    .stat-label { font-size:.78rem; color:var(--warm-gray); }
-    .stat-card.accent .stat-label { color:rgba(255,255,255,.45); }
-    .stat-card.accent .stat-num { color:white; }
-
-    .stat-change {
-      display:inline-flex; align-items:center; gap:.25rem;
-      font-size:.72rem; font-weight:600;
-      padding:.15rem .5rem; border-radius:100px;
-      margin-top:.5rem;
-    }
-    .stat-change.up { background:rgba(34,197,94,.1); color:#15803D; }
-    .stat-change.neutral { background:rgba(0,0,0,.05); color:var(--warm-gray); }
-
-    /* ── Main grid ── */
-    .dash-grid {
-      display:grid;
-      grid-template-columns:1fr 340px;
-      gap:1.25rem;
-    }
-
-    /* ── Card base ── */
-    .card {
-      background:white;
-      border:1px solid var(--border);
-      border-radius:20px;
-      overflow:hidden;
-    }
-
-    .card-header {
-      padding:1.2rem 1.4rem .8rem;
-      display:flex; align-items:center; justify-content:space-between;
-    }
-
-    .card-title {
-      font-family:'Syne',sans-serif; font-weight:700; font-size:1rem;
-    }
-
-    .card-link {
-      font-size:.78rem; font-weight:600; color:var(--amber-dark);
-      text-decoration:none;
-    }
-    .card-link:hover { text-decoration:underline; }
-
-    /* ── Service request button ── */
-    .btn-new-request {
-      background:var(--amber);
-      color:var(--charcoal);
-      font-family:'Syne',sans-serif; font-weight:700; font-size:.875rem;
-      padding:.6rem 1.2rem;
-      border-radius:100px; border:none; cursor:pointer;
-      display:flex; align-items:center; gap:.5rem;
-      transition:all .2s;
-    }
-    .btn-new-request:hover {
-      background:var(--amber-dark);
-      transform:translateY(-1px);
-      box-shadow:0 6px 18px rgba(245,158,11,.35);
-    }
-
-    /* ── Active requests ── */
-    .request-item {
-      padding:1rem 1.4rem;
-      border-top:1px solid var(--border);
-      display:flex; align-items:center; gap:1rem;
-      transition:background .15s; cursor:pointer;
-    }
-    .request-item:hover { background:#FAFAF9; }
-
-    .req-icon {
-      width:44px; height:44px; border-radius:13px;
-      display:flex; align-items:center; justify-content:center;
-      font-size:1.2rem; flex-shrink:0;
-    }
-
-    .req-title { font-family:'Syne',sans-serif; font-weight:700; font-size:.9rem; }
-    .req-sub   { font-size:.78rem; color:var(--warm-gray); margin-top:.1rem; }
-    .req-meta  { font-size:.72rem; color:var(--muted); margin-top:.3rem; }
-
-    .status-pill {
-      display:inline-flex; align-items:center; gap:.3rem;
-      font-size:.72rem; font-weight:700;
-      padding:.22rem .65rem; border-radius:100px;
-      white-space:nowrap;
-    }
-    .status-pill.pending  { background:rgba(249,115,22,.1); color:#C2410C; }
-    .status-pill.active   { background:rgba(34,197,94,.1);  color:#15803D; }
-    .status-pill.done     { background:rgba(100,116,139,.1);color:#475569; }
-    .status-pill.waiting  { background:rgba(245,158,11,.12);color:#92400E; }
-    .status-dot { width:6px; height:6px; border-radius:50%; background:currentColor; }
-
-    .req-price {
-      font-family:'Syne',sans-serif; font-weight:700; font-size:.95rem;
-      margin-left:auto; flex-shrink:0;
-    }
-
-    /* ── Nearby maestros ── */
-    .maestro-card {
-      padding:1rem 1.4rem;
-      border-top:1px solid var(--border);
-      display:flex; align-items:center; gap:.85rem;
-      transition:background .15s; cursor:pointer;
-    }
-    .maestro-card:hover { background:#FAFAF9; }
-
-    .m-avatar {
-      width:42px; height:42px; border-radius:50%;
-      display:flex; align-items:center; justify-content:center;
-      font-family:'Syne',sans-serif; font-weight:700; font-size:.9rem; color:white;
-      flex-shrink:0; position:relative;
-    }
-    .m-online {
-      position:absolute; bottom:0; right:0;
-      width:10px; height:10px; border-radius:50%;
-      background:var(--green); border:2px solid white;
-    }
-
-    .m-name { font-family:'Syne',sans-serif; font-weight:700; font-size:.875rem; }
-    .m-trade { font-size:.75rem; color:var(--warm-gray); }
-    .m-stars { font-size:.72rem; color:var(--amber); letter-spacing:.5px; }
-    .m-dist  { font-size:.72rem; color:var(--muted); }
-
-    .btn-hire {
-      margin-left:auto; flex-shrink:0;
-      background:var(--charcoal); color:white;
-      font-family:'Syne',sans-serif; font-weight:600; font-size:.75rem;
-      padding:.38rem .85rem; border-radius:100px; border:none; cursor:pointer;
-      transition:all .18s;
-    }
-    .btn-hire:hover { background:var(--amber); color:var(--charcoal); }
-
-    /* ── Right column ── */
-    .right-col { display:flex; flex-direction:column; gap:1.25rem; }
-
-    /* ── Activity feed ── */
-    .feed-item {
-      padding:.85rem 1.4rem;
-      border-top:1px solid var(--border);
-      display:flex; align-items:flex-start; gap:.75rem;
-    }
-
-    .feed-icon {
-      width:32px; height:32px; border-radius:9px;
-      display:flex; align-items:center; justify-content:center;
-      font-size:.9rem; flex-shrink:0;
-    }
-
-    .feed-text { font-size:.82rem; line-height:1.5; color:var(--stone); }
-    .feed-text strong { font-weight:600; color:var(--charcoal); }
-    .feed-time { font-size:.7rem; color:var(--muted); margin-top:.2rem; }
-
-    /* ── Quick actions ── */
-    .qa-grid { display:grid; grid-template-columns:1fr 1fr; gap:.75rem; padding:1rem 1.4rem; }
-
-    .qa-btn {
-      background:#F5F4F2; border:1.5px solid transparent;
-      border-radius:14px; padding:1rem .9rem;
-      display:flex; flex-direction:column; align-items:flex-start; gap:.4rem;
-      cursor:pointer; transition:all .18s; text-align:left;
-    }
-    .qa-btn:hover { background:white; border-color:var(--amber); transform:translateY(-1px); box-shadow:0 4px 12px rgba(0,0,0,.06); }
-    .qa-icon { font-size:1.2rem; }
-    .qa-label { font-family:'Syne',sans-serif; font-weight:700; font-size:.8rem; color:var(--charcoal); }
-    .qa-sub   { font-size:.7rem; color:var(--warm-gray); line-height:1.4; }
-
-    /* ── Promo banner ── */
-    .promo-banner {
-      border-radius:18px;
-      background:var(--charcoal);
-      padding:1.4rem;
-      position:relative; overflow:hidden;
-    }
-    .promo-banner::before {
-      content:'';
-      position:absolute; top:-50px; right:-50px;
-      width:180px; height:180px; border-radius:50%;
-      background:radial-gradient(circle,rgba(245,158,11,.22) 0%,transparent 70%);
-      pointer-events:none;
-    }
-    .promo-title { font-family:'Syne',sans-serif; font-weight:800; font-size:1rem; color:white; margin-bottom:.4rem; position:relative; z-index:1; }
-    .promo-sub { font-size:.78rem; color:rgba(255,255,255,.5); line-height:1.5; margin-bottom:1rem; position:relative; z-index:1; }
-    .btn-promo {
-      background:var(--amber); color:var(--charcoal);
-      font-family:'Syne',sans-serif; font-weight:700; font-size:.78rem;
-      padding:.5rem 1.1rem; border-radius:100px; border:none; cursor:pointer;
-      transition:all .18s; position:relative; z-index:1;
-    }
-    .btn-promo:hover { background:var(--amber-dark); }
-
-    /* ── Rating modal ── */
-    .modal-overlay {
-      position:fixed; inset:0; background:rgba(0,0,0,.4);
-      backdrop-filter:blur(4px);
-      display:flex; align-items:center; justify-content:center;
-      z-index:500; opacity:0; pointer-events:none;
-      transition:opacity .25s;
-    }
-    .modal-overlay.show { opacity:1; pointer-events:all; }
-
-    .modal {
-      background:white; border-radius:24px;
-      padding:2rem; width:100%; max-width:380px;
-      box-shadow:0 24px 80px rgba(0,0,0,.18);
-      transform:scale(.94); transition:transform .25s;
-    }
-    .modal-overlay.show .modal { transform:scale(1); }
-
-    .star-row { display:flex; gap:.5rem; justify-content:center; margin:1.25rem 0; }
-    .star-opt {
-      font-size:2rem; cursor:pointer;
-      transition:transform .15s;
-      filter:grayscale(1) opacity(.35);
-    }
-    .star-opt:hover, .star-opt.active { filter:none; transform:scale(1.15); }
-
-    .review-textarea {
-      width:100%; padding:.75rem; border:1.5px solid var(--border);
-      border-radius:12px; font-family:'Instrument Sans',sans-serif; font-size:.875rem;
-      resize:none; outline:none; color:var(--charcoal);
-      transition:border-color .2s, box-shadow .2s;
-    }
-    .review-textarea:focus { border-color:var(--amber); box-shadow:0 0 0 3px rgba(245,158,11,.12); }
-
-    /* ── New request modal ── */
-    .req-input {
-      width:100%; padding:.7rem .9rem;
-      border:1.5px solid var(--border); border-radius:12px;
-      font-family:'Instrument Sans',sans-serif; font-size:.875rem;
-      color:var(--charcoal); outline:none; background:white;
-      transition:border-color .2s, box-shadow .2s; appearance:none;
-    }
-    .req-input:focus { border-color:var(--amber); box-shadow:0 0 0 3px rgba(245,158,11,.12); }
-    .req-input::placeholder { color:var(--muted); }
-
-    .select-wrap-m { position:relative; }
-    .select-wrap-m::after {
-      content:'▾'; position:absolute; right:.9rem; top:50%;
-      transform:translateY(-50%); color:var(--muted);
-      pointer-events:none; font-size:.8rem;
-    }
-
-    /* ── Responsive ── */
-    @media (max-width:1100px) {
-      .stats-grid { grid-template-columns:repeat(2,1fr); }
-      .dash-grid  { grid-template-columns:1fr; }
-    }
-    @media (max-width:768px) {
-      .sidebar { transform:translateX(-100%); transition:transform .3s; }
-      .sidebar.open { transform:translateX(0); }
-      .main { margin-left:0; }
-      .content { padding:1.25rem; }
-      .stats-grid { grid-template-columns:1fr 1fr; }
-    }
-
-    /* Scrollbar */
-    ::-webkit-scrollbar { width:5px; }
-    ::-webkit-scrollbar-track { background:transparent; }
-    ::-webkit-scrollbar-thumb { background:rgba(0,0,0,.12); border-radius:10px; }
-  </style>
-</head>
-<body>
-
-<!-- ══════════════ SIDEBAR ══════════════ -->
-<aside class="sidebar" id="sidebar">
-
-  <a href="oficio-landing.html" class="sidebar-logo">oficio<span>.</span></a>
-
-  <div class="sidebar-section">Principal</div>
-
-  <button class="nav-item active" onclick="setPage('dashboard')">
-    <span class="nav-icon">
-      <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-    </span>
-    Dashboard
-  </button>
-
-  <button class="nav-item" onclick="setPage('servicios')">
-    <span class="nav-icon">
-      <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-    </span>
-    Buscar servicio
-  </button>
-
-  <button class="nav-item" onclick="setPage('solicitudes')">
-    <span class="nav-icon">
-      <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg>
-    </span>
-    Mis solicitudes
-    <span class="nav-badge">2</span>
-  </button>
-
-  <button class="nav-item" onclick="setPage('mensajes')">
-    <span class="nav-icon">
-      <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-    </span>
-    Mensajes
-    <span class="nav-badge">3</span>
-  </button>
-
-  <button class="nav-item" onclick="setPage('historial')">
-    <span class="nav-icon">
-      <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="12 8 12 12 14 14"/><path d="M3.05 11a9 9 0 1 0 .5-4.5"/><polyline points="3 3 3 7 7 7"/></svg>
-    </span>
-    Historial
-  </button>
-
-  <button class="nav-item" onclick="setPage('favoritos')">
-    <span class="nav-icon">
-      <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-    </span>
-    Favoritos
-  </button>
-
-  <div class="sidebar-section" style="margin-top:.5rem;">Cuenta</div>
-
-  <button class="nav-item" onclick="setPage('perfil')">
-    <span class="nav-icon">
-      <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-    </span>
-    Mi perfil
-  </button>
-
-  <button class="nav-item" onclick="setPage('config')">
-    <span class="nav-icon">
-      <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-    </span>
-    Configuración
-  </button>
-
-  <!-- User pill -->
-  <div class="sidebar-bottom">
-    <div class="user-pill">
-      <div class="user-avatar">LC</div>
-      <div>
-        <div class="user-name">Laura Castillo</div>
-        <div class="user-role">Cliente · Villa de Álvarez</div>
-      </div>
-    </div>
-  </div>
-
-</aside>
-
-<!-- ══════════════ MAIN ══════════════ -->
-<div class="main">
-
-  <!-- Topbar -->
-  <header class="topbar">
-    <!-- Mobile menu -->
-    <button onclick="document.getElementById('sidebar').classList.toggle('open')"
-      style="display:none;background:none;border:none;cursor:pointer;color:var(--charcoal);" id="menuBtn">
-      <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-    </button>
-
-    <div class="topbar-search">
-      <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="#A8A29E" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-      <input type="text" placeholder="Busca un servicio o maestro..." />
-    </div>
-
-    <div class="topbar-actions">
-      <div class="icon-btn" onclick="openModal('notifModal')">
-        <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-        <div class="notif-dot"></div>
-      </div>
-      <div class="icon-btn">
-        <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-      </div>
-      <div style="display:flex;align-items:center;gap:.5rem;cursor:pointer;">
-        <div class="user-avatar" style="width:32px;height:32px;font-size:.75rem;">LC</div>
-        <div class="online-dot"></div>
-      </div>
-    </div>
-  </header>
-
-  <!-- ══════════ CONTENT ══════════ -->
-  <div class="content">
-
-    <!-- Page header -->
-    <div class="page-header fu">
-      <div>
-        <div class="greeting-label">Martes 26 de marzo, 2026</div>
-        <h1 class="greeting-title">¡Buenos días, Laura! ☀️</h1>
-        <p class="greeting-sub">Tienes 2 solicitudes activas y 1 servicio pendiente de calificar.</p>
-      </div>
-      <button class="btn-new-request" onclick="openModal('newReqModal')">
-        <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        Nueva solicitud
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Oficio — Mi Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --amber: #f59e0b;
+        --amber-light: rgba(245, 158, 11, 0.1);
+        --amber-dark: #d97706;
+        --charcoal: #1c1917;
+        --stone: #44403c;
+        --warm-gray: #78716c;
+        --muted: #a8a29e;
+        --cream: #fafaf9;
+        --white: #ffffff;
+        --border: rgba(0, 0, 0, 0.07);
+        --sidebar-w: 240px;
+        --green: #22c55e;
+        --blue: #3b82f6;
+        --red: #ef4444;
+        --orange: #f97316;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: 'Instrument Sans', sans-serif;
+        background: #f5f4f2;
+        color: var(--charcoal);
+        display: flex;
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+
+      .syne {
+        font-family: 'Syne', sans-serif;
+      }
+
+      /* ── Grain ── */
+      body::after {
+        content: '';
+        position: fixed;
+        inset: 0;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+        pointer-events: none;
+        z-index: 9999;
+        opacity: 0.45;
+      }
+
+      /* ── Animations ── */
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(14px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+      @keyframes slideRight {
+        from {
+          opacity: 0;
+          transform: translateX(-16px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+      @keyframes pulse-ring {
+        0% {
+          transform: scale(1);
+          opacity: 0.5;
+        }
+        100% {
+          transform: scale(1.7);
+          opacity: 0;
+        }
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      @keyframes shimmer {
+        0% {
+          background-position: -400px 0;
+        }
+        100% {
+          background-position: 400px 0;
+        }
+      }
+      @keyframes popIn {
+        from {
+          opacity: 0;
+          transform: scale(0.88);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      .fu {
+        animation: fadeUp 0.5s ease both;
+      }
+      .fi {
+        animation: fadeIn 0.4s ease both;
+      }
+      .sr {
+        animation: slideRight 0.45s ease both;
+      }
+      .pi {
+        animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+      }
+      .d1 {
+        animation-delay: 0.04s;
+      }
+      .d2 {
+        animation-delay: 0.09s;
+      }
+      .d3 {
+        animation-delay: 0.14s;
+      }
+      .d4 {
+        animation-delay: 0.19s;
+      }
+      .d5 {
+        animation-delay: 0.24s;
+      }
+      .d6 {
+        animation-delay: 0.29s;
+      }
+      .d7 {
+        animation-delay: 0.34s;
+      }
+      .d8 {
+        animation-delay: 0.39s;
+      }
+
+      /* ══════════ SIDEBAR ══════════ */
+      .sidebar {
+        width: var(--sidebar-w);
+        background: var(--charcoal);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        z-index: 200;
+        padding: 0;
+        overflow: hidden;
+      }
+
+      /* Sidebar background texture */
+      .sidebar::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background-image:
+          linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+        background-size: 40px 40px;
+        pointer-events: none;
+      }
+      .sidebar::after {
+        content: '';
+        position: absolute;
+        width: 280px;
+        height: 280px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(245, 158, 11, 0.14) 0%, transparent 70%);
+        bottom: -60px;
+        left: -60px;
+        pointer-events: none;
+      }
+
+      .sidebar-logo {
+        padding: 1.6rem 1.4rem 1.2rem;
+        font-family: 'Syne', sans-serif;
+        font-weight: 800;
+        font-size: 1.4rem;
+        letter-spacing: -0.04em;
+        color: white;
+        text-decoration: none;
+        display: block;
+        position: relative;
+        z-index: 1;
+      }
+      .sidebar-logo span {
+        color: var(--amber);
+      }
+
+      .sidebar-section {
+        font-size: 0.65rem;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.28);
+        padding: 0.9rem 1.4rem 0.4rem;
+        position: relative;
+        z-index: 1;
+      }
+
+      .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 0.7rem;
+        padding: 0.62rem 1.4rem;
+        color: rgba(255, 255, 255, 0.5);
+        text-decoration: none;
+        font-size: 0.875rem;
+        font-weight: 500;
+        border-radius: 0;
+        cursor: pointer;
+        transition: all 0.18s;
+        position: relative;
+        z-index: 1;
+        border: none;
+        background: none;
+        width: 100%;
+        text-align: left;
+      }
+      .nav-item:hover {
+        color: rgba(255, 255, 255, 0.85);
+        background: rgba(255, 255, 255, 0.05);
+      }
+      .nav-item.active {
+        color: white;
+        background: rgba(245, 158, 11, 0.15);
+        border-right: 2.5px solid var(--amber);
+        font-weight: 600;
+      }
+      .nav-item.active .nav-icon {
+        color: var(--amber);
+      }
+      .nav-icon {
+        width: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+
+      .nav-badge {
+        margin-left: auto;
+        background: var(--amber);
+        color: var(--charcoal);
+        font-family: 'Syne', sans-serif;
+        font-weight: 700;
+        font-size: 0.65rem;
+        padding: 0.1rem 0.45rem;
+        border-radius: 100px;
+        min-width: 18px;
+        text-align: center;
+      }
+
+      .sidebar-bottom {
+        margin-top: auto;
+        padding: 1.2rem 1.4rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.07);
+        position: relative;
+        z-index: 1;
+      }
+
+      .user-pill {
+        display: flex;
+        align-items: center;
+        gap: 0.65rem;
+        padding: 0.6rem 0.75rem;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.06);
+        cursor: pointer;
+        transition: background 0.18s;
+      }
+      .user-pill:hover {
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      .user-avatar {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #f59e0b, #d97706);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: 'Syne', sans-serif;
+        font-weight: 700;
+        font-size: 0.8rem;
+        color: white;
+        flex-shrink: 0;
+      }
+
+      .user-name {
+        font-family: 'Syne', sans-serif;
+        font-size: 0.82rem;
+        font-weight: 700;
+        color: white;
+      }
+      .user-role {
+        font-size: 0.7rem;
+        color: rgba(255, 255, 255, 0.4);
+      }
+
+      /* ══════════ MAIN ══════════ */
+      .main {
+        margin-left: var(--sidebar-w);
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+      }
+
+      /* ── Topbar ── */
+      .topbar {
+        background: white;
+        border-bottom: 1px solid var(--border);
+        padding: 0.9rem 2rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+
+      .topbar-search {
+        flex: 1;
+        max-width: 360px;
+        background: #f5f4f2;
+        border: 1.5px solid transparent;
+        border-radius: 10px;
+        padding: 0.55rem 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        transition:
+          border-color 0.2s,
+          box-shadow 0.2s;
+      }
+      .topbar-search:focus-within {
+        border-color: var(--amber);
+        box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
+        background: white;
+      }
+      .topbar-search input {
+        border: none;
+        outline: none;
+        background: transparent;
+        font-family: 'Instrument Sans', sans-serif;
+        font-size: 0.875rem;
+        color: var(--charcoal);
+        flex: 1;
+      }
+      .topbar-search input::placeholder {
+        color: var(--muted);
+      }
+
+      .topbar-actions {
+        margin-left: auto;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+
+      .icon-btn {
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        border: 1.5px solid var(--border);
+        background: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        color: var(--warm-gray);
+        transition: all 0.18s;
+        position: relative;
+      }
+      .icon-btn:hover {
+        border-color: var(--amber);
+        color: var(--charcoal);
+        background: #fffbf0;
+      }
+
+      .notif-dot {
+        position: absolute;
+        top: 6px;
+        right: 6px;
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--red);
+        border: 1.5px solid white;
+      }
+
+      .online-dot {
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        background: var(--green);
+        position: relative;
+      }
+      .online-dot::after {
+        content: '';
+        position: absolute;
+        inset: -3px;
+        border-radius: 50%;
+        border: 2px solid var(--green);
+        animation: pulse-ring 1.5s ease-out infinite;
+      }
+
+      /* ── Content area ── */
+      .content {
+        padding: 2rem;
+        flex: 1;
+      }
+
+      /* ── Page header ── */
+      .page-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        margin-bottom: 1.75rem;
+        flex-wrap: wrap;
+        gap: 1rem;
+      }
+
+      .greeting-label {
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--amber-dark);
+        margin-bottom: 0.25rem;
+      }
+
+      .greeting-title {
+        font-family: 'Syne', sans-serif;
+        font-size: 1.65rem;
+        font-weight: 800;
+        letter-spacing: -0.03em;
+        line-height: 1.1;
+      }
+
+      .greeting-sub {
+        font-size: 0.875rem;
+        color: var(--warm-gray);
+        margin-top: 0.25rem;
+      }
+
+      /* ── Stat cards ── */
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1rem;
+        margin-bottom: 1.75rem;
+      }
+
+      .stat-card {
+        background: white;
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        padding: 1.3rem 1.4rem;
+        transition:
+          transform 0.2s,
+          box-shadow 0.2s;
+      }
+      .stat-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.07);
+      }
+
+      .stat-card.accent {
+        background: var(--charcoal);
+        border-color: transparent;
+      }
+
+      .stat-icon-wrap {
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+        margin-bottom: 0.9rem;
+      }
+
+      .stat-num {
+        font-family: 'Syne', sans-serif;
+        font-size: 1.75rem;
+        font-weight: 800;
+        line-height: 1;
+        margin-bottom: 0.2rem;
+      }
+
+      .stat-label {
+        font-size: 0.78rem;
+        color: var(--warm-gray);
+      }
+      .stat-card.accent .stat-label {
+        color: rgba(255, 255, 255, 0.45);
+      }
+      .stat-card.accent .stat-num {
+        color: white;
+      }
+
+      .stat-change {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        font-size: 0.72rem;
+        font-weight: 600;
+        padding: 0.15rem 0.5rem;
+        border-radius: 100px;
+        margin-top: 0.5rem;
+      }
+      .stat-change.up {
+        background: rgba(34, 197, 94, 0.1);
+        color: #15803d;
+      }
+      .stat-change.neutral {
+        background: rgba(0, 0, 0, 0.05);
+        color: var(--warm-gray);
+      }
+
+      /* ── Main grid ── */
+      .dash-grid {
+        display: grid;
+        grid-template-columns: 1fr 340px;
+        gap: 1.25rem;
+      }
+
+      /* ── Card base ── */
+      .card {
+        background: white;
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        overflow: hidden;
+      }
+
+      .card-header {
+        padding: 1.2rem 1.4rem 0.8rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .card-title {
+        font-family: 'Syne', sans-serif;
+        font-weight: 700;
+        font-size: 1rem;
+      }
+
+      .card-link {
+        font-size: 0.78rem;
+        font-weight: 600;
+        color: var(--amber-dark);
+        text-decoration: none;
+      }
+      .card-link:hover {
+        text-decoration: underline;
+      }
+
+      /* ── Service request button ── */
+      .btn-new-request {
+        background: var(--amber);
+        color: var(--charcoal);
+        font-family: 'Syne', sans-serif;
+        font-weight: 700;
+        font-size: 0.875rem;
+        padding: 0.6rem 1.2rem;
+        border-radius: 100px;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.2s;
+      }
+      .btn-new-request:hover {
+        background: var(--amber-dark);
+        transform: translateY(-1px);
+        box-shadow: 0 6px 18px rgba(245, 158, 11, 0.35);
+      }
+
+      /* ── Active requests ── */
+      .request-item {
+        padding: 1rem 1.4rem;
+        border-top: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        transition: background 0.15s;
+        cursor: pointer;
+      }
+      .request-item:hover {
+        background: #fafaf9;
+      }
+
+      .req-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 13px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        flex-shrink: 0;
+      }
+
+      .req-title {
+        font-family: 'Syne', sans-serif;
+        font-weight: 700;
+        font-size: 0.9rem;
+      }
+      .req-sub {
+        font-size: 0.78rem;
+        color: var(--warm-gray);
+        margin-top: 0.1rem;
+      }
+      .req-meta {
+        font-size: 0.72rem;
+        color: var(--muted);
+        margin-top: 0.3rem;
+      }
+
+      .status-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+        font-size: 0.72rem;
+        font-weight: 700;
+        padding: 0.22rem 0.65rem;
+        border-radius: 100px;
+        white-space: nowrap;
+      }
+      .status-pill.pending {
+        background: rgba(249, 115, 22, 0.1);
+        color: #c2410c;
+      }
+      .status-pill.active {
+        background: rgba(34, 197, 94, 0.1);
+        color: #15803d;
+      }
+      .status-pill.done {
+        background: rgba(100, 116, 139, 0.1);
+        color: #475569;
+      }
+      .status-pill.waiting {
+        background: rgba(245, 158, 11, 0.12);
+        color: #92400e;
+      }
+      .status-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: currentColor;
+      }
+
+      .req-price {
+        font-family: 'Syne', sans-serif;
+        font-weight: 700;
+        font-size: 0.95rem;
+        margin-left: auto;
+        flex-shrink: 0;
+      }
+
+      /* ── Nearby maestros ── */
+      .maestro-card {
+        padding: 1rem 1.4rem;
+        border-top: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        gap: 0.85rem;
+        transition: background 0.15s;
+        cursor: pointer;
+      }
+      .maestro-card:hover {
+        background: #fafaf9;
+      }
+
+      .m-avatar {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: 'Syne', sans-serif;
+        font-weight: 700;
+        font-size: 0.9rem;
+        color: white;
+        flex-shrink: 0;
+        position: relative;
+      }
+      .m-online {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--green);
+        border: 2px solid white;
+      }
+
+      .m-name {
+        font-family: 'Syne', sans-serif;
+        font-weight: 700;
+        font-size: 0.875rem;
+      }
+      .m-trade {
+        font-size: 0.75rem;
+        color: var(--warm-gray);
+      }
+      .m-stars {
+        font-size: 0.72rem;
+        color: var(--amber);
+        letter-spacing: 0.5px;
+      }
+      .m-dist {
+        font-size: 0.72rem;
+        color: var(--muted);
+      }
+
+      .btn-hire {
+        margin-left: auto;
+        flex-shrink: 0;
+        background: var(--charcoal);
+        color: white;
+        font-family: 'Syne', sans-serif;
+        font-weight: 600;
+        font-size: 0.75rem;
+        padding: 0.38rem 0.85rem;
+        border-radius: 100px;
+        border: none;
+        cursor: pointer;
+        transition: all 0.18s;
+      }
+      .btn-hire:hover {
+        background: var(--amber);
+        color: var(--charcoal);
+      }
+
+      /* ── Right column ── */
+      .right-col {
+        display: flex;
+        flex-direction: column;
+        gap: 1.25rem;
+      }
+
+      /* ── Activity feed ── */
+      .feed-item {
+        padding: 0.85rem 1.4rem;
+        border-top: 1px solid var(--border);
+        display: flex;
+        align-items: flex-start;
+        gap: 0.75rem;
+      }
+
+      .feed-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 9px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.9rem;
+        flex-shrink: 0;
+      }
+
+      .feed-text {
+        font-size: 0.82rem;
+        line-height: 1.5;
+        color: var(--stone);
+      }
+      .feed-text strong {
+        font-weight: 600;
+        color: var(--charcoal);
+      }
+      .feed-time {
+        font-size: 0.7rem;
+        color: var(--muted);
+        margin-top: 0.2rem;
+      }
+
+      /* ── Quick actions ── */
+      .qa-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
+        padding: 1rem 1.4rem;
+      }
+
+      .qa-btn {
+        background: #f5f4f2;
+        border: 1.5px solid transparent;
+        border-radius: 14px;
+        padding: 1rem 0.9rem;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.4rem;
+        cursor: pointer;
+        transition: all 0.18s;
+        text-align: left;
+      }
+      .qa-btn:hover {
+        background: white;
+        border-color: var(--amber);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+      }
+      .qa-icon {
+        font-size: 1.2rem;
+      }
+      .qa-label {
+        font-family: 'Syne', sans-serif;
+        font-weight: 700;
+        font-size: 0.8rem;
+        color: var(--charcoal);
+      }
+      .qa-sub {
+        font-size: 0.7rem;
+        color: var(--warm-gray);
+        line-height: 1.4;
+      }
+
+      /* ── Promo banner ── */
+      .promo-banner {
+        border-radius: 18px;
+        background: var(--charcoal);
+        padding: 1.4rem;
+        position: relative;
+        overflow: hidden;
+      }
+      .promo-banner::before {
+        content: '';
+        position: absolute;
+        top: -50px;
+        right: -50px;
+        width: 180px;
+        height: 180px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(245, 158, 11, 0.22) 0%, transparent 70%);
+        pointer-events: none;
+      }
+      .promo-title {
+        font-family: 'Syne', sans-serif;
+        font-weight: 800;
+        font-size: 1rem;
+        color: white;
+        margin-bottom: 0.4rem;
+        position: relative;
+        z-index: 1;
+      }
+      .promo-sub {
+        font-size: 0.78rem;
+        color: rgba(255, 255, 255, 0.5);
+        line-height: 1.5;
+        margin-bottom: 1rem;
+        position: relative;
+        z-index: 1;
+      }
+      .btn-promo {
+        background: var(--amber);
+        color: var(--charcoal);
+        font-family: 'Syne', sans-serif;
+        font-weight: 700;
+        font-size: 0.78rem;
+        padding: 0.5rem 1.1rem;
+        border-radius: 100px;
+        border: none;
+        cursor: pointer;
+        transition: all 0.18s;
+        position: relative;
+        z-index: 1;
+      }
+      .btn-promo:hover {
+        background: var(--amber-dark);
+      }
+
+      /* ── Rating modal ── */
+      .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(4px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 500;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.25s;
+      }
+      .modal-overlay.show {
+        opacity: 1;
+        pointer-events: all;
+      }
+
+      .modal {
+        background: white;
+        border-radius: 24px;
+        padding: 2rem;
+        width: 100%;
+        max-width: 380px;
+        box-shadow: 0 24px 80px rgba(0, 0, 0, 0.18);
+        transform: scale(0.94);
+        transition: transform 0.25s;
+      }
+      .modal-overlay.show .modal {
+        transform: scale(1);
+      }
+
+      .star-row {
+        display: flex;
+        gap: 0.5rem;
+        justify-content: center;
+        margin: 1.25rem 0;
+      }
+      .star-opt {
+        font-size: 2rem;
+        cursor: pointer;
+        transition: transform 0.15s;
+        filter: grayscale(1) opacity(0.35);
+      }
+      .star-opt:hover,
+      .star-opt.active {
+        filter: none;
+        transform: scale(1.15);
+      }
+
+      .review-textarea {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1.5px solid var(--border);
+        border-radius: 12px;
+        font-family: 'Instrument Sans', sans-serif;
+        font-size: 0.875rem;
+        resize: none;
+        outline: none;
+        color: var(--charcoal);
+        transition:
+          border-color 0.2s,
+          box-shadow 0.2s;
+      }
+      .review-textarea:focus {
+        border-color: var(--amber);
+        box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.12);
+      }
+
+      /* ── New request modal ── */
+      .req-input {
+        width: 100%;
+        padding: 0.7rem 0.9rem;
+        border: 1.5px solid var(--border);
+        border-radius: 12px;
+        font-family: 'Instrument Sans', sans-serif;
+        font-size: 0.875rem;
+        color: var(--charcoal);
+        outline: none;
+        background: white;
+        transition:
+          border-color 0.2s,
+          box-shadow 0.2s;
+        appearance: none;
+      }
+      .req-input:focus {
+        border-color: var(--amber);
+        box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.12);
+      }
+      .req-input::placeholder {
+        color: var(--muted);
+      }
+
+      .select-wrap-m {
+        position: relative;
+      }
+      .select-wrap-m::after {
+        content: '▾';
+        position: absolute;
+        right: 0.9rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--muted);
+        pointer-events: none;
+        font-size: 0.8rem;
+      }
+
+      /* ── Responsive ── */
+      @media (max-width: 1100px) {
+        .stats-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .dash-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+      @media (max-width: 768px) {
+        .sidebar {
+          transform: translateX(-100%);
+          transition: transform 0.3s;
+        }
+        .sidebar.open {
+          transform: translateX(0);
+        }
+        .main {
+          margin-left: 0;
+        }
+        .content {
+          padding: 1.25rem;
+        }
+        .stats-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+
+      /* Scrollbar */
+      ::-webkit-scrollbar {
+        width: 5px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: rgba(0, 0, 0, 0.12);
+        border-radius: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ══════════════ SIDEBAR ══════════════ -->
+    <aside class="sidebar" id="sidebar">
+      <a href="oficio-landing.html" class="sidebar-logo">oficio<span>.</span></a>
+
+      <div class="sidebar-section">Principal</div>
+
+      <button class="nav-item active" onclick="setPage('dashboard')">
+        <span class="nav-icon">
+          <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="7" height="7" />
+            <rect x="14" y="3" width="7" height="7" />
+            <rect x="14" y="14" width="7" height="7" />
+            <rect x="3" y="14" width="7" height="7" />
+          </svg>
+        </span>
+        Dashboard
       </button>
-    </div>
 
-    <!-- Stat cards -->
-    <div class="stats-grid">
-
-      <div class="stat-card fu d1">
-        <div class="stat-icon-wrap" style="background:rgba(245,158,11,.1);">🔧</div>
-        <div class="stat-num">8</div>
-        <div class="stat-label">Servicios contratados</div>
-        <div class="stat-change up">↑ 2 este mes</div>
-      </div>
-
-      <div class="stat-card fu d2">
-        <div class="stat-icon-wrap" style="background:rgba(34,197,94,.1);">✅</div>
-        <div class="stat-num">6</div>
-        <div class="stat-label">Completados</div>
-        <div class="stat-change up">100% satisfacción</div>
-      </div>
-
-      <div class="stat-card fu d3">
-        <div class="stat-icon-wrap" style="background:rgba(59,130,246,.1);">💬</div>
-        <div class="stat-num">3</div>
-        <div class="stat-label">Mensajes nuevos</div>
-        <div class="stat-change neutral">2 maestros</div>
-      </div>
-
-      <div class="stat-card accent fu d4">
-        <div class="stat-icon-wrap" style="background:rgba(255,255,255,.08);">⭐</div>
-        <div class="stat-num">4.9</div>
-        <div class="stat-label">Tu calificación media</div>
-        <div class="stat-change" style="background:rgba(245,158,11,.2);color:#FCD34D;">↑ muy buena</div>
-      </div>
-
-    </div>
-
-    <!-- Main dash grid -->
-    <div class="dash-grid">
-
-      <!-- LEFT COLUMN -->
-      <div style="display:flex;flex-direction:column;gap:1.25rem;">
-
-        <!-- Active requests -->
-        <div class="card fu d2">
-          <div class="card-header">
-            <div class="card-title">Solicitudes activas</div>
-            <a href="#" class="card-link" onclick="setPage('solicitudes');return false;">Ver todas →</a>
-          </div>
-
-          <!-- Req 1 -->
-          <div class="request-item" onclick="openModal('detailModal')">
-            <div class="req-icon" style="background:rgba(59,130,246,.1);">🔧</div>
-            <div style="flex:1;min-width:0;">
-              <div class="req-title">Fuga de agua en cocina</div>
-              <div class="req-sub">Juan Morales · Plomero</div>
-              <div class="req-meta">📍 1.2 km · Hoy 14:30 hrs</div>
-            </div>
-            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:.4rem;">
-              <div class="status-pill active"><div class="status-dot"></div>En camino</div>
-              <div class="req-price">$350</div>
-            </div>
-          </div>
-
-          <!-- Req 2 -->
-          <div class="request-item">
-            <div class="req-icon" style="background:rgba(234,179,8,.1);">⚡</div>
-            <div style="flex:1;min-width:0;">
-              <div class="req-title">Instalación de contactos</div>
-              <div class="req-sub">Rosa García · Electricista</div>
-              <div class="req-meta">📍 3.5 km · Mañana 10:00 hrs</div>
-            </div>
-            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:.4rem;">
-              <div class="status-pill waiting"><div class="status-dot"></div>Confirmado</div>
-              <div class="req-price">$500</div>
-            </div>
-          </div>
-
-          <!-- Req 3: pendiente de calificar -->
-          <div class="request-item" onclick="openModal('ratingModal')">
-            <div class="req-icon" style="background:rgba(100,116,139,.1);">🪵</div>
-            <div style="flex:1;min-width:0;">
-              <div class="req-title">Reparación de puerta</div>
-              <div class="req-sub">Carlos Ávila · Carpintero</div>
-              <div class="req-meta">📍 0.8 km · Ayer 09:00 hrs</div>
-            </div>
-            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:.4rem;">
-              <div class="status-pill pending"><div class="status-dot"></div>Calificar ⭐</div>
-              <div class="req-price">$280</div>
-            </div>
-          </div>
-
-        </div>
-
-        <!-- Nearby maestros -->
-        <div class="card fu d3">
-          <div class="card-header">
-            <div class="card-title">Maestros cerca de ti</div>
-            <a href="#" class="card-link">Ver mapa →</a>
-          </div>
-
-          <div class="maestro-card">
-            <div class="m-avatar" style="background:linear-gradient(135deg,#F59E0B,#D97706);">
-              JM
-              <div class="m-online"></div>
-            </div>
-            <div style="flex:1;min-width:0;">
-              <div class="m-name">Juan Morales</div>
-              <div class="m-trade">Plomero · 8 años exp.</div>
-              <div style="display:flex;gap:.5rem;margin-top:.2rem;">
-                <div class="m-stars">★★★★★</div>
-                <div class="m-dist">1.2 km</div>
-              </div>
-            </div>
-            <button class="btn-hire">Contratar</button>
-          </div>
-
-          <div class="maestro-card">
-            <div class="m-avatar" style="background:linear-gradient(135deg,#3B82F6,#2563EB);">
-              RG
-              <div class="m-online"></div>
-            </div>
-            <div style="flex:1;min-width:0;">
-              <div class="m-name">Rosa García</div>
-              <div class="m-trade">Electricista · 5 años</div>
-              <div style="display:flex;gap:.5rem;margin-top:.2rem;">
-                <div class="m-stars">★★★★★</div>
-                <div class="m-dist">3.5 km</div>
-              </div>
-            </div>
-            <button class="btn-hire">Contratar</button>
-          </div>
-
-          <div class="maestro-card">
-            <div class="m-avatar" style="background:linear-gradient(135deg,#10B981,#059669);">
-              CA
-            </div>
-            <div style="flex:1;min-width:0;">
-              <div class="m-name">Carlos Ávila</div>
-              <div class="m-trade">Carpintero · 12 años</div>
-              <div style="display:flex;gap:.5rem;margin-top:.2rem;">
-                <div class="m-stars">★★★★★</div>
-                <div class="m-dist">0.8 km</div>
-              </div>
-            </div>
-            <button class="btn-hire">Contratar</button>
-          </div>
-
-          <div class="maestro-card">
-            <div class="m-avatar" style="background:linear-gradient(135deg,#8B5CF6,#7C3AED);">
-              MR
-              <div class="m-online"></div>
-            </div>
-            <div style="flex:1;min-width:0;">
-              <div class="m-name">Miguel Ramos</div>
-              <div class="m-trade">Pintor · 6 años</div>
-              <div style="display:flex;gap:.5rem;margin-top:.2rem;">
-                <div class="m-stars">★★★★☆</div>
-                <div class="m-dist">2.1 km</div>
-              </div>
-            </div>
-            <button class="btn-hire">Contratar</button>
-          </div>
-
-        </div>
-
-      </div>
-
-      <!-- RIGHT COLUMN -->
-      <div class="right-col">
-
-        <!-- Quick actions -->
-        <div class="card fu d2">
-          <div class="card-header">
-            <div class="card-title">Acciones rápidas</div>
-          </div>
-          <div class="qa-grid">
-            <button class="qa-btn" onclick="openModal('newReqModal')">
-              <div class="qa-icon">🔍</div>
-              <div class="qa-label">Pedir servicio</div>
-              <div class="qa-sub">Solicita ahora</div>
-            </button>
-            <button class="qa-btn" onclick="setPage('mensajes')">
-              <div class="qa-icon">💬</div>
-              <div class="qa-label">Mensajes</div>
-              <div class="qa-sub">3 sin leer</div>
-            </button>
-            <button class="qa-btn" onclick="setPage('historial')">
-              <div class="qa-icon">🕐</div>
-              <div class="qa-label">Historial</div>
-              <div class="qa-sub">8 servicios</div>
-            </button>
-            <button class="qa-btn" onclick="setPage('favoritos')">
-              <div class="qa-icon">❤️</div>
-              <div class="qa-label">Favoritos</div>
-              <div class="qa-sub">4 maestros</div>
-            </button>
-          </div>
-        </div>
-
-        <!-- Promo -->
-        <div class="promo-banner fu d3">
-          <div class="promo-title">¿Eres maestro también?</div>
-          <div class="promo-sub">Regístrate como proveedor y empieza a recibir clientes en tu zona sin costo inicial.</div>
-          <button class="btn-promo">Registrar mi oficio →</button>
-        </div>
-
-        <!-- Activity feed -->
-        <div class="card fu d4">
-          <div class="card-header">
-            <div class="card-title">Actividad reciente</div>
-          </div>
-
-          <div class="feed-item">
-            <div class="feed-icon" style="background:rgba(34,197,94,.1);">✅</div>
-            <div>
-              <div class="feed-text"><strong>Juan Morales</strong> aceptó tu solicitud de plomería.</div>
-              <div class="feed-time">Hace 12 min</div>
-            </div>
-          </div>
-
-          <div class="feed-item">
-            <div class="feed-icon" style="background:rgba(59,130,246,.1);">💬</div>
-            <div>
-              <div class="feed-text"><strong>Rosa García</strong> te envió un mensaje sobre la instalación.</div>
-              <div class="feed-time">Hace 45 min</div>
-            </div>
-          </div>
-
-          <div class="feed-item">
-            <div class="feed-icon" style="background:rgba(245,158,11,.1);">⭐</div>
-            <div>
-              <div class="feed-text">Califica el servicio de <strong>Carlos Ávila</strong> para ayudar a la comunidad.</div>
-              <div class="feed-time">Hace 1 hora</div>
-            </div>
-          </div>
-
-          <div class="feed-item">
-            <div class="feed-icon" style="background:rgba(100,116,139,.1);">🔧</div>
-            <div>
-              <div class="feed-text">Servicio de carpintería <strong>completado</strong> exitosamente.</div>
-              <div class="feed-time">Ayer 09:42</div>
-            </div>
-          </div>
-
-          <div class="feed-item">
-            <div class="feed-icon" style="background:rgba(239,68,68,.1);">📍</div>
-            <div>
-              <div class="feed-text"><strong>Miguel Ramos</strong> se unió como maestro en tu zona.</div>
-              <div class="feed-time">Hace 2 días</div>
-            </div>
-          </div>
-
-        </div>
-
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ══════════ MODALS ══════════ -->
-
-<!-- Rating modal -->
-<div class="modal-overlay" id="ratingModal" onclick="closeOnBg(event,'ratingModal')">
-  <div class="modal">
-    <div style="text-align:center;margin-bottom:.5rem;">
-      <div style="font-size:2.5rem;margin-bottom:.5rem;">🪵</div>
-      <h3 class="syne" style="font-size:1.2rem;font-weight:800;margin-bottom:.25rem;">Califica a Carlos Ávila</h3>
-      <p style="font-size:.83rem;color:var(--warm-gray);">Reparación de puerta · $280</p>
-    </div>
-    <div class="star-row" id="starRow">
-      <span class="star-opt" onclick="rateStar(1)">★</span>
-      <span class="star-opt" onclick="rateStar(2)">★</span>
-      <span class="star-opt" onclick="rateStar(3)">★</span>
-      <span class="star-opt" onclick="rateStar(4)">★</span>
-      <span class="star-opt" onclick="rateStar(5)">★</span>
-    </div>
-    <textarea class="review-textarea" rows="3" placeholder="¿Cómo fue tu experiencia? (opcional)" style="margin-bottom:1rem;"></textarea>
-    <button onclick="submitRating()" style="width:100%;padding:.8rem;background:var(--charcoal);color:white;font-family:'Syne',sans-serif;font-weight:700;font-size:.9rem;border:none;border-radius:12px;cursor:pointer;transition:background .2s;" onmouseover="this.style.background='#2c2825'" onmouseout="this.style.background='var(--charcoal)'">
-      Enviar calificación
-    </button>
-    <button onclick="closeModal('ratingModal')" style="width:100%;margin-top:.6rem;padding:.6rem;background:none;border:none;color:var(--warm-gray);font-size:.83rem;cursor:pointer;">Cancelar</button>
-  </div>
-</div>
-
-<!-- New request modal -->
-<div class="modal-overlay" id="newReqModal" onclick="closeOnBg(event,'newReqModal')">
-  <div class="modal">
-    <h3 class="syne" style="font-size:1.2rem;font-weight:800;margin-bottom:.35rem;">Nueva solicitud</h3>
-    <p style="font-size:.83rem;color:var(--warm-gray);margin-bottom:1.25rem;">Cuéntanos qué necesitas y te buscamos al maestro ideal.</p>
-
-    <div style="margin-bottom:.85rem;">
-      <label style="font-size:.78rem;font-weight:600;color:var(--stone);display:block;margin-bottom:.35rem;">Tipo de servicio</label>
-      <div class="select-wrap-m">
-        <select class="req-input">
-          <option value="" disabled selected>Selecciona una categoría...</option>
-          <option>🔧 Plomería</option>
-          <option>⚡ Electricidad</option>
-          <option>🪵 Carpintería</option>
-          <option>🎨 Pintura</option>
-          <option>🧱 Albañilería</option>
-          <option>❄️ Aire acondicionado</option>
-          <option>🔑 Cerrajería</option>
-          <option>🌿 Jardinería</option>
-        </select>
-      </div>
-    </div>
-
-    <div style="margin-bottom:.85rem;">
-      <label style="font-size:.78rem;font-weight:600;color:var(--stone);display:block;margin-bottom:.35rem;">Descripción del problema</label>
-      <textarea class="review-textarea" rows="3" placeholder="Ej: Tengo una fuga de agua debajo del fregadero en la cocina..."></textarea>
-    </div>
-
-    <div style="margin-bottom:.85rem;">
-      <label style="font-size:.78rem;font-weight:600;color:var(--stone);display:block;margin-bottom:.35rem;">¿Cuándo lo necesitas?</label>
-      <div class="select-wrap-m">
-        <select class="req-input">
-          <option>Lo antes posible</option>
-          <option>Hoy por la tarde</option>
-          <option>Mañana por la mañana</option>
-          <option>Esta semana</option>
-          <option>Elegir fecha...</option>
-        </select>
-      </div>
-    </div>
-
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:1.25rem;">
-      <div>
-        <label style="font-size:.78rem;font-weight:600;color:var(--stone);display:block;margin-bottom:.35rem;">Presupuesto aprox.</label>
-        <input type="text" class="req-input" placeholder="Ej: $300–$500" />
-      </div>
-      <div>
-        <label style="font-size:.78rem;font-weight:600;color:var(--stone);display:block;margin-bottom:.35rem;">Urgencia</label>
-        <div class="select-wrap-m">
-          <select class="req-input">
-            <option>Normal</option>
-            <option>Urgente</option>
-            <option>Muy urgente</option>
-          </select>
-        </div>
-      </div>
-    </div>
-
-    <button onclick="submitRequest()" style="width:100%;padding:.8rem;background:var(--amber);color:var(--charcoal);font-family:'Syne',sans-serif;font-weight:700;font-size:.9rem;border:none;border-radius:12px;cursor:pointer;transition:all .2s;" onmouseover="this.style.background='var(--amber-dark)'" onmouseout="this.style.background='var(--amber)'">
-      Buscar maestros disponibles →
-    </button>
-    <button onclick="closeModal('newReqModal')" style="width:100%;margin-top:.6rem;padding:.6rem;background:none;border:none;color:var(--warm-gray);font-size:.83rem;cursor:pointer;">Cancelar</button>
-  </div>
-</div>
-
-<!-- Service detail modal -->
-<div class="modal-overlay" id="detailModal" onclick="closeOnBg(event,'detailModal')">
-  <div class="modal">
-    <div style="display:flex;align-items:center;gap:.85rem;margin-bottom:1.25rem;padding-bottom:1.25rem;border-bottom:1px solid var(--border);">
-      <div style="width:50px;height:50px;background:linear-gradient(135deg,#F59E0B,#D97706);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;color:white;flex-shrink:0;">JM</div>
-      <div>
-        <div class="syne" style="font-weight:700;font-size:1rem;">Juan Morales</div>
-        <div style="font-size:.78rem;color:var(--warm-gray);">Plomero · ★★★★★ 4.97</div>
-      </div>
-      <div style="margin-left:auto;" class="status-pill active"><div class="status-dot"></div>En camino</div>
-    </div>
-
-    <div style="background:#F5F4F2;border-radius:14px;padding:1rem;margin-bottom:1rem;">
-      <div style="font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--warm-gray);margin-bottom:.6rem;">Detalles del servicio</div>
-      <div style="font-family:'Syne',sans-serif;font-weight:700;margin-bottom:.25rem;">Fuga de agua en cocina</div>
-      <div style="font-size:.83rem;color:var(--warm-gray);line-height:1.6;">Reparación de tubería bajo el fregadero. Incluye revisión completa del sistema.</div>
-    </div>
-
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.6rem;margin-bottom:1.25rem;">
-      <div style="background:#F5F4F2;border-radius:12px;padding:.75rem;text-align:center;">
-        <div style="font-size:.7rem;color:var(--muted);margin-bottom:.2rem;">Precio</div>
-        <div class="syne" style="font-weight:800;font-size:1rem;">$350</div>
-      </div>
-      <div style="background:#F5F4F2;border-radius:12px;padding:.75rem;text-align:center;">
-        <div style="font-size:.7rem;color:var(--muted);margin-bottom:.2rem;">Llegada</div>
-        <div class="syne" style="font-weight:800;font-size:1rem;">~15 min</div>
-      </div>
-      <div style="background:#F5F4F2;border-radius:12px;padding:.75rem;text-align:center;">
-        <div style="font-size:.7rem;color:var(--muted);margin-bottom:.2rem;">Distancia</div>
-        <div class="syne" style="font-weight:800;font-size:1rem;">1.2 km</div>
-      </div>
-    </div>
-
-    <div style="display:flex;gap:.75rem;">
-      <button style="flex:1;padding:.75rem;background:var(--charcoal);color:white;font-family:'Syne',sans-serif;font-weight:700;font-size:.875rem;border:none;border-radius:12px;cursor:pointer;">
-        💬 Enviar mensaje
+      <button class="nav-item" onclick="setPage('servicios')">
+        <span class="nav-icon">
+          <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8" />
+            <path d="m21 21-4.35-4.35" />
+          </svg>
+        </span>
+        Buscar servicio
       </button>
-      <button onclick="closeModal('detailModal')" style="padding:.75rem 1.2rem;background:none;border:1.5px solid var(--border);border-radius:12px;cursor:pointer;font-size:.875rem;color:var(--warm-gray);">
-        Cerrar
+
+      <button class="nav-item" onclick="setPage('solicitudes')">
+        <span class="nav-icon">
+          <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2" />
+            <rect x="9" y="3" width="6" height="4" rx="1" />
+          </svg>
+        </span>
+        Mis solicitudes
+        <span class="nav-badge">2</span>
       </button>
-    </div>
-  </div>
-</div>
 
-<!-- Notifications modal -->
-<div class="modal-overlay" id="notifModal" onclick="closeOnBg(event,'notifModal')">
-  <div class="modal" style="max-width:340px;">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.1rem;">
-      <h3 class="syne" style="font-size:1rem;font-weight:800;">Notificaciones</h3>
-      <span style="font-size:.72rem;font-weight:600;color:var(--amber-dark);cursor:pointer;">Marcar leídas</span>
-    </div>
+      <button class="nav-item" onclick="setPage('mensajes')">
+        <span class="nav-icon">
+          <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+          </svg>
+        </span>
+        Mensajes
+        <span class="nav-badge">3</span>
+      </button>
 
-    <div style="display:flex;flex-direction:column;gap:0;">
-      <div style="display:flex;gap:.75rem;padding:.85rem 0;border-bottom:1px solid var(--border);align-items:flex-start;">
-        <div style="width:36px;height:36px;background:rgba(34,197,94,.1);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:.95rem;flex-shrink:0;">✅</div>
-        <div>
-          <div style="font-size:.83rem;font-weight:500;line-height:1.5;">Juan Morales <strong>aceptó</strong> tu solicitud y está en camino.</div>
-          <div style="font-size:.7rem;color:var(--muted);margin-top:.2rem;">Hace 12 min</div>
+      <button class="nav-item" onclick="setPage('historial')">
+        <span class="nav-icon">
+          <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <polyline points="12 8 12 12 14 14" />
+            <path d="M3.05 11a9 9 0 1 0 .5-4.5" />
+            <polyline points="3 3 3 7 7 7" />
+          </svg>
+        </span>
+        Historial
+      </button>
+
+      <button class="nav-item" onclick="setPage('favoritos')">
+        <span class="nav-icon">
+          <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path
+              d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
+            />
+          </svg>
+        </span>
+        Favoritos
+      </button>
+
+      <div class="sidebar-section" style="margin-top: 0.5rem">Cuenta</div>
+
+      <button class="nav-item" onclick="setPage('perfil')">
+        <span class="nav-icon">
+          <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+            <circle cx="12" cy="7" r="4" />
+          </svg>
+        </span>
+        Mi perfil
+      </button>
+
+      <button class="nav-item" onclick="setPage('config')">
+        <span class="nav-icon">
+          <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3" />
+            <path
+              d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"
+            />
+          </svg>
+        </span>
+        Configuración
+      </button>
+
+      <!-- User pill -->
+      <div class="sidebar-bottom">
+        <div class="user-pill">
+          <div class="user-avatar">LC</div>
+          <div>
+            <div class="user-name">Laura Castillo</div>
+            <div class="user-role">Cliente · Villa de Álvarez</div>
+          </div>
         </div>
-        <div style="width:7px;height:7px;border-radius:50%;background:var(--amber);flex-shrink:0;margin-top:6px;"></div>
       </div>
-      <div style="display:flex;gap:.75rem;padding:.85rem 0;border-bottom:1px solid var(--border);align-items:flex-start;">
-        <div style="width:36px;height:36px;background:rgba(59,130,246,.1);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:.95rem;flex-shrink:0;">💬</div>
-        <div>
-          <div style="font-size:.83rem;font-weight:500;line-height:1.5;"><strong>Rosa García</strong> te envió un mensaje.</div>
-          <div style="font-size:.7rem;color:var(--muted);margin-top:.2rem;">Hace 45 min</div>
+    </aside>
+
+    <!-- ══════════════ MAIN ══════════════ -->
+    <div class="main">
+      <!-- Topbar -->
+      <header class="topbar">
+        <!-- Mobile menu -->
+        <button
+          onclick="document.getElementById('sidebar').classList.toggle('open')"
+          style="display: none; background: none; border: none; cursor: pointer; color: var(--charcoal)"
+          id="menuBtn"
+        >
+          <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <line x1="3" y1="12" x2="21" y2="12" />
+            <line x1="3" y1="6" x2="21" y2="6" />
+            <line x1="3" y1="18" x2="21" y2="18" />
+          </svg>
+        </button>
+
+        <div class="topbar-search">
+          <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="#A8A29E" stroke-width="2">
+            <circle cx="11" cy="11" r="8" />
+            <path d="m21 21-4.35-4.35" />
+          </svg>
+          <input type="text" placeholder="Busca un servicio o maestro..." />
         </div>
-        <div style="width:7px;height:7px;border-radius:50%;background:var(--amber);flex-shrink:0;margin-top:6px;"></div>
-      </div>
-      <div style="display:flex;gap:.75rem;padding:.85rem 0;align-items:flex-start;">
-        <div style="width:36px;height:36px;background:rgba(245,158,11,.1);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:.95rem;flex-shrink:0;">⭐</div>
-        <div>
-          <div style="font-size:.83rem;font-weight:500;line-height:1.5;">Califica tu servicio con Carlos Ávila.</div>
-          <div style="font-size:.7rem;color:var(--muted);margin-top:.2rem;">Hace 1 hora</div>
+
+        <div class="topbar-actions">
+          <div class="icon-btn" onclick="openModal('notifModal')">
+            <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+              <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+            </svg>
+            <div class="notif-dot"></div>
+          </div>
+          <div class="icon-btn">
+            <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+            </svg>
+          </div>
+          <div style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer">
+            <div class="user-avatar" style="width: 32px; height: 32px; font-size: 0.75rem">LC</div>
+            <div class="online-dot"></div>
+          </div>
         </div>
-        <div style="width:7px;height:7px;border-radius:50%;background:var(--amber);flex-shrink:0;margin-top:6px;"></div>
+      </header>
+
+      <!-- ══════════ CONTENT ══════════ -->
+      <div class="content">
+        <!-- Page header -->
+        <div class="page-header fu">
+          <div>
+            <div class="greeting-label">Martes 26 de marzo, 2026</div>
+            <h1 class="greeting-title">¡Buenos días, Laura! ☀️</h1>
+            <p class="greeting-sub">Tienes 2 solicitudes activas y 1 servicio pendiente de calificar.</p>
+          </div>
+          <button class="btn-new-request" onclick="openModal('newReqModal')">
+            <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <line x1="12" y1="5" x2="12" y2="19" />
+              <line x1="5" y1="12" x2="19" y2="12" />
+            </svg>
+            Nueva solicitud
+          </button>
+        </div>
+
+        <!-- Stat cards -->
+        <div class="stats-grid">
+          <div class="stat-card fu d1">
+            <div class="stat-icon-wrap" style="background: rgba(245, 158, 11, 0.1)">🔧</div>
+            <div class="stat-num">8</div>
+            <div class="stat-label">Servicios contratados</div>
+            <div class="stat-change up">↑ 2 este mes</div>
+          </div>
+
+          <div class="stat-card fu d2">
+            <div class="stat-icon-wrap" style="background: rgba(34, 197, 94, 0.1)">✅</div>
+            <div class="stat-num">6</div>
+            <div class="stat-label">Completados</div>
+            <div class="stat-change up">100% satisfacción</div>
+          </div>
+
+          <div class="stat-card fu d3">
+            <div class="stat-icon-wrap" style="background: rgba(59, 130, 246, 0.1)">💬</div>
+            <div class="stat-num">3</div>
+            <div class="stat-label">Mensajes nuevos</div>
+            <div class="stat-change neutral">2 maestros</div>
+          </div>
+
+          <div class="stat-card accent fu d4">
+            <div class="stat-icon-wrap" style="background: rgba(255, 255, 255, 0.08)">⭐</div>
+            <div class="stat-num">4.9</div>
+            <div class="stat-label">Tu calificación media</div>
+            <div class="stat-change" style="background: rgba(245, 158, 11, 0.2); color: #fcd34d">↑ muy buena</div>
+          </div>
+        </div>
+
+        <!-- Main dash grid -->
+        <div class="dash-grid">
+          <!-- LEFT COLUMN -->
+          <div style="display: flex; flex-direction: column; gap: 1.25rem">
+            <!-- Active requests -->
+            <div class="card fu d2">
+              <div class="card-header">
+                <div class="card-title">Solicitudes activas</div>
+                <a
+                  href="#"
+                  class="card-link"
+                  onclick="
+                    setPage('solicitudes');
+                    return false;
+                  "
+                  >Ver todas →</a
+                >
+              </div>
+
+              <!-- Req 1 -->
+              <div class="request-item" onclick="openModal('detailModal')">
+                <div class="req-icon" style="background: rgba(59, 130, 246, 0.1)">🔧</div>
+                <div style="flex: 1; min-width: 0">
+                  <div class="req-title">Fuga de agua en cocina</div>
+                  <div class="req-sub">Juan Morales · Plomero</div>
+                  <div class="req-meta">📍 1.2 km · Hoy 14:30 hrs</div>
+                </div>
+                <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 0.4rem">
+                  <div class="status-pill active">
+                    <div class="status-dot"></div>
+                    En camino
+                  </div>
+                  <div class="req-price">$350</div>
+                </div>
+              </div>
+
+              <!-- Req 2 -->
+              <div class="request-item">
+                <div class="req-icon" style="background: rgba(234, 179, 8, 0.1)">⚡</div>
+                <div style="flex: 1; min-width: 0">
+                  <div class="req-title">Instalación de contactos</div>
+                  <div class="req-sub">Rosa García · Electricista</div>
+                  <div class="req-meta">📍 3.5 km · Mañana 10:00 hrs</div>
+                </div>
+                <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 0.4rem">
+                  <div class="status-pill waiting">
+                    <div class="status-dot"></div>
+                    Confirmado
+                  </div>
+                  <div class="req-price">$500</div>
+                </div>
+              </div>
+
+              <!-- Req 3: pendiente de calificar -->
+              <div class="request-item" onclick="openModal('ratingModal')">
+                <div class="req-icon" style="background: rgba(100, 116, 139, 0.1)">🪵</div>
+                <div style="flex: 1; min-width: 0">
+                  <div class="req-title">Reparación de puerta</div>
+                  <div class="req-sub">Carlos Ávila · Carpintero</div>
+                  <div class="req-meta">📍 0.8 km · Ayer 09:00 hrs</div>
+                </div>
+                <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 0.4rem">
+                  <div class="status-pill pending">
+                    <div class="status-dot"></div>
+                    Calificar ⭐
+                  </div>
+                  <div class="req-price">$280</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Nearby maestros -->
+            <div class="card fu d3">
+              <div class="card-header">
+                <div class="card-title">Maestros cerca de ti</div>
+                <a href="#" class="card-link">Ver mapa →</a>
+              </div>
+
+              <div class="maestro-card">
+                <div class="m-avatar" style="background: linear-gradient(135deg, #f59e0b, #d97706)">
+                  JM
+                  <div class="m-online"></div>
+                </div>
+                <div style="flex: 1; min-width: 0">
+                  <div class="m-name">Juan Morales</div>
+                  <div class="m-trade">Plomero · 8 años exp.</div>
+                  <div style="display: flex; gap: 0.5rem; margin-top: 0.2rem">
+                    <div class="m-stars">★★★★★</div>
+                    <div class="m-dist">1.2 km</div>
+                  </div>
+                </div>
+                <button class="btn-hire">Contratar</button>
+              </div>
+
+              <div class="maestro-card">
+                <div class="m-avatar" style="background: linear-gradient(135deg, #3b82f6, #2563eb)">
+                  RG
+                  <div class="m-online"></div>
+                </div>
+                <div style="flex: 1; min-width: 0">
+                  <div class="m-name">Rosa García</div>
+                  <div class="m-trade">Electricista · 5 años</div>
+                  <div style="display: flex; gap: 0.5rem; margin-top: 0.2rem">
+                    <div class="m-stars">★★★★★</div>
+                    <div class="m-dist">3.5 km</div>
+                  </div>
+                </div>
+                <button class="btn-hire">Contratar</button>
+              </div>
+
+              <div class="maestro-card">
+                <div class="m-avatar" style="background: linear-gradient(135deg, #10b981, #059669)">CA</div>
+                <div style="flex: 1; min-width: 0">
+                  <div class="m-name">Carlos Ávila</div>
+                  <div class="m-trade">Carpintero · 12 años</div>
+                  <div style="display: flex; gap: 0.5rem; margin-top: 0.2rem">
+                    <div class="m-stars">★★★★★</div>
+                    <div class="m-dist">0.8 km</div>
+                  </div>
+                </div>
+                <button class="btn-hire">Contratar</button>
+              </div>
+
+              <div class="maestro-card">
+                <div class="m-avatar" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed)">
+                  MR
+                  <div class="m-online"></div>
+                </div>
+                <div style="flex: 1; min-width: 0">
+                  <div class="m-name">Miguel Ramos</div>
+                  <div class="m-trade">Pintor · 6 años</div>
+                  <div style="display: flex; gap: 0.5rem; margin-top: 0.2rem">
+                    <div class="m-stars">★★★★☆</div>
+                    <div class="m-dist">2.1 km</div>
+                  </div>
+                </div>
+                <button class="btn-hire">Contratar</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- RIGHT COLUMN -->
+          <div class="right-col">
+            <!-- Quick actions -->
+            <div class="card fu d2">
+              <div class="card-header">
+                <div class="card-title">Acciones rápidas</div>
+              </div>
+              <div class="qa-grid">
+                <button class="qa-btn" onclick="openModal('newReqModal')">
+                  <div class="qa-icon">🔍</div>
+                  <div class="qa-label">Pedir servicio</div>
+                  <div class="qa-sub">Solicita ahora</div>
+                </button>
+                <button class="qa-btn" onclick="setPage('mensajes')">
+                  <div class="qa-icon">💬</div>
+                  <div class="qa-label">Mensajes</div>
+                  <div class="qa-sub">3 sin leer</div>
+                </button>
+                <button class="qa-btn" onclick="setPage('historial')">
+                  <div class="qa-icon">🕐</div>
+                  <div class="qa-label">Historial</div>
+                  <div class="qa-sub">8 servicios</div>
+                </button>
+                <button class="qa-btn" onclick="setPage('favoritos')">
+                  <div class="qa-icon">❤️</div>
+                  <div class="qa-label">Favoritos</div>
+                  <div class="qa-sub">4 maestros</div>
+                </button>
+              </div>
+            </div>
+
+            <!-- Promo -->
+            <div class="promo-banner fu d3">
+              <div class="promo-title">¿Eres maestro también?</div>
+              <div class="promo-sub">Regístrate como proveedor y empieza a recibir clientes en tu zona sin costo inicial.</div>
+              <button class="btn-promo">Registrar mi oficio →</button>
+            </div>
+
+            <!-- Activity feed -->
+            <div class="card fu d4">
+              <div class="card-header">
+                <div class="card-title">Actividad reciente</div>
+              </div>
+
+              <div class="feed-item">
+                <div class="feed-icon" style="background: rgba(34, 197, 94, 0.1)">✅</div>
+                <div>
+                  <div class="feed-text"><strong>Juan Morales</strong> aceptó tu solicitud de plomería.</div>
+                  <div class="feed-time">Hace 12 min</div>
+                </div>
+              </div>
+
+              <div class="feed-item">
+                <div class="feed-icon" style="background: rgba(59, 130, 246, 0.1)">💬</div>
+                <div>
+                  <div class="feed-text"><strong>Rosa García</strong> te envió un mensaje sobre la instalación.</div>
+                  <div class="feed-time">Hace 45 min</div>
+                </div>
+              </div>
+
+              <div class="feed-item">
+                <div class="feed-icon" style="background: rgba(245, 158, 11, 0.1)">⭐</div>
+                <div>
+                  <div class="feed-text">Califica el servicio de <strong>Carlos Ávila</strong> para ayudar a la comunidad.</div>
+                  <div class="feed-time">Hace 1 hora</div>
+                </div>
+              </div>
+
+              <div class="feed-item">
+                <div class="feed-icon" style="background: rgba(100, 116, 139, 0.1)">🔧</div>
+                <div>
+                  <div class="feed-text">Servicio de carpintería <strong>completado</strong> exitosamente.</div>
+                  <div class="feed-time">Ayer 09:42</div>
+                </div>
+              </div>
+
+              <div class="feed-item">
+                <div class="feed-icon" style="background: rgba(239, 68, 68, 0.1)">📍</div>
+                <div>
+                  <div class="feed-text"><strong>Miguel Ramos</strong> se unió como maestro en tu zona.</div>
+                  <div class="feed-time">Hace 2 días</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
-    <button onclick="closeModal('notifModal')" style="width:100%;margin-top:1rem;padding:.65rem;background:none;border:1.5px solid var(--border);border-radius:12px;cursor:pointer;font-size:.83rem;color:var(--warm-gray);">Cerrar</button>
-  </div>
-</div>
+    <!-- ══════════ MODALS ══════════ -->
 
-<script>
-  // ── Nav ──
-  function setPage(page) {
-    document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-    event.currentTarget.classList.add('active');
-  }
+    <!-- Rating modal -->
+    <div class="modal-overlay" id="ratingModal" onclick="closeOnBg(event, 'ratingModal')">
+      <div class="modal">
+        <div style="text-align: center; margin-bottom: 0.5rem">
+          <div style="font-size: 2.5rem; margin-bottom: 0.5rem">🪵</div>
+          <h3 class="syne" style="font-size: 1.2rem; font-weight: 800; margin-bottom: 0.25rem">Califica a Carlos Ávila</h3>
+          <p style="font-size: 0.83rem; color: var(--warm-gray)">Reparación de puerta · $280</p>
+        </div>
+        <div class="star-row" id="starRow">
+          <span class="star-opt" onclick="rateStar(1)">★</span>
+          <span class="star-opt" onclick="rateStar(2)">★</span>
+          <span class="star-opt" onclick="rateStar(3)">★</span>
+          <span class="star-opt" onclick="rateStar(4)">★</span>
+          <span class="star-opt" onclick="rateStar(5)">★</span>
+        </div>
+        <textarea class="review-textarea" rows="3" placeholder="¿Cómo fue tu experiencia? (opcional)" style="margin-bottom: 1rem"></textarea>
+        <button
+          onclick="submitRating()"
+          style="
+            width: 100%;
+            padding: 0.8rem;
+            background: var(--charcoal);
+            color: white;
+            font-family: 'Syne', sans-serif;
+            font-weight: 700;
+            font-size: 0.9rem;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background 0.2s;
+          "
+          onmouseover="this.style.background = '#2c2825'"
+          onmouseout="this.style.background = 'var(--charcoal)'"
+        >
+          Enviar calificación
+        </button>
+        <button
+          onclick="closeModal('ratingModal')"
+          style="
+            width: 100%;
+            margin-top: 0.6rem;
+            padding: 0.6rem;
+            background: none;
+            border: none;
+            color: var(--warm-gray);
+            font-size: 0.83rem;
+            cursor: pointer;
+          "
+        >
+          Cancelar
+        </button>
+      </div>
+    </div>
 
-  // ── Modals ──
-  function openModal(id) {
-    document.getElementById(id).classList.add('show');
-    document.body.style.overflow = 'hidden';
-  }
-  function closeModal(id) {
-    document.getElementById(id).classList.remove('show');
-    document.body.style.overflow = '';
-  }
-  function closeOnBg(e, id) {
-    if (e.target === document.getElementById(id)) closeModal(id);
-  }
+    <!-- New request modal -->
+    <div class="modal-overlay" id="newReqModal" onclick="closeOnBg(event, 'newReqModal')">
+      <div class="modal">
+        <h3 class="syne" style="font-size: 1.2rem; font-weight: 800; margin-bottom: 0.35rem">Nueva solicitud</h3>
+        <p style="font-size: 0.83rem; color: var(--warm-gray); margin-bottom: 1.25rem">Cuéntanos qué necesitas y te buscamos al maestro ideal.</p>
 
-  // ── Rating ──
-  let selectedStars = 0;
-  function rateStar(n) {
-    selectedStars = n;
-    const stars = document.querySelectorAll('.star-opt');
-    stars.forEach((s, i) => {
-      s.classList.toggle('active', i < n);
-    });
-  }
+        <div style="margin-bottom: 0.85rem">
+          <label style="font-size: 0.78rem; font-weight: 600; color: var(--stone); display: block; margin-bottom: 0.35rem">Tipo de servicio</label>
+          <div class="select-wrap-m">
+            <select class="req-input">
+              <option value="" disabled selected>Selecciona una categoría...</option>
+              <option>🔧 Plomería</option>
+              <option>⚡ Electricidad</option>
+              <option>🪵 Carpintería</option>
+              <option>🎨 Pintura</option>
+              <option>🧱 Albañilería</option>
+              <option>❄️ Aire acondicionado</option>
+              <option>🔑 Cerrajería</option>
+              <option>🌿 Jardinería</option>
+            </select>
+          </div>
+        </div>
 
-  function submitRating() {
-    if (!selectedStars) { alert('Selecciona una calificación'); return; }
-    closeModal('ratingModal');
-    showToast('¡Gracias por tu reseña! 🌟');
-    // Update UI: change "Calificar" to "done"
-    const pills = document.querySelectorAll('.status-pill.pending');
-    if (pills.length) {
-      pills[0].className = 'status-pill done';
-      pills[0].innerHTML = '<div class="status-dot"></div>Completado';
-    }
-  }
+        <div style="margin-bottom: 0.85rem">
+          <label style="font-size: 0.78rem; font-weight: 600; color: var(--stone); display: block; margin-bottom: 0.35rem"
+            >Descripción del problema</label
+          >
+          <textarea class="review-textarea" rows="3" placeholder="Ej: Tengo una fuga de agua debajo del fregadero en la cocina..."></textarea>
+        </div>
 
-  function submitRequest() {
-    closeModal('newReqModal');
-    showToast('Buscando maestros disponibles... 🔍');
-  }
+        <div style="margin-bottom: 0.85rem">
+          <label style="font-size: 0.78rem; font-weight: 600; color: var(--stone); display: block; margin-bottom: 0.35rem"
+            >¿Cuándo lo necesitas?</label
+          >
+          <div class="select-wrap-m">
+            <select class="req-input">
+              <option>Lo antes posible</option>
+              <option>Hoy por la tarde</option>
+              <option>Mañana por la mañana</option>
+              <option>Esta semana</option>
+              <option>Elegir fecha...</option>
+            </select>
+          </div>
+        </div>
 
-  // ── Toast ──
-  function showToast(msg) {
-    const t = document.createElement('div');
-    t.textContent = msg;
-    Object.assign(t.style, {
-      position:'fixed', bottom:'1.5rem', left:'50%', transform:'translateX(-50%) translateY(20px)',
-      background:var_charcoal(), color:'white',
-      fontFamily:"'Syne',sans-serif", fontWeight:'600', fontSize:'.875rem',
-      padding:'.75rem 1.5rem', borderRadius:'100px',
-      boxShadow:'0 8px 24px rgba(0,0,0,.2)',
-      zIndex:'9998', opacity:'0',
-      transition:'all .35s cubic-bezier(.34,1.56,.64,1)',
-      whiteSpace:'nowrap'
-    });
-    document.body.appendChild(t);
-    requestAnimationFrame(() => {
-      t.style.opacity = '1';
-      t.style.transform = 'translateX(-50%) translateY(0)';
-    });
-    setTimeout(() => {
-      t.style.opacity = '0';
-      t.style.transform = 'translateX(-50%) translateY(10px)';
-      setTimeout(() => t.remove(), 400);
-    }, 3000);
-  }
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 1.25rem">
+          <div>
+            <label style="font-size: 0.78rem; font-weight: 600; color: var(--stone); display: block; margin-bottom: 0.35rem"
+              >Presupuesto aprox.</label
+            >
+            <input type="text" class="req-input" placeholder="Ej: $300–$500" />
+          </div>
+          <div>
+            <label style="font-size: 0.78rem; font-weight: 600; color: var(--stone); display: block; margin-bottom: 0.35rem">Urgencia</label>
+            <div class="select-wrap-m">
+              <select class="req-input">
+                <option>Normal</option>
+                <option>Urgente</option>
+                <option>Muy urgente</option>
+              </select>
+            </div>
+          </div>
+        </div>
 
-  function var_charcoal() { return '#1C1917'; }
+        <button
+          onclick="submitRequest()"
+          style="
+            width: 100%;
+            padding: 0.8rem;
+            background: var(--amber);
+            color: var(--charcoal);
+            font-family: 'Syne', sans-serif;
+            font-weight: 700;
+            font-size: 0.9rem;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+          "
+          onmouseover="this.style.background = 'var(--amber-dark)'"
+          onmouseout="this.style.background = 'var(--amber)'"
+        >
+          Buscar maestros disponibles →
+        </button>
+        <button
+          onclick="closeModal('newReqModal')"
+          style="
+            width: 100%;
+            margin-top: 0.6rem;
+            padding: 0.6rem;
+            background: none;
+            border: none;
+            color: var(--warm-gray);
+            font-size: 0.83rem;
+            cursor: pointer;
+          "
+        >
+          Cancelar
+        </button>
+      </div>
+    </div>
 
-  // ── Mobile topbar menu btn ──
-  if (window.innerWidth <= 768) {
-    document.getElementById('menuBtn').style.display = 'block';
-  }
+    <!-- Service detail modal -->
+    <div class="modal-overlay" id="detailModal" onclick="closeOnBg(event, 'detailModal')">
+      <div class="modal">
+        <div
+          style="
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            margin-bottom: 1.25rem;
+            padding-bottom: 1.25rem;
+            border-bottom: 1px solid var(--border);
+          "
+        >
+          <div
+            style="
+              width: 50px;
+              height: 50px;
+              background: linear-gradient(135deg, #f59e0b, #d97706);
+              border-radius: 50%;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-family: 'Syne', sans-serif;
+              font-weight: 700;
+              font-size: 1rem;
+              color: white;
+              flex-shrink: 0;
+            "
+          >
+            JM
+          </div>
+          <div>
+            <div class="syne" style="font-weight: 700; font-size: 1rem">Juan Morales</div>
+            <div style="font-size: 0.78rem; color: var(--warm-gray)">Plomero · ★★★★★ 4.97</div>
+          </div>
+          <div style="margin-left: auto" class="status-pill active">
+            <div class="status-dot"></div>
+            En camino
+          </div>
+        </div>
 
-  // ── Hire buttons ──
-  document.querySelectorAll('.btn-hire').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      openModal('newReqModal');
-    });
-  });
+        <div style="background: #f5f4f2; border-radius: 14px; padding: 1rem; margin-bottom: 1rem">
+          <div
+            style="
+              font-size: 0.72rem;
+              font-weight: 700;
+              letter-spacing: 0.08em;
+              text-transform: uppercase;
+              color: var(--warm-gray);
+              margin-bottom: 0.6rem;
+            "
+          >
+            Detalles del servicio
+          </div>
+          <div style="font-family: 'Syne', sans-serif; font-weight: 700; margin-bottom: 0.25rem">Fuga de agua en cocina</div>
+          <div style="font-size: 0.83rem; color: var(--warm-gray); line-height: 1.6">
+            Reparación de tubería bajo el fregadero. Incluye revisión completa del sistema.
+          </div>
+        </div>
 
-  // ── Keyboard close ──
-  document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') {
-      document.querySelectorAll('.modal-overlay.show').forEach(m => {
-        closeModal(m.id);
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.6rem; margin-bottom: 1.25rem">
+          <div style="background: #f5f4f2; border-radius: 12px; padding: 0.75rem; text-align: center">
+            <div style="font-size: 0.7rem; color: var(--muted); margin-bottom: 0.2rem">Precio</div>
+            <div class="syne" style="font-weight: 800; font-size: 1rem">$350</div>
+          </div>
+          <div style="background: #f5f4f2; border-radius: 12px; padding: 0.75rem; text-align: center">
+            <div style="font-size: 0.7rem; color: var(--muted); margin-bottom: 0.2rem">Llegada</div>
+            <div class="syne" style="font-weight: 800; font-size: 1rem">~15 min</div>
+          </div>
+          <div style="background: #f5f4f2; border-radius: 12px; padding: 0.75rem; text-align: center">
+            <div style="font-size: 0.7rem; color: var(--muted); margin-bottom: 0.2rem">Distancia</div>
+            <div class="syne" style="font-weight: 800; font-size: 1rem">1.2 km</div>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 0.75rem">
+          <button
+            style="
+              flex: 1;
+              padding: 0.75rem;
+              background: var(--charcoal);
+              color: white;
+              font-family: 'Syne', sans-serif;
+              font-weight: 700;
+              font-size: 0.875rem;
+              border: none;
+              border-radius: 12px;
+              cursor: pointer;
+            "
+          >
+            💬 Enviar mensaje
+          </button>
+          <button
+            onclick="closeModal('detailModal')"
+            style="
+              padding: 0.75rem 1.2rem;
+              background: none;
+              border: 1.5px solid var(--border);
+              border-radius: 12px;
+              cursor: pointer;
+              font-size: 0.875rem;
+              color: var(--warm-gray);
+            "
+          >
+            Cerrar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Notifications modal -->
+    <div class="modal-overlay" id="notifModal" onclick="closeOnBg(event, 'notifModal')">
+      <div class="modal" style="max-width: 340px">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.1rem">
+          <h3 class="syne" style="font-size: 1rem; font-weight: 800">Notificaciones</h3>
+          <span style="font-size: 0.72rem; font-weight: 600; color: var(--amber-dark); cursor: pointer">Marcar leídas</span>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 0">
+          <div style="display: flex; gap: 0.75rem; padding: 0.85rem 0; border-bottom: 1px solid var(--border); align-items: flex-start">
+            <div
+              style="
+                width: 36px;
+                height: 36px;
+                background: rgba(34, 197, 94, 0.1);
+                border-radius: 10px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 0.95rem;
+                flex-shrink: 0;
+              "
+            >
+              ✅
+            </div>
+            <div>
+              <div style="font-size: 0.83rem; font-weight: 500; line-height: 1.5">
+                Juan Morales <strong>aceptó</strong> tu solicitud y está en camino.
+              </div>
+              <div style="font-size: 0.7rem; color: var(--muted); margin-top: 0.2rem">Hace 12 min</div>
+            </div>
+            <div style="width: 7px; height: 7px; border-radius: 50%; background: var(--amber); flex-shrink: 0; margin-top: 6px"></div>
+          </div>
+          <div style="display: flex; gap: 0.75rem; padding: 0.85rem 0; border-bottom: 1px solid var(--border); align-items: flex-start">
+            <div
+              style="
+                width: 36px;
+                height: 36px;
+                background: rgba(59, 130, 246, 0.1);
+                border-radius: 10px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 0.95rem;
+                flex-shrink: 0;
+              "
+            >
+              💬
+            </div>
+            <div>
+              <div style="font-size: 0.83rem; font-weight: 500; line-height: 1.5"><strong>Rosa García</strong> te envió un mensaje.</div>
+              <div style="font-size: 0.7rem; color: var(--muted); margin-top: 0.2rem">Hace 45 min</div>
+            </div>
+            <div style="width: 7px; height: 7px; border-radius: 50%; background: var(--amber); flex-shrink: 0; margin-top: 6px"></div>
+          </div>
+          <div style="display: flex; gap: 0.75rem; padding: 0.85rem 0; align-items: flex-start">
+            <div
+              style="
+                width: 36px;
+                height: 36px;
+                background: rgba(245, 158, 11, 0.1);
+                border-radius: 10px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 0.95rem;
+                flex-shrink: 0;
+              "
+            >
+              ⭐
+            </div>
+            <div>
+              <div style="font-size: 0.83rem; font-weight: 500; line-height: 1.5">Califica tu servicio con Carlos Ávila.</div>
+              <div style="font-size: 0.7rem; color: var(--muted); margin-top: 0.2rem">Hace 1 hora</div>
+            </div>
+            <div style="width: 7px; height: 7px; border-radius: 50%; background: var(--amber); flex-shrink: 0; margin-top: 6px"></div>
+          </div>
+        </div>
+
+        <button
+          onclick="closeModal('notifModal')"
+          style="
+            width: 100%;
+            margin-top: 1rem;
+            padding: 0.65rem;
+            background: none;
+            border: 1.5px solid var(--border);
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 0.83rem;
+            color: var(--warm-gray);
+          "
+        >
+          Cerrar
+        </button>
+      </div>
+    </div>
+
+    <script>
+      // ── Nav ──
+      function setPage(page) {
+        document.querySelectorAll('.nav-item').forEach((el) => el.classList.remove('active'));
+        event.currentTarget.classList.add('active');
+      }
+
+      // ── Modals ──
+      function openModal(id) {
+        document.getElementById(id).classList.add('show');
+        document.body.style.overflow = 'hidden';
+      }
+      function closeModal(id) {
+        document.getElementById(id).classList.remove('show');
+        document.body.style.overflow = '';
+      }
+      function closeOnBg(e, id) {
+        if (e.target === document.getElementById(id)) closeModal(id);
+      }
+
+      // ── Rating ──
+      let selectedStars = 0;
+      function rateStar(n) {
+        selectedStars = n;
+        const stars = document.querySelectorAll('.star-opt');
+        stars.forEach((s, i) => {
+          s.classList.toggle('active', i < n);
+        });
+      }
+
+      function submitRating() {
+        if (!selectedStars) {
+          alert('Selecciona una calificación');
+          return;
+        }
+        closeModal('ratingModal');
+        showToast('¡Gracias por tu reseña! 🌟');
+        // Update UI: change "Calificar" to "done"
+        const pills = document.querySelectorAll('.status-pill.pending');
+        if (pills.length) {
+          pills[0].className = 'status-pill done';
+          pills[0].innerHTML = '<div class="status-dot"></div>Completado';
+        }
+      }
+
+      function submitRequest() {
+        closeModal('newReqModal');
+        showToast('Buscando maestros disponibles... 🔍');
+      }
+
+      // ── Toast ──
+      function showToast(msg) {
+        const t = document.createElement('div');
+        t.textContent = msg;
+        Object.assign(t.style, {
+          position: 'fixed',
+          bottom: '1.5rem',
+          left: '50%',
+          transform: 'translateX(-50%) translateY(20px)',
+          background: var_charcoal(),
+          color: 'white',
+          fontFamily: "'Syne',sans-serif",
+          fontWeight: '600',
+          fontSize: '.875rem',
+          padding: '.75rem 1.5rem',
+          borderRadius: '100px',
+          boxShadow: '0 8px 24px rgba(0,0,0,.2)',
+          zIndex: '9998',
+          opacity: '0',
+          transition: 'all .35s cubic-bezier(.34,1.56,.64,1)',
+          whiteSpace: 'nowrap',
+        });
+        document.body.appendChild(t);
+        requestAnimationFrame(() => {
+          t.style.opacity = '1';
+          t.style.transform = 'translateX(-50%) translateY(0)';
+        });
+        setTimeout(() => {
+          t.style.opacity = '0';
+          t.style.transform = 'translateX(-50%) translateY(10px)';
+          setTimeout(() => t.remove(), 400);
+        }, 3000);
+      }
+
+      function var_charcoal() {
+        return '#1C1917';
+      }
+
+      // ── Mobile topbar menu btn ──
+      if (window.innerWidth <= 768) {
+        document.getElementById('menuBtn').style.display = 'block';
+      }
+
+      // ── Hire buttons ──
+      document.querySelectorAll('.btn-hire').forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          openModal('newReqModal');
+        });
       });
-    }
-  });
-</script>
 
-</body>
+      // ── Keyboard close ──
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          document.querySelectorAll('.modal-overlay.show').forEach((m) => {
+            closeModal(m.id);
+          });
+        }
+      });
+    </script>
+  </body>
 </html>

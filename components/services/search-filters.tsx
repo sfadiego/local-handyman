@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { categories } from "@/lib/mock-data";
-import { Search, MapPin, Filter, X } from "lucide-react";
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { categories } from '@/lib/mock-data';
+import { Filter, MapPin, Search, X } from 'lucide-react';
+import { useState } from 'react';
 
 interface SearchFiltersProps {
   searchQuery: string;
@@ -42,12 +42,12 @@ export function SearchFilters({
   const [showFilters, setShowFilters] = useState(false);
 
   const clearFilters = () => {
-    onSearchQueryChange("");
+    onSearchQueryChange('');
     onCategoryChange(null);
     onMinPriceChange(0);
     onMaxPriceChange(10000);
     onRadiusChange(10);
-    onSortByChange("distance");
+    onSortByChange('distance');
   };
 
   const hasActiveFilters = searchQuery || selectedCategory || minPrice > 0 || maxPrice < 10000 || radiusKm !== 10;
@@ -57,7 +57,7 @@ export function SearchFilters({
       {/* Main Search Bar */}
       <Card className="shadow-lg">
         <CardContent className="p-6">
-          <div className="flex flex-col lg:flex-row gap-4">
+          <div className="flex flex-col gap-4 lg:flex-row">
             {/* Service Search */}
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-500" />
@@ -84,22 +84,15 @@ export function SearchFilters({
 
             {/* Search Button */}
             <Button size="lg" className="bg-blue-600 hover:bg-blue-700 lg:px-8">
-              <Search className="h-4 w-4 mr-2" />
+              <Search className="mr-2 h-4 w-4" />
               Buscar
             </Button>
 
             {/* Filters Toggle */}
-            <Button
-              variant="outline"
-              size="lg"
-              onClick={() => setShowFilters(!showFilters)}
-              className="relative"
-            >
-              <Filter className="h-4 w-4 mr-2" />
+            <Button variant="outline" size="lg" onClick={() => setShowFilters(!showFilters)} className="relative">
+              <Filter className="mr-2 h-4 w-4" />
               Filtros
-              {hasActiveFilters && (
-                <span className="absolute -top-1 -right-1 h-3 w-3 bg-blue-600 rounded-full"></span>
-              )}
+              {hasActiveFilters && <span className="absolute -right-1 -top-1 h-3 w-3 rounded-full bg-blue-600"></span>}
             </Button>
           </div>
         </CardContent>
@@ -108,13 +101,13 @@ export function SearchFilters({
       {/* Advanced Filters */}
       {showFilters && (
         <Card className="shadow-lg">
-          <CardContent className="p-6 space-y-6">
-            <div className="flex justify-between items-center">
+          <CardContent className="space-y-6 p-6">
+            <div className="flex items-center justify-between">
               <h3 className="text-lg font-semibold">Filtros avanzados</h3>
               <div className="flex space-x-2">
                 {hasActiveFilters && (
                   <Button variant="outline" size="sm" onClick={clearFilters}>
-                    <X className="h-4 w-4 mr-1" />
+                    <X className="mr-1 h-4 w-4" />
                     Limpiar
                   </Button>
                 )}
@@ -126,20 +119,14 @@ export function SearchFilters({
 
             {/* Categories */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-3">
-                Categoría de servicio
-              </label>
-              <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-4 gap-2">
+              <label className="mb-3 block text-sm font-medium text-gray-700">Categoría de servicio</label>
+              <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-4">
                 {categories.map((category) => (
                   <Button
                     key={category.id}
-                    variant={selectedCategory === category.name ? "default" : "outline"}
+                    variant={selectedCategory === category.name ? 'default' : 'outline'}
                     size="sm"
-                    onClick={() =>
-                      onCategoryChange(
-                        selectedCategory === category.name ? null : category.name
-                      )
-                    }
+                    onClick={() => onCategoryChange(selectedCategory === category.name ? null : category.name)}
                     className="justify-start"
                   >
                     <span className="mr-2">{category.icon}</span>
@@ -149,12 +136,10 @@ export function SearchFilters({
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
               {/* Price Range */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Rango de precio (MXN)
-                </label>
+                <label className="mb-2 block text-sm font-medium text-gray-700">Rango de precio (MXN)</label>
                 <div className="space-y-2">
                   <div className="flex space-x-2">
                     <input
@@ -177,18 +162,16 @@ export function SearchFilters({
 
               {/* Distance */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Radio de búsqueda: {radiusKm} km
-                </label>
+                <label className="mb-2 block text-sm font-medium text-gray-700">Radio de búsqueda: {radiusKm} km</label>
                 <input
                   type="range"
                   min="1"
                   max="50"
                   value={radiusKm}
                   onChange={(e) => onRadiusChange(Number(e.target.value))}
-                  className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                  className="h-2 w-full cursor-pointer appearance-none rounded-lg bg-gray-200"
                 />
-                <div className="flex justify-between text-xs text-gray-500 mt-1">
+                <div className="mt-1 flex justify-between text-xs text-gray-500">
                   <span>1 km</span>
                   <span>25 km</span>
                   <span>50+ km</span>
@@ -197,9 +180,7 @@ export function SearchFilters({
 
               {/* Sort By */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Ordenar por
-                </label>
+                <label className="mb-2 block text-sm font-medium text-gray-700">Ordenar por</label>
                 <select
                   value={sortBy}
                   onChange={(e) => onSortByChange(e.target.value)}
