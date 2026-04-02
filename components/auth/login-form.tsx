@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -11,6 +10,7 @@ import {
 } from '@/components/ui/card';
 import { useAuth } from '@/contexts/auth-context';
 import { Eye, EyeOff, Loader2 } from 'lucide-react';
+import { useState } from 'react';
 
 interface LoginFormProps {
   onToggleForm: () => void;
