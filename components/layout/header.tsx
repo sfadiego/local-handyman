@@ -1,18 +1,18 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { useAuth } from "@/contexts/auth-context";
-import { AuthModal } from "@/components/auth/auth-modal";
-import { User, LogOut, Menu, X, Terminal, Database } from "lucide-react";
+import { AuthModal } from '@/components/auth/auth-modal';
+import { Button } from '@/components/ui/button';
+import { useAuth } from '@/contexts/auth-context';
+import { LogOut, Menu, X } from 'lucide-react';
+import { useState } from 'react';
 
 export function Header() {
   const { user, isAuthenticated, logout } = useAuth();
   const [showAuthModal, setShowAuthModal] = useState(false);
-  const [authForm, setAuthForm] = useState<"login" | "register">("login");
+  const [authForm, setAuthForm] = useState<'login' | 'register'>('login');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const handleAuthClick = (form: "login" | "register") => {
+  const handleAuthClick = (form: 'login' | 'register') => {
     setAuthForm(form);
     setShowAuthModal(true);
   };
@@ -24,20 +24,32 @@ export function Header() {
           <div className="flex h-16 items-center justify-between">
             {/* Logo */}
             <div className="flex items-center">
-              <a href="/" className="text-2xl font-bold text-gray-900 hover:text-black transition-colors">
+              <a
+                href="/"
+                className="text-2xl font-bold text-gray-900 hover:text-black transition-colors"
+              >
                 Local Handyman
               </a>
             </div>
 
             {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center space-x-8">
-              <a href="/search" className="text-gray-600 hover:text-gray-900 transition-colors">
+              <a
+                href="/search"
+                className="text-gray-600 hover:text-gray-900 transition-colors"
+              >
                 Servicios
               </a>
-              <a href="#" className="text-gray-600 hover:text-gray-900 transition-colors">
+              <a
+                href="#"
+                className="text-gray-600 hover:text-gray-900 transition-colors"
+              >
                 Cómo funciona
               </a>
-              <a href="#" className="text-gray-600 hover:text-gray-900 transition-colors">
+              <a
+                href="#"
+                className="text-gray-600 hover:text-gray-900 transition-colors"
+              >
                 Para profesionales
               </a>
             </nav>
@@ -53,8 +65,12 @@ export function Header() {
                       className="h-8 w-8 rounded-full"
                     />
                     <div className="hidden md:block">
-                      <p className="text-sm font-medium text-gray-900">{user.name}</p>
-                      <p className="text-xs text-gray-500 capitalize">{user.type}</p>
+                      <p className="text-sm font-medium text-gray-900">
+                        {user.name}
+                      </p>
+                      <p className="text-xs text-gray-500 capitalize">
+                        {user.type}
+                      </p>
                     </div>
                   </div>
                   <Button variant="ghost" size="sm" onClick={logout}>
@@ -64,10 +80,16 @@ export function Header() {
                 </div>
               ) : (
                 <div className="hidden md:flex items-center space-x-3">
-                  <Button variant="ghost" onClick={() => handleAuthClick("login")}>
+                  <Button
+                    variant="ghost"
+                    onClick={() => handleAuthClick('login')}
+                  >
                     Iniciar sesión
                   </Button>
-                  <Button onClick={() => handleAuthClick("register")} className="bg-black hover:bg-gray-800 text-white">
+                  <Button
+                    onClick={() => handleAuthClick('register')}
+                    className="bg-black hover:bg-gray-800 text-white"
+                  >
                     Registrarse
                   </Button>
                 </div>
@@ -93,17 +115,29 @@ export function Header() {
           {mobileMenuOpen && (
             <div className="md:hidden border-t border-gray-200 py-4 space-y-4">
               <nav className="flex flex-col space-y-4">
-                <a href="/search" className="text-gray-600 hover:text-gray-900">Servicios</a>
-                <a href="#" className="text-gray-600 hover:text-gray-900">Cómo funciona</a>
-                <a href="#" className="text-gray-600 hover:text-gray-900">Para profesionales</a>
+                <a href="/search" className="text-gray-600 hover:text-gray-900">
+                  Servicios
+                </a>
+                <a href="#" className="text-gray-600 hover:text-gray-900">
+                  Cómo funciona
+                </a>
+                <a href="#" className="text-gray-600 hover:text-gray-900">
+                  Para profesionales
+                </a>
               </nav>
 
               {!isAuthenticated && (
                 <div className="flex flex-col space-y-2 pt-4 border-t border-gray-200">
-                  <Button variant="ghost" onClick={() => handleAuthClick("login")}>
+                  <Button
+                    variant="ghost"
+                    onClick={() => handleAuthClick('login')}
+                  >
                     Iniciar sesión
                   </Button>
-                  <Button onClick={() => handleAuthClick("register")} className="bg-black hover:bg-gray-800 text-white">
+                  <Button
+                    onClick={() => handleAuthClick('register')}
+                    className="bg-black hover:bg-gray-800 text-white"
+                  >
                     Registrarse
                   </Button>
                 </div>

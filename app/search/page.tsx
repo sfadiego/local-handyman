@@ -1,58 +1,65 @@
-"use client";
+'use client';
 
-import { useState, useMemo } from "react";
-import { mockServices, categories } from "@/lib/mock-data";
-import { ServiceCard } from "@/components/services/service-card";
-import { SearchFilters } from "@/components/services/search-filters";
-import { useAuth } from "@/contexts/auth-context";
-import { Button } from "@/components/ui/button";
-import { AuthModal } from "@/components/auth/auth-modal";
-import { MapPin, Users, Star } from "lucide-react";
+import { useState, useMemo } from 'react';
+import { mockServices, categories } from '@/lib/mock-data';
+import { ServiceCard } from '@/components/services/service-card';
+import { SearchFilters } from '@/components/services/search-filters';
+import { useAuth } from '@/contexts/auth-context';
+import { Button } from '@/components/ui/button';
+import { AuthModal } from '@/components/auth/auth-modal';
+import { MapPin, Users, Star } from 'lucide-react';
 
 export default function SearchPage() {
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [location, setLocation] = useState("Colonia Roma Norte, CDMX");
+  const [location, setLocation] = useState('Colonia Roma Norte, CDMX');
   const [radiusKm, setRadiusKm] = useState(10);
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(10000);
-  const [sortBy, setSortBy] = useState("distance");
+  const [sortBy, setSortBy] = useState('distance');
   const [showAuthModal, setShowAuthModal] = useState(false);
 
   const { isAuthenticated } = useAuth();
 
   const filteredAndSortedServices = useMemo(() => {
-    let filtered = mockServices.filter(service => {
-      const matchesSearch = !searchQuery ||
+    const filtered = mockServices.filter((service) => {
+      const matchesSearch =
+        !searchQuery ||
         service.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         service.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
         service.category.toLowerCase().includes(searchQuery.toLowerCase());
 
-      const matchesCategory = !selectedCategory ||
+      const matchesCategory =
+        !selectedCategory ||
         service.category.toLowerCase().includes(selectedCategory.toLowerCase());
 
       const matchesDistance = service.location.distance <= radiusKm;
 
-      const matchesPrice = service.price.min >= minPrice && service.price.max <= maxPrice;
+      const matchesPrice =
+        service.price.min >= minPrice && service.price.max <= maxPrice;
 
-      return matchesSearch && matchesCategory && matchesDistance && matchesPrice;
+      return (
+        matchesSearch && matchesCategory && matchesDistance && matchesPrice
+      );
     });
 
     // Sort results
     switch (sortBy) {
-      case "rating":
+      case 'rating':
         filtered.sort((a, b) => b.provider.rating - a.provider.rating);
         break;
-      case "price_low":
+      case 'price_low':
         filtered.sort((a, b) => a.price.min - b.price.min);
         break;
-      case "price_high":
+      case 'price_high':
         filtered.sort((a, b) => b.price.min - a.price.min);
         break;
-      case "reviews":
-        filtered.sort((a, b) => b.provider.reviewCount - a.provider.reviewCount);
+      case 'reviews':
+        filtered.sort(
+          (a, b) => b.provider.reviewCount - a.provider.reviewCount
+        );
         break;
-      case "distance":
+      case 'distance':
       default:
         filtered.sort((a, b) => a.location.distance - b.location.distance);
         break;
@@ -65,7 +72,7 @@ export default function SearchPage() {
     if (!isAuthenticated) {
       setShowAuthModal(true);
     } else {
-      alert("¡Funcionalidad de contacto estará disponible próximamente!");
+      alert('¡Funcionalidad de contacto estará disponible próximamente!');
     }
   };
 
@@ -106,7 +113,8 @@ export default function SearchPage() {
                 {filteredAndSortedServices.length} profesionales encontrados
                 {location && (
                   <>
-                    {" "}cerca de <span className="font-medium">{location}</span>
+                    {' '}
+                    cerca de <span className="font-medium">{location}</span>
                   </>
                 )}
               </p>
@@ -143,7 +151,7 @@ export default function SearchPage() {
                 <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
                   "{searchQuery}"
                   <button
-                    onClick={() => setSearchQuery("")}
+                    onClick={() => setSearchQuery('')}
                     className="ml-2 text-green-600 hover:text-green-500"
                   >
                     ×
@@ -173,7 +181,7 @@ export default function SearchPage() {
                   onClick={() => {
                     setRadiusKm(25);
                     setSelectedCategory(null);
-                    setSearchQuery("");
+                    setSearchQuery('');
                     setMinPrice(0);
                     setMaxPrice(10000);
                   }}

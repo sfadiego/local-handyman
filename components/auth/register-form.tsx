@@ -1,10 +1,16 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { useAuth } from "@/contexts/auth-context";
-import { Eye, EyeOff, Loader2 } from "lucide-react";
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { useAuth } from '@/contexts/auth-context';
+import { Eye, EyeOff, Loader2 } from 'lucide-react';
 
 interface RegisterFormProps {
   onToggleForm: () => void;
@@ -13,30 +19,30 @@ interface RegisterFormProps {
 
 export function RegisterForm({ onToggleForm, onClose }: RegisterFormProps) {
   const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-    type: "customer" as "customer" | "provider",
-    address: ""
+    name: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+    type: 'customer' as 'customer' | 'provider',
+    address: '',
   });
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
 
   const { register } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
+    setError('');
 
     if (formData.password !== formData.confirmPassword) {
-      setError("Las contraseñas no coinciden");
+      setError('Las contraseñas no coinciden');
       return;
     }
 
     if (formData.password.length < 6) {
-      setError("La contraseña debe tener al menos 6 caracteres");
+      setError('La contraseña debe tener al menos 6 caracteres');
       return;
     }
 
@@ -47,22 +53,24 @@ export function RegisterForm({ onToggleForm, onClose }: RegisterFormProps) {
       email: formData.email,
       password: formData.password,
       type: formData.type,
-      address: formData.address
+      address: formData.address,
     });
 
     if (success) {
       onClose();
     } else {
-      setError("Error al crear la cuenta. Intenta de nuevo.");
+      setError('Error al crear la cuenta. Intenta de nuevo.');
     }
 
     setIsLoading(false);
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData(prev => ({
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setFormData((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     }));
   };
 
@@ -70,9 +78,7 @@ export function RegisterForm({ onToggleForm, onClose }: RegisterFormProps) {
     <Card className="w-full max-w-md mx-auto">
       <CardHeader className="text-center">
         <CardTitle className="text-2xl">Crear Cuenta</CardTitle>
-        <CardDescription>
-          Únete a Local Handyman
-        </CardDescription>
+        <CardDescription>Únete a Local Handyman</CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -80,16 +86,20 @@ export function RegisterForm({ onToggleForm, onClose }: RegisterFormProps) {
           <div className="grid grid-cols-2 gap-2">
             <Button
               type="button"
-              variant={formData.type === "customer" ? "default" : "outline"}
-              onClick={() => setFormData(prev => ({ ...prev, type: "customer" }))}
+              variant={formData.type === 'customer' ? 'default' : 'outline'}
+              onClick={() =>
+                setFormData((prev) => ({ ...prev, type: 'customer' }))
+              }
               className="w-full"
             >
               Cliente
             </Button>
             <Button
               type="button"
-              variant={formData.type === "provider" ? "default" : "outline"}
-              onClick={() => setFormData(prev => ({ ...prev, type: "provider" }))}
+              variant={formData.type === 'provider' ? 'default' : 'outline'}
+              onClick={() =>
+                setFormData((prev) => ({ ...prev, type: 'provider' }))
+              }
               className="w-full"
             >
               Profesional
@@ -98,7 +108,10 @@ export function RegisterForm({ onToggleForm, onClose }: RegisterFormProps) {
 
           {/* Name */}
           <div>
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+            <label
+              htmlFor="name"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
               Nombre completo
             </label>
             <input
@@ -115,7 +128,10 @@ export function RegisterForm({ onToggleForm, onClose }: RegisterFormProps) {
 
           {/* Email */}
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
               Email
             </label>
             <input
@@ -132,7 +148,10 @@ export function RegisterForm({ onToggleForm, onClose }: RegisterFormProps) {
 
           {/* Address */}
           <div>
-            <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-1">
+            <label
+              htmlFor="address"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
               Dirección
             </label>
             <input
@@ -149,14 +168,17 @@ export function RegisterForm({ onToggleForm, onClose }: RegisterFormProps) {
 
           {/* Password */}
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
               Contraseña
             </label>
             <div className="relative">
               <input
                 id="password"
                 name="password"
-                type={showPassword ? "text" : "password"}
+                type={showPassword ? 'text' : 'password'}
                 value={formData.password}
                 onChange={handleChange}
                 className="w-full rounded-lg border border-gray-300 px-3 py-2 pr-10 text-gray-900 placeholder-gray-500 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -179,7 +201,10 @@ export function RegisterForm({ onToggleForm, onClose }: RegisterFormProps) {
 
           {/* Confirm Password */}
           <div>
-            <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
+            <label
+              htmlFor="confirmPassword"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
               Confirmar contraseña
             </label>
             <input
@@ -200,18 +225,14 @@ export function RegisterForm({ onToggleForm, onClose }: RegisterFormProps) {
             </div>
           )}
 
-          <Button
-            type="submit"
-            className="w-full"
-            disabled={isLoading}
-          >
+          <Button type="submit" className="w-full" disabled={isLoading}>
             {isLoading ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 Creando cuenta...
               </>
             ) : (
-              "Crear Cuenta"
+              'Crear Cuenta'
             )}
           </Button>
 
