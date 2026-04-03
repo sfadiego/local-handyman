@@ -51,7 +51,6 @@ export function LoginForm({
                   value={formik.values.email}
                 />
               </div>
-              {console.log(formik.errors)}
               {formik.touched.email && formik.errors.email ? (
                 <div>{formik.errors.email}</div>
               ) : null}
