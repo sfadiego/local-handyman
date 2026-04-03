@@ -1,9 +1,9 @@
 'use client';
+import { Role } from '@/models/role';
 import { useState } from 'react';
 
 // ── Types ──
-type Tab = 'login' | 'register';
-type Role = 'client' | 'provider';
+export type Tab = 'login' | 'register';
 
 interface SuccessScreen {
   title: string;
@@ -88,101 +88,101 @@ export function useAuth() {
   };
 
   // ── Login ──
-  const handleLogin = async (email: string, password: string) => {
-    const fields = ['loginEmail', 'loginPass'];
-    clearAllErrors(fields);
-    let ok = true;
+  //   const handleLogin = async (email: string, password: string) => {
+  //     const fields = ['loginEmail', 'loginPass'];
+  //     clearAllErrors(fields);
+  //     let ok = true;
 
-    if (!validEmail(email)) {
-      showErr('loginEmail', 'Correo inválido');
-      ok = false;
-    }
-    if (!password) {
-      showErr('loginPass', 'La contraseña es requerida');
-      ok = false;
-    }
-    if (!ok) return;
+  //     if (!validEmail(email)) {
+  //       showErr('loginEmail', 'Correo inválido');
+  //       ok = false;
+  //     }
+  //     if (!password) {
+  //       showErr('loginPass', 'La contraseña es requerida');
+  //       ok = false;
+  //     }
+  //     if (!ok) return;
 
-    setIsLoading(true);
-    await sleep(1500);
-    setIsLoading(false);
+  //     setIsLoading(true);
+  //     await sleep(1500);
+  //     setIsLoading(false);
 
-    showSuccess(
-      loginRole === 'provider' ? '¡Bienvenido, Maestro!' : '¡Hola de nuevo!',
-      loginRole === 'provider'
-        ? 'Tu panel de trabajo está listo. Revisa las nuevas solicitudes.'
-        : 'Encuentra el maestro ideal para tu proyecto.',
-      loginRole === 'provider' ? 'Ir a mi panel' : 'Explorar servicios'
-    );
-  };
+  //     showSuccess(
+  //       loginRole === 'provider' ? '¡Bienvenido, Maestro!' : '¡Hola de nuevo!',
+  //       loginRole === 'provider'
+  //         ? 'Tu panel de trabajo está listo. Revisa las nuevas solicitudes.'
+  //         : 'Encuentra el maestro ideal para tu proyecto.',
+  //       loginRole === 'provider' ? 'Ir a mi panel' : 'Explorar servicios'
+  //     );
+  //   };
 
   // ── Register ──
-  const handleRegister = async (fields: {
-    nombre: string;
-    apellido: string;
-    email: string;
-    tel: string;
-    password: string;
-    terms: boolean;
-    categoria?: string;
-  }) => {
-    const { nombre, apellido, email, tel, password, terms, categoria } = fields;
-    const isProvider = registerRole === 'provider';
+  //   const handleRegister = async (fields: {
+  //     nombre: string;
+  //     apellido: string;
+  //     email: string;
+  //     tel: string;
+  //     password: string;
+  //     terms: boolean;
+  //     categoria?: string;
+  //   }) => {
+  //     const { nombre, apellido, email, tel, password, terms, categoria } = fields;
+  //     const isProvider = registerRole === 'provider';
 
-    clearAllErrors([
-      'regNombre',
-      'regApellido',
-      'regEmail',
-      'regTel',
-      'regPass',
-      'regTerms',
-      'regCategoria',
-    ]);
+  //     clearAllErrors([
+  //       'regNombre',
+  //       'regApellido',
+  //       'regEmail',
+  //       'regTel',
+  //       'regPass',
+  //       'regTerms',
+  //       'regCategoria',
+  //     ]);
 
-    let ok = true;
+  //     let ok = true;
 
-    if (!nombre) {
-      showErr('regNombre');
-      ok = false;
-    }
-    if (!apellido) {
-      showErr('regApellido');
-      ok = false;
-    }
-    if (!validEmail(email)) {
-      showErr('regEmail', 'Correo inválido');
-      ok = false;
-    }
-    if (!tel || tel.length < 8) {
-      showErr('regTel', 'Teléfono inválido');
-      ok = false;
-    }
-    if (password.length < 8) {
-      showErr('regPass', 'Mínimo 8 caracteres');
-      ok = false;
-    }
-    if (isProvider && !categoria) {
-      showErr('regCategoria');
-      ok = false;
-    }
-    if (!terms) {
-      showErr('regTerms', 'Debes aceptar los términos');
-      ok = false;
-    }
-    if (!ok) return;
+  //     if (!nombre) {
+  //       showErr('regNombre');
+  //       ok = false;
+  //     }
+  //     if (!apellido) {
+  //       showErr('regApellido');
+  //       ok = false;
+  //     }
+  //     if (!validEmail(email)) {
+  //       showErr('regEmail', 'Correo inválido');
+  //       ok = false;
+  //     }
+  //     if (!tel || tel.length < 8) {
+  //       showErr('regTel', 'Teléfono inválido');
+  //       ok = false;
+  //     }
+  //     if (password.length < 8) {
+  //       showErr('regPass', 'Mínimo 8 caracteres');
+  //       ok = false;
+  //     }
+  //     if (isProvider && !categoria) {
+  //       showErr('regCategoria');
+  //       ok = false;
+  //     }
+  //     if (!terms) {
+  //       showErr('regTerms', 'Debes aceptar los términos');
+  //       ok = false;
+  //     }
+  //     if (!ok) return;
 
-    setIsLoading(true);
-    await sleep(1800);
-    setIsLoading(false);
+  //     setIsLoading(true);
+  //     await sleep(1800);
+  //     setIsLoading(false);
 
-    showSuccess(
-      isProvider ? '¡Bienvenido, Maestro! 🔧' : '¡Cuenta creada! 🎉',
-      isProvider
-        ? 'Tu perfil ya está visible. Completa tu información para recibir más solicitudes.'
-        : 'Ya puedes buscar servicios cerca de ti.',
-      isProvider ? 'Completar mi perfil' : 'Buscar un maestro'
-    );
-  };
+  //     showSuccess(
+  //       isProvider ? '¡Bienvenido, Maestro! 🔧' : '¡Cuenta creada! 🎉',
+  //       isProvider
+  //         ? 'Tu perfil ya está visible. Completa tu información para recibir más solicitudes.'
+  //         : 'Ya puedes buscar servicios cerca de ti.',
+  //       isProvider ? 'Completar mi perfil' : 'Buscar un maestro'
+  //     );
+  //   };
 
   // ── Success screen ──
   const showSuccess = (title: string, msg: string, btnText: string) => {
@@ -212,8 +212,8 @@ export function useAuth() {
     switchTab,
     selectLoginRole,
     selectRegisterRole,
-    handleLogin,
-    handleRegister,
+    // handleLogin,
+    // handleRegister,
     resetSuccess,
     socialLogin,
     checkStrength,

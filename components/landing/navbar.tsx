@@ -1,5 +1,5 @@
-import React from 'react';
 import Link from 'next/link';
+
 const navItems = [
   { label: 'Servicios', href: '#servicios' },
   { label: 'Cómo funciona', href: '#como-funciona' },
@@ -27,8 +27,8 @@ export default function Navbar() {
           alignItems: 'center',
         }}
       >
-        <a
-          href="oficio-auth.html"
+        <Link
+          href="/auth"
           style={{
             fontSize: '0.875rem',
             fontWeight: 500,
@@ -37,10 +37,10 @@ export default function Navbar() {
           }}
         >
           Iniciar sesión
-        </a>
-        <a href="oficio-auth.html" className="btn-primary">
+        </Link>
+        <Link href="/auth" className="btn-primary">
           Registrarse
-        </a>
+        </Link>
       </div>
     </nav>
   );
