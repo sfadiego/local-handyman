@@ -22,10 +22,10 @@
     "yup": "^1.7.1"
   },
   "devDependencies": {
-    "@eslint/js": "^10.0.1",
+    "@eslint/js": "^9.15.0",
     "@types/node": "25.5.0",
     "@types/react": "19.2.14",
-    "eslint": "^10.1.0",
+    "eslint": "^9.7.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.5",
     "eslint-plugin-react": "^7.37.5",

@@ -1,7 +1,6 @@
 'use client';
 
-import { RoleEnum } from '@/enums/roleEnum';
-import { Role } from '@/models/role';
+import { RoleEnum, RoleType } from '@/enums/roleEnum';
 import { useState } from 'react';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { LoginForm } from './login-form';
@@ -21,15 +20,15 @@ export function AuthModal({
   const [currentTab, setCurrentTab] = useState<'login' | 'register'>(
     defaultForm
   );
-  const [loginRole, setLoginRole] = useState<RoleEnum>(RoleEnum.CLIENT);
-  const [registerRole, setRegisterRole] = useState<Role>('client');
+  const [loginRole, setLoginRole] = useState<RoleType>('client');
+  const [registerRole, setRegisterRole] = useState<RoleType>('client');
 
   const switchTab = (tab: 'login' | 'register') => {
     setCurrentTab(tab);
   };
 
-  const selectLoginRole = (role: RoleEnum) => setLoginRole(role);
-  const selectRegisterRole = (role: Role) => setRegisterRole(role);
+  const selectLoginRole = (role: RoleType) => setLoginRole(role);
+  const selectRegisterRole = (role: RoleType) => setRegisterRole(role);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -37,7 +36,6 @@ export function AuthModal({
         <div className="right-panel bg-white rounded-2xl p-8 max-h-[90vh] overflow-y-auto">
           {currentTab === 'login' ? (
             <LoginForm
-              selectLoginRole={selectLoginRole}
               loginRole={loginRole}
               switchTab={switchTab}
             />
