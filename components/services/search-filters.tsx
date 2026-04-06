@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { categories } from "@/lib/mock-data";
-import { Search, MapPin, Filter, X } from "lucide-react";
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { categories } from '@/lib/mock-data';
+import { Search, MapPin, Filter, X } from 'lucide-react';
 
 interface SearchFiltersProps {
   searchQuery: string;
@@ -42,15 +42,20 @@ export function SearchFilters({
   const [showFilters, setShowFilters] = useState(false);
 
   const clearFilters = () => {
-    onSearchQueryChange("");
+    onSearchQueryChange('');
     onCategoryChange(null);
     onMinPriceChange(0);
     onMaxPriceChange(10000);
     onRadiusChange(10);
-    onSortByChange("distance");
+    onSortByChange('distance');
   };
 
-  const hasActiveFilters = searchQuery || selectedCategory || minPrice > 0 || maxPrice < 10000 || radiusKm !== 10;
+  const hasActiveFilters =
+    searchQuery ||
+    selectedCategory ||
+    minPrice > 0 ||
+    maxPrice < 10000 ||
+    radiusKm !== 10;
 
   return (
     <div className="space-y-4">
@@ -118,7 +123,11 @@ export function SearchFilters({
                     Limpiar
                   </Button>
                 )}
-                <Button variant="ghost" size="sm" onClick={() => setShowFilters(false)}>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowFilters(false)}
+                >
                   <X className="h-4 w-4" />
                 </Button>
               </div>
@@ -133,11 +142,15 @@ export function SearchFilters({
                 {categories.map((category) => (
                   <Button
                     key={category.id}
-                    variant={selectedCategory === category.name ? "default" : "outline"}
+                    variant={
+                      selectedCategory === category.name ? 'default' : 'outline'
+                    }
                     size="sm"
                     onClick={() =>
                       onCategoryChange(
-                        selectedCategory === category.name ? null : category.name
+                        selectedCategory === category.name
+                          ? null
+                          : category.name
                       )
                     }
                     className="justify-start"

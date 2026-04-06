@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import * as React from "react";
-import { cn } from "@/lib/utils";
+import * as React from 'react';
+import { cn } from '@/lib/utils';
 
 interface DialogProps {
   open: boolean;
@@ -16,19 +16,19 @@ interface DialogContentProps extends React.HTMLAttributes<HTMLDivElement> {
 const Dialog = ({ open, onOpenChange, children }: DialogProps) => {
   React.useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
+      if (e.key === 'Escape') {
         onOpenChange(false);
       }
     };
 
     if (open) {
-      document.addEventListener("keydown", handleEscape);
-      document.body.style.overflow = "hidden";
+      document.addEventListener('keydown', handleEscape);
+      document.body.style.overflow = 'hidden';
     }
 
     return () => {
-      document.removeEventListener("keydown", handleEscape);
-      document.body.style.overflow = "unset";
+      document.removeEventListener('keydown', handleEscape);
+      document.body.style.overflow = 'unset';
     };
   }, [open, onOpenChange]);
 
@@ -40,9 +40,7 @@ const Dialog = ({ open, onOpenChange, children }: DialogProps) => {
         className="fixed inset-0 bg-black/50"
         onClick={() => onOpenChange(false)}
       />
-      <div className="relative z-10 w-full max-w-lg mx-4">
-        {children}
-      </div>
+      <div className="relative z-10 w-full max-w-lg mx-4">{children}</div>
     </div>
   );
 };
@@ -52,7 +50,7 @@ const DialogContent = React.forwardRef<HTMLDivElement, DialogContentProps>(
     <div
       ref={ref}
       className={cn(
-        "relative bg-white rounded-lg shadow-lg max-h-[90vh] overflow-y-auto",
+        'relative bg-white rounded-lg shadow-lg max-h-[90vh] overflow-y-auto',
         className
       )}
       {...props}
@@ -61,6 +59,6 @@ const DialogContent = React.forwardRef<HTMLDivElement, DialogContentProps>(
     </div>
   )
 );
-DialogContent.displayName = "DialogContent";
+DialogContent.displayName = 'DialogContent';
 
 export { Dialog, DialogContent };
