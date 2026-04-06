@@ -1,5 +1,7 @@
 'use client';
 
+export const dynamic = 'force-dynamic';
+
 import { useState, useMemo } from 'react';
 import { mockServices, categories } from '@/lib/mock-data';
 import { ServiceCard } from '@/components/services/service-card';
