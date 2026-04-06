@@ -47,7 +47,9 @@ export function ServiceCard({ service, onContact }: ServiceCardProps) {
             <div className="flex items-center space-x-2">
               <span className="font-medium text-gray-900">{service.provider.name}</span>
               {service.provider.verified && (
-                <Shield className="h-4 w-4 text-blue-500" title="Verificado" />
+                <div title="Verificado">
+                  <Shield className="h-4 w-4 text-blue-500" />
+                </div>
               )}
             </div>
             <div className="flex items-center space-x-1 text-sm text-gray-500">
