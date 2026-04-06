@@ -6,15 +6,8 @@ import './auth.css';
 import { useAuth } from './useAuth';
 
 export default function AuthPage() {
-  const {
-    switchTab,
-    currentTab,
-    selectLoginRole,
-    selectRegisterRole,
-    registerRole,
-    loginRole,
-    resetSuccess,
-  } = useAuth();
+  const { switchTab, currentTab, selectRegisterRole, registerRole, loginRole } =
+    useAuth();
   return (
     <>
       <a href="/" className="back-home">
@@ -89,7 +82,6 @@ export default function AuthPage() {
             </div>
           </div>
 
-          {/* Stats */}
           <div className="stats-row fade-up d5">
             <div className="stat-item">
               <div className="stat-num">
@@ -115,8 +107,11 @@ export default function AuthPage() {
         {/* ══════════════ RIGHT PANEL ══════════════ */}
         <div className="right-panel">
           <div className="form-container scale-in">
-            {/* ── TAB BAR ── */}
-            <div className="tab-bar" id="tabBar">
+            <div
+              className="tab-bar"
+              style={{ display: currentTab === 'success' ? 'none' : '' }}
+              id="tabBar"
+            >
               <button
                 className={`tab-btn ${currentTab === 'login' ? 'active' : ''}`}
                 onClick={() => switchTab('login')}
@@ -131,19 +126,13 @@ export default function AuthPage() {
               </button>
             </div>
 
-            {/* ════════════ LOGIN FORM ════════════ */}
             <div
               className={currentTab === 'login' ? '' : 'hidden'}
               id="loginForm"
             >
-              <LoginForm
-                selectLoginRole={selectLoginRole}
-                loginRole={loginRole}
-                switchTab={switchTab}
-              />
+              <LoginForm loginRole={loginRole} switchTab={switchTab} />
             </div>
 
-            {/* ════════════ REGISTER FORM ════════════ */}
             <div
               className={currentTab === 'register' ? '' : 'hidden'}
               id="registerForm"
@@ -155,8 +144,10 @@ export default function AuthPage() {
               />
             </div>
 
-            {/* <!-- ════════════ SUCCESS SCREEN ════════════ --> */}
-            <SuccessRegister resetSuccess={resetSuccess} />
+            <SuccessRegister
+              isShow={currentTab === 'success'}
+              switchTab={switchTab}
+            />
           </div>
         </div>
       </div>

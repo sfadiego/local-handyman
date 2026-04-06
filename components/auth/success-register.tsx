@@ -1,11 +1,21 @@
+import { LoginTabs } from '@/app/auth/useAuth';
+import { PartyPopper } from 'lucide-react';
+
 export const SuccessRegister = ({
-  resetSuccess,
+  isShow,
+  switchTab,
 }: {
-  resetSuccess: () => void;
+  isShow: boolean;
+  switchTab: (tab: LoginTabs) => void;
 }) => {
   return (
-    <div id="successScreen" className="success-screen">
-      <div className="success-circle">🎉</div>
+    <div
+      id="successScreen"
+      className={`success-screen ${isShow ? 'show' : ''}`}
+    >
+      <div className="success-circle">
+        <PartyPopper size={48} />
+      </div>
       <h2
         className="form-title"
         style={{ marginBottom: '0.4rem' }}
@@ -26,7 +36,7 @@ export const SuccessRegister = ({
       </p>
       <button
         className="btn-submit"
-        onClick={resetSuccess}
+        onClick={() => switchTab('login')}
         style={{ marginBottom: '0' }}
       >
         <span className="btn-text" id="successBtn">
