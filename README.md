@@ -39,3 +39,11 @@ to seed database, run:
 ```bash
 pnpx prisma db seed
 ```
+
+# Docker
+
+configura el archivo .env con las variables de entorno necesarias para docker
+
+```
+docker compose up -d
+```
