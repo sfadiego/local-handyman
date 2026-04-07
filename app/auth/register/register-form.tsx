@@ -1,19 +1,15 @@
 'use client';
 
 import { LoginTabs } from '@/app/auth/useAuth';
+import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Input } from '@/components/ui/input';
+import Select from '@/components/ui/select';
 import { UserRole } from '@prisma/client';
 import { Form, Formik } from 'formik';
-import {
-  Eye,
-  EyeOff,
-  House,
-  Lock,
-  Mail,
-  Phone,
-  User,
-  Wrench,
-} from 'lucide-react';
-import { useRegister } from './useRegister';
+import { House, Lock, Mail, Phone, Wrench } from 'lucide-react';
+import Link from 'next/link';
+import { IRegisterValues, useRegister } from './useRegister';
 
 interface RegisterFormProps {
   selectRegisterRole: (role: UserRole) => void;
@@ -26,7 +22,7 @@ export function RegisterForm({
   registerRole,
   switchTab,
 }: RegisterFormProps) {
-  const { showPassword, setShowPassword, formikProps } = useRegister({
+  const { formikProps } = useRegister({
     registerRole,
     switchTab,
   });
@@ -67,114 +63,49 @@ export function RegisterForm({
       </div>
 
       <Formik enableReinitialize {...formikProps}>
-        {({
-          values,
-          errors,
-          touched,
-          handleChange,
-          handleBlur,
-          handleSubmit,
-        }) => (
-          <Form onSubmit={handleSubmit}>
+        {(formik) => (
+          <Form onSubmit={formik.handleSubmit}>
             <div className="field-row fade-up d3">
               <div className="field">
-                <label htmlFor="firstName">Nombre</label>
-                <div className="input-wrap">
-                  <span className="input-icon">
-                    <User width={15} height={15} />
-                  </span>
-                  <input
-                    type="text"
-                    id="firstName"
-                    name="firstName"
-                    placeholder="Juan"
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    value={values.firstName}
-                    className={
-                      touched.firstName && errors.firstName ? 'error' : ''
-                    }
-                  />
-                </div>
-                <div
-                  className={`field-error ${touched.firstName && errors.firstName ? 'show' : ''}`}
-                >
-                  {errors.firstName}
-                </div>
+                <Input<IRegisterValues>
+                  type="text"
+                  name="firstName"
+                  label="Nombre"
+                  placeholder="Juan"
+                  formik={formik}
+                />
               </div>
               <div className="field">
-                <label htmlFor="lastName">Apellido</label>
-                <div className="input-wrap">
-                  <span className="input-icon">
-                    <User width={15} height={15} />
-                  </span>
-                  <input
-                    type="text"
-                    id="lastName"
-                    name="lastName"
-                    placeholder="Morales"
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    value={values.lastName}
-                    className={
-                      touched.lastName && errors.lastName ? 'error' : ''
-                    }
-                  />
-                </div>
-                <div
-                  className={`field-error ${touched.lastName && errors.lastName ? 'show' : ''}`}
-                >
-                  {errors.lastName}
-                </div>
+                <Input<IRegisterValues>
+                  type="text"
+                  name="lastName"
+                  label="Apellido"
+                  placeholder="Pérez"
+                  formik={formik}
+                />
               </div>
             </div>
 
             <div className="field fade-up d3">
-              <label htmlFor="email">Correo electrónico</label>
-              <div className="input-wrap">
-                <span className="input-icon">
-                  <Mail width={16} height={16} />
-                </span>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  placeholder="tu@correo.com"
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  value={values.email}
-                  className={touched.email && errors.email ? 'error' : ''}
-                />
-              </div>
-              <div
-                className={`field-error ${touched.email && errors.email ? 'show' : ''}`}
-              >
-                {errors.email}
-              </div>
+              <Input<IRegisterValues>
+                type="email"
+                placeholder="Correo electrónico"
+                name="email"
+                formik={formik}
+                Icon={<Mail width={16} height={16} />}
+                label="Correo electrónico"
+              />
             </div>
 
             <div className="field fade-up d4">
-              <label htmlFor="phone">Teléfono</label>
-              <div className="input-wrap">
-                <span className="input-icon">
-                  <Phone width={15} height={15} />
-                </span>
-                <input
-                  type="tel"
-                  id="phone"
-                  name="phone"
-                  placeholder="+52 312 000 0000"
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  value={values.phone}
-                  className={touched.phone && errors.phone ? 'error' : ''}
-                />
-              </div>
-              <div
-                className={`field-error ${touched.phone && errors.phone ? 'show' : ''}`}
-              >
-                {errors.phone}
-              </div>
+              <Input<IRegisterValues>
+                type="tel"
+                placeholder="Teléfono"
+                name="phone"
+                formik={formik}
+                Icon={<Phone width={15} height={15} />}
+                label="Teléfono"
+              />
             </div>
 
             {/* <!-- ── PROVIDER ONLY FIELDS ── --> */}
@@ -201,67 +132,46 @@ export function RegisterForm({
                 </div>
 
                 <div className="field">
-                  <label htmlFor="category">Categoría principal</label>
-                  <div className="input-wrap select-wrap">
-                    <select
-                      id="category"
-                      name="category"
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      value={values.category}
-                      className={
-                        touched.category && errors.category ? 'error' : ''
-                      }
-                    >
-                      <option value="">Selecciona tu oficio...</option>
-                      <option value="plomeria">Plomería</option>
-                      <option value="electricidad">Electricidad</option>
-                      <option value="carpinteria">Carpintería</option>
-                      <option value="pintura">Pintura</option>
-                      <option value="albanileria">Albañilería</option>
-                      <option value="aire_acondicionado">
-                        Aire acondicionado
-                      </option>
-                      <option value="cerrajeria">Cerrajería</option>
-                      <option value="jardineria">Jardinería</option>
-                      <option value="vidrieria">Vidriería</option>
-                      <option value="remodelaciones">Remodelaciones</option>
-                      <option value="otro">Otro</option>
-                    </select>
-                  </div>
-                  <div
-                    className={`field-error ${touched.category && errors.category ? 'show' : ''}`}
-                  >
-                    {errors.category}
-                  </div>
+                  <Select
+                    name="category"
+                    className=""
+                    formik={formik}
+                    label="Categoría principal"
+                    options={[
+                      { value: '', label: 'Selecciona tu oficio...' },
+                      { value: 'plomeria', label: 'Plomería' },
+                      { value: 'electricidad', label: 'Electricidad' },
+                      { value: 'carpinteria', label: 'Carpintería' },
+                      { value: 'pintura', label: 'Pintura' },
+                      { value: 'albanileria', label: 'Albañilería' },
+                      {
+                        value: 'aire_acondicionado',
+                        label: 'Aire acondicionado',
+                      },
+                      { value: 'cerrajeria', label: 'Cerrajería' },
+                      { value: 'jardineria', label: 'Jardinería' },
+                      { value: 'vidrieria', label: 'Vidriería' },
+                      { value: 'remodelaciones', label: 'Remodelaciones' },
+                      { value: 'otro', label: 'Otro' },
+                    ]}
+                  />
                 </div>
 
                 <div className="field">
-                  <label htmlFor="experience">Años de experiencia</label>
-                  <div className="input-wrap select-wrap">
-                    <select
-                      id="experience"
-                      name="experience"
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      value={values.experience}
-                      className={
-                        touched.experience && errors.experience ? 'error' : ''
-                      }
-                    >
-                      <option value="">¿Cuántos años llevas trabajando?</option>
-                      <option value="less_than_1">Menos de 1 año</option>
-                      <option value="1_3">1-3 años</option>
-                      <option value="3_5">3-5 años</option>
-                      <option value="5_10">5-10 años</option>
-                      <option value="more_than_10">Más de 10 años</option>
-                    </select>
-                  </div>
-                  <div
-                    className={`field-error ${touched.experience && errors.experience ? 'show' : ''}`}
-                  >
-                    {errors.experience}
-                  </div>
+                  <Select
+                    name="experience"
+                    className=""
+                    formik={formik}
+                    label="Años de experiencia"
+                    options={[
+                      { value: '', label: '¿Cuántos años llevas trabajando?' },
+                      { value: 'less_than_1', label: 'Menos de 1 año' },
+                      { value: '1_3', label: '1-3 años' },
+                      { value: '3_5', label: '3-5 años' },
+                      { value: '5_10', label: '5-10 años' },
+                      { value: 'more_than_10', label: 'Más de 10 años' },
+                    ]}
+                  />
                 </div>
 
                 <div
@@ -275,69 +185,28 @@ export function RegisterForm({
             )}
 
             <div className="field fade-up d4">
-              <label htmlFor="password">Contraseña</label>
-              <div className="input-wrap">
-                <span className="input-icon">
-                  <Lock width={16} height={16} />
-                </span>
-                <input
-                  type={showPassword ? 'text' : 'password'}
-                  id="password"
-                  name="password"
-                  placeholder="Mínimo 8 caracteres"
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  value={values.password}
-                  className={touched.password && errors.password ? 'error' : ''}
-                />
-                <button
-                  className="eye-btn"
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                >
-                  {showPassword ? (
-                    <EyeOff width={16} height={16} />
-                  ) : (
-                    <Eye width={16} height={16} />
-                  )}
-                </button>
-              </div>
-              <div
-                className={`field-error ${touched.password && errors.password ? 'show' : ''}`}
-              >
-                {errors.password}
-              </div>
-            </div>
-
-            <div className="check-row fade-up d5">
-              <input
-                type="checkbox"
-                id="acceptTerms"
-                name="acceptTerms"
-                onChange={handleChange}
-                onBlur={handleBlur}
-                checked={values.acceptTerms}
+              <Input<IRegisterValues>
+                type="password"
+                name="password"
+                label="Contraseña"
+                placeholder="Mínimo 8 caracteres"
+                formik={formik}
+                Icon={<Lock width={16} height={16} />}
               />
-              <label className="check-label" htmlFor="acceptTerms">
-                Acepto los <a href="#">Términos de servicio</a> y la
-                <a href="#">Política de privacidad</a> de Oficio.
-              </label>
             </div>
-            <div
-              className={`field-error ${touched.acceptTerms && errors.acceptTerms ? 'show' : ''}`}
-              style={{ marginTop: '-0.75rem', marginBottom: '0.75rem' }}
-            >
-              {errors.acceptTerms}
-            </div>
+            <Checkbox<IRegisterValues> name="acceptTerms" formik={formik}>
+              Acepto los <Link href="/terms">Términos de servicio</Link> y la
+              <Link href="/privacy"> Política de privacidad</Link> de Oficio.
+            </Checkbox>
 
-            <button
+            <Button
               type="submit"
-              className="btn-submit fade-up d5" //descomentar para agregar spiner ${isSubmitting ? 'loading' : ''}
-              disabled={false}
+              loading={false}
+              className="btn-submit fade-up d5"
             >
               <div className="spinner"></div>
               <span className="btn-text">Crear mi cuenta gratis</span>
-            </button>
+            </Button>
           </Form>
         )}
       </Formik>

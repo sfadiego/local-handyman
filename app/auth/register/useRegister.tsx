@@ -1,5 +1,5 @@
 import { UserRole } from '@prisma/client';
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import * as Yup from 'yup';
 
 export interface IRegisterValues {
@@ -17,11 +17,9 @@ export const useRegister = ({
   registerRole,
   switchTab,
 }: {
-  registerRole: string;
+  registerRole: UserRole;
   switchTab: (tab: string) => void;
 }) => {
-  const [showPassword, setShowPassword] = useState<boolean>(false);
-
   const initialValues: IRegisterValues = useMemo(
     () => ({
       firstName: '',
@@ -75,8 +73,6 @@ export const useRegister = ({
     onSubmit: handleRegister,
   };
   return {
-    showPassword,
-    setShowPassword,
     formikProps,
   };
 };

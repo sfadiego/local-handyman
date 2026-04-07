@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import * as Yup from 'yup';
 
 export interface ILoginValues {
@@ -7,8 +6,6 @@ export interface ILoginValues {
 }
 
 export const useLoginForm = ({ loginRole }) => {
-  const [showPassword, setShowPassword] = useState<boolean>(false);
-
   const initialValues: ILoginValues = {
     email: '',
     password: '',
@@ -29,8 +26,6 @@ export const useLoginForm = ({ loginRole }) => {
   return {
     validationSchema,
     initialValues,
-    showPassword,
-    setShowPassword,
     handleLogin,
   };
 };
