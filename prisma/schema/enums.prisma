@@ -1,0 +1,67 @@
+enum UserRole {
+  client
+  provider
+  both
+}
+
+// pricing_type define cómo cobra el proveedor:
+//   hourly → hourlyRate tiene valor, fixedRate es null
+//   fixed  → fixedRate tiene valor, hourlyRate es null
+//   quote  → ambos null, manda cotización antes de iniciar
+enum PricingTypeEnum {
+  hourly
+  fixed
+  quote
+}
+
+enum RequestStatusEnum {
+  pending // esperando que un maestro acepte
+  quoted // maestro mandó cotización (solo para pricing_type = quote)
+  accepted // maestro aceptó y precio acordado
+  in_progress // trabajo en curso
+  completed // trabajo terminado, pendiente de pago
+  paid // pagado y cerrado
+  cancelled
+  disputed
+}
+
+enum RequestUrgencyEnum {
+  normal
+  urgent
+  emergency
+}
+
+enum QuoteStatusEnum {
+  pending // enviada, esperando respuesta del cliente
+  accepted // cliente aceptó → service_request.agreedPrice se actualiza
+  rejected // cliente rechazó
+  expired // pasó validHours sin respuesta
+}
+
+enum PaymentStatusEnum {
+  pending
+  captured // cobrado al cliente, en escrow
+  released // liberado al proveedor
+  refunded
+  failed
+}
+
+enum PaymentMethodEnum {
+  card
+  oxxo
+  bank_transfer
+  cash
+}
+
+enum NotificationTypeEnum {
+  request_accepted
+  request_cancelled
+  quote_received
+  quote_accepted
+  quote_rejected
+  provider_on_the_way
+  job_completed
+  payment_received
+  new_message
+  new_review
+}

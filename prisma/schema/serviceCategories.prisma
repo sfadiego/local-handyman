@@ -1,0 +1,9 @@
+model ServiceCategory {
+    id               String            @id @default(uuid())
+    name             String            @unique
+    createdAt        DateTime          @default(now())
+    providerProfiles ProviderProfile[]
+    serviceRequests  ServiceRequest[]
+
+    @@map("service_categories")
+}

@@ -6,14 +6,21 @@
     "lint": "eslint",
     "lint:fix": "eslint --fix"
   },
+  "prisma": {
+    "seed": "pnpm tsx prisma/seed.ts"
+  },
   "dependencies": {
+    "@prisma/adapter-pg": "^7.6.0",
+    "@prisma/client": "^7.6.0",
     "@radix-ui/react-slot": "^1.2.4",
     "autoprefixer": "^10.4.27",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "dotenv": "^17.4.1",
     "formik": "^2.4.9",
     "lucide-react": "^1.7.0",
     "next": "^16.2.1",
+    "pg": "^8.20.0",
     "postcss": "^8.5.8",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
@@ -23,7 +30,8 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.15.0",
-    "@types/node": "25.5.0",
+    "@types/node": "^25.5.2",
+    "@types/pg": "^8.20.0",
     "@types/react": "19.2.14",
     "eslint": "^9.7.0",
     "eslint-config-prettier": "^10.1.8",
@@ -32,7 +40,9 @@
     "eslint-plugin-unused-imports": "^4.4.1",
     "globals": "^17.4.0",
     "prettier": "^3.8.1",
+    "prisma": "^7.6.0",
     "tailwindcss": "^3.4.19",
+    "tsx": "^4.21.0",
     "typescript": "6.0.2",
     "typescript-eslint": "^8.58.0"
   }

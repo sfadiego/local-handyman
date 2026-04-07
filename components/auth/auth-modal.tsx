@@ -1,8 +1,8 @@
 'use client';
 
-import { RoleEnum, RoleType } from '@/enums/roleEnum';
-import { useState } from 'react';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
+import type { UserRole } from '@prisma/client';
+import { useState } from 'react';
 import { LoginForm } from './login-form';
 import { RegisterForm } from './register-form';
 
@@ -20,25 +20,22 @@ export function AuthModal({
   const [currentTab, setCurrentTab] = useState<'login' | 'register'>(
     defaultForm
   );
-  const [loginRole, setLoginRole] = useState<RoleType>('client');
-  const [registerRole, setRegisterRole] = useState<RoleType>('client');
+  const [loginRole, setLoginRole] = useState<UserRole>('client');
+  const [registerRole, setRegisterRole] = useState<UserRole>('client');
 
   const switchTab = (tab: 'login' | 'register') => {
     setCurrentTab(tab);
   };
 
-  const selectLoginRole = (role: RoleType) => setLoginRole(role);
-  const selectRegisterRole = (role: RoleType) => setRegisterRole(role);
+  const selectLoginRole = (role: UserRole) => setLoginRole(role);
+  const selectRegisterRole = (role: UserRole) => setRegisterRole(role);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[420px] p-0 overflow-hidden border-none bg-transparent shadow-none">
         <div className="right-panel bg-white rounded-2xl p-8 max-h-[90vh] overflow-y-auto">
           {currentTab === 'login' ? (
-            <LoginForm
-              loginRole={loginRole}
-              switchTab={switchTab}
-            />
+            <LoginForm loginRole={loginRole} switchTab={switchTab} />
           ) : (
             <RegisterForm
               selectRegisterRole={selectRegisterRole}

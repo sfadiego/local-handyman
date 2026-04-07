@@ -2,14 +2,14 @@
 
 export const dynamic = 'force-dynamic';
 
-import { useState, useMemo } from 'react';
-import { mockServices, categories } from '@/lib/mock-data';
-import { ServiceCard } from '@/components/services/service-card';
-import { SearchFilters } from '@/components/services/search-filters';
-import { useAuth } from '@/contexts/auth-context';
-import { Button } from '@/components/ui/button';
 import { AuthModal } from '@/components/auth/auth-modal';
-import { MapPin, Users, Star } from 'lucide-react';
+import { SearchFilters } from '@/components/services/search-filters';
+import { ServiceCard } from '@/components/services/service-card';
+import { Button } from '@/components/ui/button';
+import { useAuth } from '@/contexts/auth-context';
+import { mockServices } from '@/lib/mock-data';
+import { MapPin, Users } from 'lucide-react';
+import { useMemo, useState } from 'react';
 
 export default function SearchPage() {
   const [searchQuery, setSearchQuery] = useState('');

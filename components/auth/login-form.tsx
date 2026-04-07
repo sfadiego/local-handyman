@@ -1,37 +1,26 @@
 'use client';
 
 import { LoginTabs } from '@/app/auth/useAuth';
-import { RoleType } from '@/enums/roleEnum';
+import type { UserRole } from '@prisma/client';
 import { Form, Formik } from 'formik';
 import { Eye, EyeOff, Lock, Mail } from 'lucide-react';
-import { useState } from 'react';
-import * as Yup from 'yup';
+import { useLoginForm } from './login/useLoginForm';
 
 interface LoginFormProps {
-  loginRole: RoleType;
+  loginRole: UserRole;
   switchTab: (tab: LoginTabs) => void;
 }
 
 export function LoginForm({ loginRole, switchTab }: LoginFormProps) {
-  const [showPassword, setShowPassword] = useState(false);
-
-  const initialValues = {
-    email: '',
-    password: '',
-  };
-
-  const validationSchema = Yup.object().shape({
-    email: Yup.string()
-      .required('El correo es requerido')
-      .email('Ingresa un correo válido'),
-    password: Yup.string().required('La contraseña es requerida'),
+  const {
+    initialValues,
+    validationSchema,
+    handleLogin,
+    showPassword,
+    setShowPassword,
+  } = useLoginForm({
+    loginRole,
   });
-
-  const handleLogin = (values: typeof initialValues) => {
-    console.log('Login values:', values, 'Role:', loginRole);
-    // TODO: Implement login logic with auth provider
-  };
-
   return (
     <>
       <h2 className="form-title fade-up d1">Bienvenido de vuelta</h2>
@@ -48,7 +37,6 @@ export function LoginForm({ loginRole, switchTab }: LoginFormProps) {
           handleChange,
           handleBlur,
           handleSubmit,
-          isSubmitting,
         }) => (
           <Form onSubmit={handleSubmit}>
             <div className="field fade-up d3">
@@ -116,8 +104,8 @@ export function LoginForm({ loginRole, switchTab }: LoginFormProps) {
 
             <button
               type="submit"
-              className={`btn-submit fade-up d5 ${isSubmitting ? 'loading' : ''}`}
-              disabled={isSubmitting}
+              className={`btn-submit fade-up d5`}
+              disabled={false}
             >
               <div className="spinner"></div>
               <span className="btn-text">Entrar a mi cuenta</span>

@@ -1,7 +1,7 @@
 'use client';
 
 import { LoginTabs } from '@/app/auth/useAuth';
-import { RoleType } from '@/enums/roleEnum';
+import { UserRole } from '@prisma/client';
 import { Form, Formik } from 'formik';
 import {
   Eye,
@@ -16,8 +16,8 @@ import {
 import { useRegister } from './register/useRegister';
 
 interface RegisterFormProps {
-  selectRegisterRole: (role: RoleType) => void;
-  registerRole: RoleType;
+  selectRegisterRole: (role: UserRole) => void;
+  registerRole: UserRole;
   switchTab: (tab: LoginTabs) => void;
 }
 
@@ -42,8 +42,8 @@ export function RegisterForm({
       <div className="role-selector fade-up d2" id="registerRoles">
         <button
           type="button"
-          className={`role-btn ${registerRole === 'client' ? 'active' : ''}`}
-          onClick={() => selectRegisterRole('client')}
+          className={`role-btn ${registerRole === UserRole.client ? 'active' : ''}`}
+          onClick={() => selectRegisterRole(UserRole.client)}
         >
           <div className="role-check">✓</div>
           <span className="role-icon">
@@ -54,8 +54,8 @@ export function RegisterForm({
         </button>
         <button
           type="button"
-          className={`role-btn ${registerRole === 'provider' ? 'active' : ''}`}
-          onClick={() => selectRegisterRole('provider')}
+          className={`role-btn ${registerRole === UserRole.provider ? 'active' : ''}`}
+          onClick={() => selectRegisterRole(UserRole.provider)}
         >
           <div className="role-check">✓</div>
           <span className="role-icon">
@@ -74,7 +74,6 @@ export function RegisterForm({
           handleChange,
           handleBlur,
           handleSubmit,
-          isSubmitting,
         }) => (
           <Form onSubmit={handleSubmit}>
             <div className="field-row fade-up d3">
@@ -333,8 +332,8 @@ export function RegisterForm({
 
             <button
               type="submit"
-              className={`btn-submit fade-up d5 ${isSubmitting ? 'loading' : ''}`}
-              disabled={isSubmitting}
+              className="btn-submit fade-up d5" //descomentar para agregar spiner ${isSubmitting ? 'loading' : ''}
+              disabled={false}
             >
               <div className="spinner"></div>
               <span className="btn-text">Crear mi cuenta gratis</span>
