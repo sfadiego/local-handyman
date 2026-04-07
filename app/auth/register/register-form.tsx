@@ -13,7 +13,7 @@ import {
   User,
   Wrench,
 } from 'lucide-react';
-import { useRegister } from './register/useRegister';
+import { useRegister } from './useRegister';
 
 interface RegisterFormProps {
   selectRegisterRole: (role: UserRole) => void;

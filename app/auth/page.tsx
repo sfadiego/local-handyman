@@ -1,8 +1,9 @@
 'use client';
-import { LoginForm } from '@/components/auth/login-form';
-import { RegisterForm } from '@/components/auth/register-form';
-import { SuccessRegister } from '@/components/auth/success-register';
+
 import './auth.css';
+import { LoginForm } from './login/login-form';
+import { RegisterForm } from './register/register-form';
+import { SuccessRegister } from './register/success-register';
 import { useAuth } from './useAuth';
 
 export default function AuthPage() {

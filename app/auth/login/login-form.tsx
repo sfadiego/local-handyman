@@ -4,7 +4,7 @@ import { LoginTabs } from '@/app/auth/useAuth';
 import type { UserRole } from '@prisma/client';
 import { Form, Formik } from 'formik';
 import { Eye, EyeOff, Lock, Mail } from 'lucide-react';
-import { useLoginForm } from './login/useLoginForm';
+import { useLoginForm } from './useLoginForm';
 
 interface LoginFormProps {
   loginRole: UserRole;
