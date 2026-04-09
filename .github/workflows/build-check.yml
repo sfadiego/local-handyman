@@ -11,7 +11,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-      DATABASE_URL: 'postgresql://postgres:postgres@localhost:5432/db'
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -29,9 +28,6 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-
-      - name: Generate Prisma Client
-        run: pnpm prisma generate
 
       - name: Run build
         run: pnpm run build
