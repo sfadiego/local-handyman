@@ -1,5 +1,5 @@
 'use client';
-import { UserRole } from '@prisma/client';
+import type { UserRole } from '@prisma/client';
 import { useState } from 'react';
 
 export type LoginTabs = 'login' | 'register' | 'success';

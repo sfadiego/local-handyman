@@ -1,4 +1,4 @@
-import { UserRole } from '@prisma/client';
+import type { UserRole } from '@prisma/client';
 import { useMemo } from 'react';
 import * as Yup from 'yup';
 
