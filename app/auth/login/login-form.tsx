@@ -3,7 +3,7 @@
 import { LoginTabs } from '@/app/auth/useAuth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import type { UserRole } from '@prisma/client';
+import { UserRole } from '@prisma/client';
 import { Form, Formik } from 'formik';
 import { Mail } from 'lucide-react';
 import { ILoginValues, useLoginForm } from './useLoginForm';

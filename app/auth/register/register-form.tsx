@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import Select from '@/components/ui/select';
-import type { UserRole } from '@prisma/client';
+import { UserRole } from '@prisma/client';
 import { Form, Formik } from 'formik';
 import { House, Lock, Mail, Phone, Wrench } from 'lucide-react';
 import Link from 'next/link';
