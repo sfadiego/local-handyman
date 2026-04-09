@@ -1,0 +1,32 @@
+model ProviderProfile {
+    id              String  @id @default(uuid())
+    userId          String  @unique
+    bio             String?
+    categoryId      String
+    experienceYears Int     @default(0)
+
+    // Pricing — solo uno de los dos rate fields tendrá valor según pricingType
+    pricingType PricingTypeEnum @default(hourly)
+    hourlyRate  Float? // MXN/hr
+    fixedRate   Float? // MXN por trabajo
+
+    ratingAvg    Float @default(0)
+    totalReviews Int   @default(0)
+    totalJobs    Int   @default(0)
+
+    isVerified  Boolean   @default(false)
+    isAvailable Boolean   @default(true)
+    verifiedAt  DateTime?
+    createdAt   DateTime  @default(now())
+    updatedAt   DateTime  @updatedAt
+
+    // Relations
+    user     User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+    requests ServiceRequest[] @relation("ProviderRequests")
+    quotes   Quote[]
+    category ServiceCategory  @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+    @@index([userId])
+    @@index([isAvailable, isVerified])
+    @@map("provider_profiles")
+}

@@ -1,0 +1,22 @@
+model Quote {
+    id         String @id @default(uuid())
+    requestId  String
+    providerId String
+
+    amount     Float
+    notes      String?
+    validHours Int             @default(24) // horas que tiene el cliente para decidir
+    status     QuoteStatusEnum @default(pending)
+
+    createdAt  DateTime  @default(now())
+    acceptedAt DateTime?
+    expiresAt  DateTime // = createdAt + validHours
+
+    // Relations
+    request  ServiceRequest  @relation(fields: [requestId], references: [id], onDelete: Cascade)
+    provider ProviderProfile @relation(fields: [providerId], references: [id])
+
+    @@index([requestId])
+    @@index([providerId])
+    @@map("quotes")
+}

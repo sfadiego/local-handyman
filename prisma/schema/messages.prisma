@@ -1,0 +1,18 @@
+model Message {
+    id        String @id @default(uuid())
+    requestId String
+    senderId  String
+
+    content String
+    isRead  Boolean @default(false)
+
+    sentAt DateTime @default(now())
+
+    // Relations
+    request ServiceRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+    sender  User           @relation(fields: [senderId], references: [id])
+
+    @@index([requestId])
+    @@index([senderId])
+    @@map("messages")
+}

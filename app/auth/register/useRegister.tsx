@@ -1,26 +1,38 @@
-import { RoleEnum } from '@/enums/roleEnum';
-import { useState } from 'react';
+import { UserRole } from '@prisma/client';
+import { useMemo } from 'react';
 import * as Yup from 'yup';
+
+export interface IRegisterValues {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  password: string;
+  category: string;
+  experience: string;
+  acceptTerms: boolean;
+}
 
 export const useRegister = ({
   registerRole,
   switchTab,
 }: {
-  registerRole: string;
+  registerRole: UserRole;
   switchTab: (tab: string) => void;
 }) => {
-  const [showPassword, setShowPassword] = useState<boolean>(false);
-
-  const initialValues = {
-    firstName: '',
-    lastName: '',
-    email: '',
-    phone: '',
-    password: '',
-    category: '',
-    experience: '',
-    acceptTerms: false,
-  };
+  const initialValues: IRegisterValues = useMemo(
+    () => ({
+      firstName: '',
+      lastName: '',
+      email: '',
+      phone: '',
+      password: '',
+      category: '',
+      experience: '',
+      acceptTerms: false,
+    }),
+    []
+  );
 
   const validationSchema = Yup.object().shape({
     firstName: Yup.string().required('Requerido'),
@@ -32,18 +44,18 @@ export const useRegister = ({
       .required('Contraseña requerida'),
     acceptTerms: Yup.boolean().oneOf([true], 'Debes aceptar los términos'),
     category: Yup.string().when([], {
-      is: () => registerRole === RoleEnum.PROVIDER,
+      is: () => registerRole === UserRole.provider,
       then: (schema) => schema.required('Selecciona una categoría'),
       otherwise: (schema) => schema.optional(),
     }),
     experience: Yup.string().when([], {
-      is: () => registerRole === RoleEnum.PROVIDER,
+      is: () => registerRole === UserRole.provider,
       then: (schema) => schema.required('Selecciona tu experiencia'),
       otherwise: (schema) => schema.optional(),
     }),
   });
 
-  const handleRegister = (values: typeof initialValues) => {
+  const handleRegister = (values: IRegisterValues) => {
     const submissionData = {
       ...values,
       role: registerRole,
@@ -61,8 +73,6 @@ export const useRegister = ({
     onSubmit: handleRegister,
   };
   return {
-    showPassword,
-    setShowPassword,
     formikProps,
   };
 };

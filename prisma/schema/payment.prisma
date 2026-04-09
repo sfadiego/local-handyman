@@ -1,0 +1,25 @@
+model Payment {
+    id        String @id @default(uuid())
+    requestId String @unique
+
+    amount         Float
+    platformFee    Float // comisión Oficio (15%)
+    providerPayout Float // amount - platformFee
+
+    pricingModel PricingTypeEnum // snapshot del modelo usado
+    hoursWorked  Float? // solo si pricingModel = hourly
+
+    status        PaymentStatusEnum @default(pending)
+    paymentMethod PaymentMethodEnum
+    externalRef   String? // ID Stripe / Conekta / OXXO
+
+    paidAt    DateTime?
+    createdAt DateTime  @default(now())
+    updatedAt DateTime  @updatedAt
+
+    // Relations
+    request ServiceRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+
+    @@index([requestId])
+    @@map("payments")
+}

@@ -1,0 +1,42 @@
+model ServiceRequest {
+    id         String  @id @default(uuid())
+    clientId   String
+    providerId String?
+
+    categoryId  String
+    title       String
+    description String
+    urgency     RequestUrgencyEnum @default(normal)
+    status      RequestStatusEnum  @default(pending)
+
+    // Pricing snapshot — copia del modelo al momento de crear la solicitud
+    pricingSnapshot PricingTypeEnum
+    estimatedHours  Float? // solo si pricingSnapshot = hourly
+    budgetMin       Float?
+    budgetMax       Float?
+    agreedPrice     Float? // precio pactado antes de iniciar
+    finalPrice      Float? // precio real al terminar
+
+    locationAddress String
+    locationLat     Float
+    locationLng     Float
+
+    scheduledAt DateTime?
+    completedAt DateTime?
+    createdAt   DateTime  @default(now())
+    updatedAt   DateTime  @updatedAt
+
+    // Relations
+    client   User             @relation("ClientRequests", fields: [clientId], references: [id])
+    provider ProviderProfile? @relation("ProviderRequests", fields: [providerId], references: [id])
+    quotes   Quote[]
+    review   Review?
+    messages Message[]
+    payment  Payment?
+    category ServiceCategory  @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+    @@index([clientId])
+    @@index([providerId])
+    @@index([locationLat, locationLng])
+    @@map("service_requests")
+}
