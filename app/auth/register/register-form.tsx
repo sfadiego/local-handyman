@@ -1,11 +1,10 @@
 'use client';
 
-import { LoginTabs } from '@/app/auth/useAuth';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import Select from '@/components/ui/select';
-import { UserRole } from '@prisma/client';
+import { LoginTabs, UserRole } from '@/types/auth';
 import { Form, Formik } from 'formik';
 import { House, Lock, Mail, Phone, Wrench } from 'lucide-react';
 import Link from 'next/link';
@@ -36,7 +35,7 @@ export function RegisterForm({
 
       {/* Role selector */}
       <div className="role-selector fade-up d2" id="registerRoles">
-        <button
+        <Button
           type="button"
           className={`role-btn ${registerRole === UserRole.client ? 'active' : ''}`}
           onClick={() => selectRegisterRole(UserRole.client)}
@@ -47,8 +46,8 @@ export function RegisterForm({
           </span>
           <span className="role-name">Soy cliente</span>
           <span className="role-desc">Quiero contratar</span>
-        </button>
-        <button
+        </Button>
+        <Button
           type="button"
           className={`role-btn ${registerRole === UserRole.provider ? 'active' : ''}`}
           onClick={() => selectRegisterRole(UserRole.provider)}
@@ -59,7 +58,7 @@ export function RegisterForm({
           </span>
           <span className="role-name">Soy maestro</span>
           <span className="role-desc">Quiero ofrecer servicios</span>
-        </button>
+        </Button>
       </div>
 
       <Formik enableReinitialize {...formikProps}>
@@ -213,7 +212,7 @@ export function RegisterForm({
 
       <div className="divider fade-up d5">o regístrate con</div>
 
-      <button className="btn-social fade-up d6" type="button">
+      <Button className="btn-social fade-up d6" type="button">
         <img
           src="/resources/svg/google.svg"
           alt="Google"
@@ -221,11 +220,11 @@ export function RegisterForm({
           height={18}
         />
         Continuar con Google
-      </button>
+      </Button>
 
       <div className="switch-link fade-up d6">
         ¿Ya tienes cuenta?
-        <a
+        <Link
           href="#"
           onClick={(e) => {
             e.preventDefault();
@@ -233,7 +232,7 @@ export function RegisterForm({
           }}
         >
           Iniciar sesión
-        </a>
+        </Link>
       </div>
     </>
   );

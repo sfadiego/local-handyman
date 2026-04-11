@@ -5,6 +5,8 @@ interface ButtonProps {
   disabled?: boolean;
   onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
   loading?: boolean;
+  style?: React.CSSProperties;
+  id?: string;
 }
 
 export const Button = ({
@@ -14,13 +16,17 @@ export const Button = ({
   disabled = false,
   onClick,
   loading = false,
+  style = {},
+  id,
 }: ButtonProps) => {
   return (
     <button
+      {...(id ? { id } : {})}
       className={`${className} ${loading ? 'loading' : ''}`}
       type={type}
       disabled={disabled || loading}
       onClick={onClick}
+      style={style}
     >
       {children}
     </button>

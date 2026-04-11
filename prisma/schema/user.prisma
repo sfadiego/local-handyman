@@ -1,6 +1,7 @@
 model User {
     id           String   @id @default(uuid())
-    fullName     String
+    firstName    String
+    lastName     String
     email        String   @unique
     phone        String
     passwordHash String
@@ -9,6 +10,8 @@ model User {
     lat          Float?
     lng          Float?
     city         String?
+    state        String?
+    address      String?
     createdAt    DateTime @default(now())
     updatedAt    DateTime @updatedAt
 

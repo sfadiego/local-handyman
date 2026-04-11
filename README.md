@@ -40,6 +40,12 @@ to seed database, run:
 pnpx prisma db seed
 ```
 
+To push the database, run:
+
+```bash
+pnpx prisma db push
+```
+
 # Docker
 
 configura el archivo .env con las variables de entorno necesarias para docker

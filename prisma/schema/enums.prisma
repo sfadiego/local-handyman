@@ -65,3 +65,11 @@ enum NotificationTypeEnum {
   new_message
   new_review
 }
+
+enum ExperienceLevelEnum {
+  less_than_one
+  one_to_three
+  three_to_five
+  five_to_ten
+  more_than_ten
+}

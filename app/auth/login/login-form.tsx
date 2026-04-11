@@ -1,11 +1,11 @@
 'use client';
 
-import { LoginTabs } from '@/app/auth/useAuth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { UserRole } from '@prisma/client';
+import { LoginTabs, UserRole } from '@/types/auth';
 import { Form, Formik } from 'formik';
 import { Mail } from 'lucide-react';
+import Link from 'next/link';
 import { ILoginValues, useLoginForm } from './useLoginForm';
 
 interface LoginFormProps {
@@ -51,7 +51,7 @@ export function LoginForm({ loginRole, switchTab }: LoginFormProps) {
             </div>
 
             <div className="forgot-row fade-up d4">
-              <a href="#">¿Olvidaste tu contraseña?</a>
+              <Link href="#">¿Olvidaste tu contraseña?</Link>
             </div>
 
             <Button
@@ -80,7 +80,7 @@ export function LoginForm({ loginRole, switchTab }: LoginFormProps) {
 
       <div className="switch-link fade-up d6">
         ¿No tienes cuenta?
-        <a
+        <Link
           href="#"
           onClick={(e) => {
             e.preventDefault();
@@ -88,7 +88,7 @@ export function LoginForm({ loginRole, switchTab }: LoginFormProps) {
           }}
         >
           Regístrate gratis
-        </a>
+        </Link>
       </div>
     </>
   );

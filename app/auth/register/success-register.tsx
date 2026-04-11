@@ -1,4 +1,5 @@
-import { LoginTabs } from '@/app/auth/useAuth';
+import { Button } from '@/components/ui/button';
+import { LoginTabs } from '@/types/auth';
 import { PartyPopper } from 'lucide-react';
 
 export const SuccessRegister = ({
@@ -34,15 +35,11 @@ export const SuccessRegister = ({
       >
         Ya puedes empezar a explorar servicios cerca de ti.
       </p>
-      <button
-        className="btn-submit"
-        onClick={() => switchTab('login')}
-        style={{ marginBottom: '0' }}
-      >
+      <Button className="btn-submit mb-0" onClick={() => switchTab('login')}>
         <span className="btn-text" id="successBtn">
           Ir a mi cuenta →
         </span>
-      </button>
+      </Button>
     </div>
   );
 };

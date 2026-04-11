@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   Cloud,
   Glasses,
@@ -38,7 +37,7 @@ export default function ServicesMarquee() {
         <div className="marquee-track">
           {items.map((service, i) => (
             <div key={i} className="marquee-item">
-              <span>{service.icon}</span>
+              {service.icon && <span>{service.icon}</span>}
               <span>{service.label}</span>
             </div>
           ))}

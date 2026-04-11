@@ -1,13 +1,11 @@
 'use client';
-import { UserRole } from '@prisma/client';
+import { LoginTabs, UserRole } from '@/types/auth';
 import { useState } from 'react';
-
-export type LoginTabs = 'login' | 'register' | 'success';
 
 export function useAuth() {
   const [currentTab, setCurrentTab] = useState<LoginTabs>('login');
-  const [loginRole, setLoginRole] = useState<UserRole>('client');
-  const [registerRole, setRegisterRole] = useState<UserRole>('client');
+  const [loginRole, setLoginRole] = useState<UserRole>(UserRole.client);
+  const [registerRole, setRegisterRole] = useState<UserRole>(UserRole.client);
 
   const switchTab = (tab: LoginTabs) => setCurrentTab(tab);
 

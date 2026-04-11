@@ -1,4 +1,4 @@
-import { UserRole } from '@prisma/client';
+import { UserRole } from '@/types/auth';
 import { useMemo } from 'react';
 import * as Yup from 'yup';
 
@@ -8,8 +8,13 @@ export interface IRegisterValues {
   email: string;
   phone: string;
   password: string;
-  category: string;
-  experience: string;
+  role: UserRole;
+  avatarUrl: string;
+  lat: number;
+  lng: number;
+  city: string;
+  state: string;
+  address: string;
   acceptTerms: boolean;
 }
 
@@ -27,8 +32,13 @@ export const useRegister = ({
       email: '',
       phone: '',
       password: '',
-      category: '',
-      experience: '',
+      role: registerRole,
+      avatarUrl: '',
+      lat: 0,
+      lng: 0,
+      city: '',
+      state: '',
+      address: '',
       acceptTerms: false,
     }),
     []
