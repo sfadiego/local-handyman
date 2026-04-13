@@ -1,7 +1,7 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { Input } from '@/components/ui/form/input';
 import { LoginTabs, UserRole } from '@/types/auth';
 import { Form, Formik } from 'formik';
 import { Mail } from 'lucide-react';
@@ -36,6 +36,7 @@ export function LoginForm({ loginRole, switchTab }: LoginFormProps) {
                 label="Correo electrónico"
                 placeholder="tu@correo.com"
                 formik={formik}
+                className="input-wrap"
                 Icon={<Mail width={16} height={16} />}
               />
             </div>
@@ -45,6 +46,7 @@ export function LoginForm({ loginRole, switchTab }: LoginFormProps) {
                 type="password"
                 name="password"
                 label="Contraseña"
+                className="input-wrap"
                 placeholder="••••••••"
                 formik={formik}
               />

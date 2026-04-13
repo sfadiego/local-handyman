@@ -1,17 +1,19 @@
 import { Field, FormikProps } from 'formik';
 import { Eye, EyeOff } from 'lucide-react';
 import { useState } from 'react';
-export type inputType = 'email' | 'text' | 'password' | 'tel';
+export type inputType = 'email' | 'text' | 'password' | 'tel' | 'textarea';
 export type InputVariants = 'default' | 'disabled' | 'error';
 
 interface InputProps<T> {
   name: Extract<keyof T, string>;
-  label: string;
+  label?: string;
   type?: inputType;
   Icon?: React.ReactNode;
   placeholder: string;
   disabled?: boolean;
   formik?: FormikProps<T>;
+  className?: string;
+  rows?: number;
 }
 
 const useInputVariant = (variant: InputVariants) => {
@@ -34,6 +36,8 @@ export const Input = <T extends object>(props: InputProps<T>) => {
     formik,
     type = 'text',
     Icon,
+    className,
+    rows,
   } = props;
 
   const variant = formik.errors[name]
@@ -46,8 +50,8 @@ export const Input = <T extends object>(props: InputProps<T>) => {
   const inputClass = useInputVariant(variant);
   return (
     <>
-      <label htmlFor={name}>{label}</label>
-      <div className="input-wrap">
+      {label && <label htmlFor={name}>{label}</label>}
+      <div className={`${className}`}>
         {inputIcon}
         <Field
           type={showPassword ? 'text' : 'password'}
@@ -55,6 +59,7 @@ export const Input = <T extends object>(props: InputProps<T>) => {
           name={name}
           placeholder={placeholder}
           className={inputClass}
+          {...(type === 'textarea' ? { rows } : {})}
         />
         {type === 'password' && (
           <button

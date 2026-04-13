@@ -1,3 +1,4 @@
+import { ActiveRequestList } from '@/app/dashboard/activeRequest/active-request-list';
 import {
   CheckSquare,
   LucideIcon,
@@ -6,9 +7,8 @@ import {
   Star,
   Wrench,
 } from 'lucide-react';
+import DashboardCard from '../card/dashboard-card';
 import { Button } from '../ui/button';
-import { ActiveRequestList } from './activeRequest/active-request-list';
-import DashboardCard from './cards/dashboard-card';
 
 export const Content = () => {
   const cards: {

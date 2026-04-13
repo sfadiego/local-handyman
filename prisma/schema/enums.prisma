@@ -20,9 +20,9 @@ enum RequestStatusEnum {
   accepted // maestro aceptó y precio acordado
   in_progress // trabajo en curso
   completed // trabajo terminado, pendiente de pago
-  paid // pagado y cerrado
+  paid // El pago fue procesado y liberado al maestro. Estado final exitoso
   cancelled
-  disputed
+  disputed // El cliente o maestro abrió una disputa al terminar el trabajo (precio incorrecto, trabajo incompleto, etc.). Requiere intervención de soporte.
 }
 
 enum RequestUrgencyEnum {

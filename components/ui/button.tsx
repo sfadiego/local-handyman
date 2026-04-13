@@ -7,7 +7,24 @@ interface ButtonProps {
   loading?: boolean;
   style?: React.CSSProperties;
   id?: string;
+  buttonStyle?: 'dark' | 'none';
 }
+
+const configButtonStyle = {
+  none: {},
+  dark: {
+    flex: 1,
+    padding: '0.75rem',
+    background: 'var(--charcoal)',
+    color: 'white',
+    fontFamily: 'Syne',
+    fontWeight: 700,
+    fontSize: '0.875rem',
+    border: 'none',
+    borderRadius: '12px',
+    cursor: 'pointer',
+  },
+};
 
 export const Button = ({
   children,
@@ -18,7 +35,9 @@ export const Button = ({
   loading = false,
   style = {},
   id,
+  buttonStyle = 'none',
 }: ButtonProps) => {
+  const selectedStyle = configButtonStyle[buttonStyle];
   return (
     <button
       {...(id ? { id } : {})}
@@ -26,7 +45,7 @@ export const Button = ({
       type={type}
       disabled={disabled || loading}
       onClick={onClick}
-      style={style}
+      style={{ ...selectedStyle, ...style }}
     >
       {children}
     </button>

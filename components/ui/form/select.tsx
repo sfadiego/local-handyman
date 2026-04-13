@@ -22,7 +22,7 @@ const Select = <T,>({
   return (
     <>
       <label htmlFor={name}>{label}</label>
-      <div className={`input-wrap select-wrap ${className}`}>
+      <div className={`${className}`}>
         <select
           id={name}
           name={name}

@@ -4,11 +4,37 @@ interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
   children: React.ReactNode;
-  title: string;
-  subtitle?: string;
+  closeButtonStyleType?: 'simple' | 'button';
 }
 
-const Modal = ({ isOpen, onClose, children, title, subtitle }: ModalProps) => {
+const closeButtonStyles = {
+  simple: {
+    width: '100%',
+    marginTop: '.6rem',
+    padding: '.6rem',
+    background: 'none',
+    border: 'none',
+    color: 'var(--warm-gray)',
+    fontSize: '.83rem',
+    cursor: 'pointer',
+  },
+  button: {
+    padding: '0.75rem 1.2rem',
+    background: 'none',
+    border: '1.5px solid var(--border)',
+    borderRadius: '12px',
+    cursor: 'pointer',
+    fontSize: '0.875rem',
+    color: 'var(--warm-gray)',
+  },
+};
+
+const Modal = ({
+  isOpen,
+  onClose,
+  children,
+  closeButtonStyleType = 'simple',
+}: ModalProps) => {
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
@@ -28,37 +54,10 @@ const Modal = ({ isOpen, onClose, children, title, subtitle }: ModalProps) => {
   return (
     <div className={`modal-overlay ${isOpen ? 'show' : ''}`}>
       <div className="modal">
-        <div style={{ textAlign: 'center', marginBottom: '.5rem' }}>
-          <div style={{ fontSize: '2.5rem', marginBottom: '.5rem' }}>🪵</div>
-          <h3
-            className="syne"
-            style={{
-              fontSize: '1.2rem',
-              fontWeight: 800,
-              marginBottom: '.25rem',
-            }}
-          >
-            {title}
-          </h3>
-          {subtitle && (
-            <p style={{ fontSize: '.83rem', color: 'var(--warm-gray)' }}>
-              {subtitle}
-            </p>
-          )}
-        </div>
         {children}
         <button
           onClick={onClose}
-          style={{
-            width: '100%',
-            marginTop: '.6rem',
-            padding: '.6rem',
-            background: 'none',
-            border: 'none',
-            color: 'var(--warm-gray)',
-            fontSize: '.83rem',
-            cursor: 'pointer',
-          }}
+          style={closeButtonStyles[closeButtonStyleType]}
         >
           Cancelar
         </button>

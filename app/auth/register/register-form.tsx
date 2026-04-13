@@ -1,9 +1,9 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Input } from '@/components/ui/input';
-import Select from '@/components/ui/select';
+import { Checkbox } from '@/components/ui/form/checkbox';
+import { Input } from '@/components/ui/form/input';
+import Select from '@/components/ui/form/select';
 import { LoginTabs, UserRole } from '@/types/auth';
 import { Form, Formik } from 'formik';
 import { House, Lock, Mail, Phone, Wrench } from 'lucide-react';
@@ -68,6 +68,7 @@ export function RegisterForm({
               <div className="field">
                 <Input<IRegisterValues>
                   type="text"
+                  className="input-wrap"
                   name="firstName"
                   label="Nombre"
                   placeholder="Juan"
@@ -77,6 +78,7 @@ export function RegisterForm({
               <div className="field">
                 <Input<IRegisterValues>
                   type="text"
+                  className="input-wrap"
                   name="lastName"
                   label="Apellido"
                   placeholder="Pérez"
@@ -88,6 +90,7 @@ export function RegisterForm({
             <div className="field fade-up d3">
               <Input<IRegisterValues>
                 type="email"
+                className="input-wrap"
                 placeholder="Correo electrónico"
                 name="email"
                 formik={formik}
@@ -99,6 +102,7 @@ export function RegisterForm({
             <div className="field fade-up d4">
               <Input<IRegisterValues>
                 type="tel"
+                className="input-wrap"
                 placeholder="Teléfono"
                 name="phone"
                 formik={formik}
@@ -133,7 +137,7 @@ export function RegisterForm({
                 <div className="field">
                   <Select
                     name="category"
-                    className=""
+                    className="input-wrap select-wrap"
                     formik={formik}
                     label="Categoría principal"
                     options={[
@@ -159,7 +163,7 @@ export function RegisterForm({
                 <div className="field">
                   <Select
                     name="experience"
-                    className=""
+                    className="input-wrap select-wrap"
                     formik={formik}
                     label="Años de experiencia"
                     options={[
@@ -187,6 +191,7 @@ export function RegisterForm({
               <Input<IRegisterValues>
                 type="password"
                 name="password"
+                className="input-wrap"
                 label="Contraseña"
                 placeholder="Mínimo 8 caracteres"
                 formik={formik}

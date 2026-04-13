@@ -1,6 +1,9 @@
+import { useModal } from '@/components/modal/useModal';
+import { RequestStatusEnum } from '@prisma/client';
 import { LucideIcon, Wrench, Zap } from 'lucide-react';
 import Link from 'next/link';
-import ModalScore from './modal-score';
+import ModalScore from './partials/modal-score';
+import ModalServiceDetails from './partials/modal-service-details';
 import RequestListItem from './request-list-item';
 
 const cards: {
@@ -19,7 +22,7 @@ const cards: {
     category: 'Plomería',
     meta: '📍 1.2 km · Hoy 14:30 hrs',
     price: '$350',
-    status: 'En camino',
+    status: RequestStatusEnum.in_progress,
   },
   {
     Icon: Zap,
@@ -28,7 +31,7 @@ const cards: {
     category: 'Electricidad',
     meta: '📍 1.2 km · Hoy 14:30 hrs',
     price: '$450',
-    status: 'Confirmado',
+    status: RequestStatusEnum.accepted,
   },
   {
     Icon: Wrench,
@@ -37,7 +40,7 @@ const cards: {
     category: 'Carpintería',
     meta: '📍 1.2 km · Hoy 14:30 hrs',
     price: '$250',
-    status: 'Calificar',
+    status: RequestStatusEnum.paid,
   },
 ];
 interface IActiveRequestList {
@@ -45,6 +48,12 @@ interface IActiveRequestList {
   className?: string;
 }
 export const ActiveRequestList = ({ title, className }: IActiveRequestList) => {
+  const { isOpen, openModal, closeModal } = useModal();
+  const {
+    isOpen: isProgressOpen,
+    openModal: openProgressModal,
+    closeModal: closeProgressModal,
+  } = useModal();
   return (
     <>
       <div className={`card fu d2 ${className || ''}`}>
@@ -55,11 +64,26 @@ export const ActiveRequestList = ({ title, className }: IActiveRequestList) => {
           </Link>
         </div>
 
-        {cards.map((item, index) => (
-          <RequestListItem key={index} {...item} />
-        ))}
+        {cards.map((item, index) => {
+          const handleClick = () => {
+            // seleccionar la solicitud y abrir el modal
+            if (item.status === RequestStatusEnum.paid) {
+              openModal();
+            }
+            if (item.status === RequestStatusEnum.in_progress) {
+              openProgressModal();
+            }
+          };
+          return (
+            <RequestListItem key={index} {...item} onClick={handleClick} />
+          );
+        })}
       </div>
-      <ModalScore isOpen={true} onClose={() => {}} />
+      <ModalScore isOpen={isOpen} onClose={closeModal} />
+      <ModalServiceDetails
+        isOpen={isProgressOpen}
+        onClose={closeProgressModal}
+      />
     </>
   );
 };
