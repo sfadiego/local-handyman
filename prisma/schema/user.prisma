@@ -5,7 +5,7 @@ model User {
     email        String   @unique
     phone        String
     passwordHash String
-    role         UserRole @default(client)
+    role         UserRole @default(customer)
     avatarUrl    String?
     lat          Float?
     lng          Float?

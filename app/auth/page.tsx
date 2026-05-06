@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import './auth.css';
 import { LoginForm } from './login/login-form';
 import { RegisterForm } from './register/register-form';
@@ -7,22 +8,21 @@ import { SuccessRegister } from './register/success-register';
 import { useAuth } from './useAuth';
 
 export default function AuthPage() {
-  const { switchTab, currentTab, selectRegisterRole, registerRole, loginRole } =
-    useAuth();
+  const { switchTab, currentTab, selectRegisterRole, registerRole } = useAuth();
   return (
     <>
-      <a href="/" className="back-home">
+      <Link href="/" className="back-home">
         ← Inicio
-      </a>
+      </Link>
       <div className="page">
         {/* ══════════════ LEFT PANEL ══════════════ */}
         <div className="left-panel">
           <div className="grid-lines"></div>
 
           {/* Logo */}
-          <a href="#" className="logo fade-in">
+          <Link href="/" className="logo fade-in">
             oficio<span>.</span>
-          </a>
+          </Link>
 
           {/* Main content */}
           <div className="left-content">
@@ -131,7 +131,7 @@ export default function AuthPage() {
               className={currentTab === 'login' ? '' : 'hidden'}
               id="loginForm"
             >
-              <LoginForm loginRole={loginRole} switchTab={switchTab} />
+              <LoginForm switchTab={switchTab} />
             </div>
 
             <div

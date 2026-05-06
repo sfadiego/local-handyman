@@ -1,8 +1,10 @@
 'use client';
 
+import { loginAction, logoutAction } from '@/actions/auth';
 import { ILoginValues } from '@/app/auth/login/useLoginForm';
 import { IRegisterValues } from '@/app/auth/register/useRegister';
 import { userSeed } from '@/prisma/seeds/user-seed';
+import { AuthRoutes } from '@/routes/routes';
 import { User } from '@prisma/client';
 import {
   createContext,
@@ -16,43 +18,39 @@ import {
 export interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
-  login: ({ email, password }: ILoginValues) => Promise<boolean>;
+  login: ({ email, password }: ILoginValues) => Promise<User | boolean>;
   logout: () => void;
   register: (data: IRegisterValues) => Promise<boolean>;
 }
 
 export const AuthContext = createContext<AuthContextType | null>(null);
 
-const generateFakeToken = (userId: string) =>
-  `mock_token_${userId}_${Date.now()}`;
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [authToken, setAuthToken] = useState<string | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const savedToken = localStorage.getItem('authToken');
     const savedUser = localStorage.getItem('user');
 
-    if (savedToken && savedUser) {
-      setAuthToken(savedToken);
+    if (savedUser) {
       setUser(JSON.parse(savedUser));
     }
     setIsLoading(false);
   }, []);
 
-  const login = async ({ email, password }: ILoginValues): Promise<boolean> => {
+  const login = async ({
+    email,
+    password,
+  }: ILoginValues): Promise<User | boolean> => {
     // Simulate API call
     await new Promise((resolve) => setTimeout(resolve, 1000));
     const user = userSeed.find((u) => u.email === email);
     const isPasswordValid = password === user?.passwordHash;
     if (user && isPasswordValid) {
-      const mockToken = generateFakeToken(user.id);
-      localStorage.setItem('authToken', mockToken);
+      await loginAction(user);
       localStorage.setItem('user', JSON.stringify(user));
-      setAuthToken(mockToken);
       setUser(user);
-      return true;
+      return user;
     }
     return false;
   };
@@ -78,11 +76,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         updatedAt: new Date(),
       };
 
-      const mockToken = generateFakeToken(newUser.id);
-      localStorage.setItem('authToken', mockToken);
+      await loginAction(newUser);
       localStorage.setItem('user', JSON.stringify(newUser));
-
-      setAuthToken(mockToken);
       setUser(newUser);
       return true;
     } catch {
@@ -90,15 +85,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const logout = useCallback(() => {
-    localStorage.removeItem('authToken');
+  const logout = useCallback(async () => {
+    await logoutAction();
     localStorage.removeItem('user');
-    setAuthToken(null);
     setUser(null);
-    window.location.replace('/auth');
+    window.location.replace(AuthRoutes.AUTH);
   }, []);
 
-  const isAuthenticated = !!authToken;
+  const isAuthenticated = !!user;
   const contextValue = useMemo(
     () => ({
       user,
@@ -108,7 +102,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       logout,
       register,
     }),
-    [user, authToken, isLoading, logout]
+    [user, isLoading, logout]
   );
   return (
     <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>

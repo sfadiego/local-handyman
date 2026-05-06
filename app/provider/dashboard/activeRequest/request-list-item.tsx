@@ -1,7 +1,7 @@
 import { LucideIcon } from 'lucide-react';
 
 interface IListItem {
-  Icon: LucideIcon;
+  Icon?: LucideIcon;
   title: string;
   sub: string;
   meta: string;
@@ -21,7 +21,7 @@ const RequestListItem = ({
   return (
     <div className="request-item" onClick={onClick}>
       <div className="req-icon" style={{ background: 'rgba(59,130,246,.1)' }}>
-        <Icon />
+        {Icon && <Icon />}
       </div>
       <div style={{ flex: 1, minWidth: 0 }}>
         <div className="req-title">{title}</div>

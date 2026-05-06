@@ -1,15 +1,17 @@
 import { LucideIcon } from 'lucide-react';
 
+export type cardVariant = 'default' | 'success' | 'neutral' | 'dark';
+
 interface CardProps {
   Icon: LucideIcon;
   number: string;
   label: string;
   change: string;
   className?: string;
-  variant?: 'default' | 'success' | 'neutral' | 'dark';
+  variant?: cardVariant;
 }
 
-const variantConfig = (variant: 'default' | 'success' | 'neutral' | 'dark') => {
+const variantConfig = (variant: cardVariant) => {
   switch (variant) {
     case 'default':
       return {

@@ -2,21 +2,18 @@
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/form/input';
-import { LoginTabs, UserRole } from '@/types/auth';
+import { LoginTabs } from '@/types/auth';
 import { Form, Formik } from 'formik';
 import { Mail } from 'lucide-react';
 import Link from 'next/link';
 import { ILoginValues, useLoginForm } from './useLoginForm';
 
 interface LoginFormProps {
-  loginRole: UserRole;
   switchTab: (tab: LoginTabs) => void;
 }
 
-export function LoginForm({ loginRole, switchTab }: LoginFormProps) {
-  const { initialValues, validationSchema, handleLogin } = useLoginForm({
-    loginRole,
-  });
+export function LoginForm({ switchTab }: LoginFormProps) {
+  const { initialValues, validationSchema, handleLogin } = useLoginForm();
 
   return (
     <>
@@ -58,11 +55,11 @@ export function LoginForm({ loginRole, switchTab }: LoginFormProps) {
 
             <Button
               type="submit"
-              className={`btn-submit fade-up d5`}
-              disabled={false}
+              className={`btn-submit fade-up d5 `}
+              disabled={formik.isSubmitting || !formik.isValid}
+              loading={formik.isSubmitting}
             >
-              <div className="spinner"></div>
-              <span className="btn-text">Entrar a mi cuenta</span>
+              Entrar a mi cuenta
             </Button>
           </Form>
         )}

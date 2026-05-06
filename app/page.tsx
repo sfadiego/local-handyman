@@ -9,7 +9,7 @@ import ServicesMarquee from '@/components/landing/ServicesMarquee';
 import UserTypeSection from '@/components/landing/UserTypeSection';
 import Footer from '@/components/layout/footer';
 
-export default function HomePage() {
+export default function LandPage() {
   return (
     <>
       <Navbar />

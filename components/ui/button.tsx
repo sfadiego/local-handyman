@@ -47,6 +47,7 @@ export const Button = ({
       onClick={onClick}
       style={{ ...selectedStyle, ...style }}
     >
+      {loading && <div className="spinner"></div>}
       {children}
     </button>
   );

@@ -1,3 +1,7 @@
+import { useAuthContext } from '@/hooks/useAuthContext';
+import { ProviderRoutes } from '@/routes/routes';
+import { useRouter } from 'next/navigation';
+import { toast } from 'react-toastify';
 import * as Yup from 'yup';
 
 export interface ILoginValues {
@@ -5,7 +9,9 @@ export interface ILoginValues {
   password: string;
 }
 
-export const useLoginForm = ({ loginRole }) => {
+export const useLoginForm = () => {
+  const { login } = useAuthContext();
+  const router = useRouter();
   const initialValues: ILoginValues = {
     email: '',
     password: '',
@@ -18,9 +24,18 @@ export const useLoginForm = ({ loginRole }) => {
     password: Yup.string().required('La contraseña es requerida'),
   });
 
-  const handleLogin = (values: ILoginValues) => {
-    console.log('Login values:', values, 'Role:', loginRole);
-    // TODO: Implement login logic with auth provider
+  const handleLogin = async (values: ILoginValues) => {
+    const userLogin = await login({
+      email: values.email,
+      password: values.password,
+    });
+
+    if (!userLogin) {
+      toast.error('Credenciales incorrectas');
+      return;
+    }
+
+    router.push(ProviderRoutes.DASHBOARD);
   };
 
   return {

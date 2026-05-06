@@ -54,7 +54,7 @@ export const Input = <T extends object>(props: InputProps<T>) => {
       <div className={`${className}`}>
         {inputIcon}
         <Field
-          type={showPassword ? 'text' : 'password'}
+          type={type === 'password' && showPassword ? 'text' : type}
           id={name}
           name={name}
           placeholder={placeholder}

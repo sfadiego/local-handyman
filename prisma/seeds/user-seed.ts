@@ -25,7 +25,7 @@ export const userSeed: User[] = [
     email: 'cliente@tuguiapro.com',
     phone: '+56912345678',
     passwordHash: 'password',
-    role: UserRole.client,
+    role: UserRole.customer,
     avatarUrl: undefined,
     lat: undefined,
     lng: undefined,

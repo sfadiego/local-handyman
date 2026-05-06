@@ -26,6 +26,8 @@
   "include": [
     "next-env.d.ts",
     ".next/types/**/*.ts",
+    "actions/**/*.ts",
+    "proxy.ts",
     "app/**/*.ts",
     "app/**/*.tsx",
     "components/**/*.ts",

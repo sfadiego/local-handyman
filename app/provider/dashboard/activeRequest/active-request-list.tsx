@@ -7,7 +7,7 @@ import ModalServiceDetails from './partials/modal-service-details';
 import RequestListItem from './request-list-item';
 
 const cards: {
-  Icon: LucideIcon;
+  Icon?: LucideIcon;
   title: string;
   sub: string;
   category: string;

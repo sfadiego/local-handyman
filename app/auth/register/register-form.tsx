@@ -37,8 +37,8 @@ export function RegisterForm({
       <div className="role-selector fade-up d2" id="registerRoles">
         <Button
           type="button"
-          className={`role-btn ${registerRole === UserRole.client ? 'active' : ''}`}
-          onClick={() => selectRegisterRole(UserRole.client)}
+          className={`role-btn ${registerRole === UserRole.customer ? 'active' : ''}`}
+          onClick={() => selectRegisterRole(UserRole.customer)}
         >
           <div className="role-check">✓</div>
           <span className="role-icon">
