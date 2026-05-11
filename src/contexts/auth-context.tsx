@@ -1,18 +1,18 @@
 'use client';
 
-import { getUserFromCookie, loginAction, logoutAction } from '@/actions/auth';
+import { loginAction, logoutAction } from '@/actions/auth';
 import { ILoginValues } from '@/app/auth/login/useLoginForm';
 import { IRegisterValues } from '@/app/auth/register/useRegister';
 import { comparePassword, encryptPassword } from '@/lib/encript';
 import { TokenPayload } from '@/lib/jwt';
 import { AuthRoutes } from '@/routes/paths';
+// import { logger } from '@/lib/logger.plugin';
 import { createUser, searchUser } from '@/services/user/user.service';
 import { User } from '@prisma/client';
 import {
   createContext,
   ReactNode,
   useCallback,
-  useEffect,
   useMemo,
   useState,
 } from 'react';
@@ -27,15 +27,15 @@ export interface AuthContextType {
 
 export const AuthContext = createContext<AuthContextType | null>(null);
 
-export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<TokenPayload | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    getUserFromCookie()
-      .then((user) => setUser(user))
-      .finally(() => setIsLoading(false));
-  }, []);
+interface AuthProviderProps {
+  children: ReactNode;
+  initialUser?: TokenPayload | null;
+}
+export function AuthProvider({
+  children,
+  initialUser = null,
+}: AuthProviderProps) {
+  const [user, setUser] = useState<TokenPayload | null>(initialUser || null);
 
   const login = async ({
     email,
@@ -76,14 +76,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUser(newUser);
       return true;
     } catch (error) {
-      console.error(error);
+      // logger.error(error);
+      console.log(error);
       return false;
     }
   };
 
   const logout = useCallback(async () => {
     await logoutAction();
-    // implement logout borrando cookie de session
     setUser(null);
     window.location.replace(AuthRoutes.AUTH);
   }, []);
@@ -93,12 +93,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     () => ({
       user,
       isAuthenticated,
-      isLoading,
       login,
       logout,
       register,
     }),
-    [user, isLoading, logout]
+    [user, logout]
   );
   return (
     <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>

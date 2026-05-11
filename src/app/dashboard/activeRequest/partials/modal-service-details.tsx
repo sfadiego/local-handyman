@@ -1,3 +1,4 @@
+'use client';
 import { Avatar } from '@/components/avatar/avatar';
 import AvatarInfo from '@/components/avatar/avatar-info';
 import { Badge } from '@/components/badges/badge';
@@ -27,7 +28,7 @@ const ModalServiceDetails = ({
             borderBottom: '1px solid var(--border)',
           }}
         >
-          <Avatar name="JM" />
+          <Avatar />
           <AvatarInfo style={{ fontWeight: 700, fontSize: '1rem' }} name="JM">
             <div style={{ fontSize: '0.78rem', color: 'var(--warm-gray)' }}>
               Plomero · ★★★★★ 4.971123123123

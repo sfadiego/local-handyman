@@ -139,7 +139,7 @@ export default function AuthPage() {
               id="registerForm"
             >
               <RegisterForm
-                switchTab={switchTab}
+                // switchTab={switchTab}
                 selectRegisterRole={selectRegisterRole}
                 registerRole={registerRole}
               />

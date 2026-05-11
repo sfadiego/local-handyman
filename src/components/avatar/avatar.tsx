@@ -1,7 +1,10 @@
+'use client';
+import { useAuthContext } from '@/hooks/useAuthContext';
+
+export type AvatarStyles = 'default' | 'navbar' | 'empty';
 interface AvatarProps {
-  name: string;
   className?: string;
-  useDefaultStyle?: boolean;
+  style?: AvatarStyles;
 }
 
 const defaultStyle = {
@@ -18,19 +21,26 @@ const defaultStyle = {
   color: 'white',
   flexShrink: 0,
 };
-export const Avatar = ({
-  name,
-  className = '',
-  useDefaultStyle = true,
-}: AvatarProps) => {
+const navbarStyle = { width: '32px', height: '32px', fontSize: '.75rem' };
+const avatarStylesMap: Record<AvatarStyles, React.CSSProperties> = {
+  default: defaultStyle,
+  navbar: navbarStyle,
+  empty: {},
+};
+
+export const Avatar = ({ className = '', style = 'default' }: AvatarProps) => {
+  const { user } = useAuthContext();
+  if (!user) {
+    return null;
+  }
   return (
     <div
       className={className}
       style={{
-        ...(useDefaultStyle ? defaultStyle : {}),
+        ...avatarStylesMap[style],
       }}
     >
-      {name}
+      {user?.firstName?.charAt(0) + user?.lastName?.charAt(0)}
     </div>
   );
 };

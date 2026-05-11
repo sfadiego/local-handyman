@@ -1,6 +1,6 @@
-import { TokenPayload, verifyToken } from '@/lib/jwt';
 import { UserRole } from '@prisma/client';
 import { NextRequest, NextResponse } from 'next/server';
+import { TokenPayload, verifyToken } from './lib/jwt';
 import { AuthRoutes } from './routes/paths';
 
 interface RouteConfig {
@@ -18,6 +18,10 @@ const protectedRoutes: Record<string, RouteConfig> = {
     roles: [UserRole.provider],
     redirect: '/unauthorized',
   },
+  '/dashboard': {
+    roles: [UserRole.customer, UserRole.provider],
+    redirect: '/unauthorized',
+  },
 };
 
 const getRouteConfig = (pathname: string): RouteConfig | null => {
@@ -30,16 +34,19 @@ const getRouteConfig = (pathname: string): RouteConfig | null => {
 export async function proxy(request: NextRequest): Promise<NextResponse> {
   const { pathname } = request.nextUrl;
   const token = request.cookies.get(COOKIE_NAME)?.value;
-  console.log('proxy-token', token);
   if (!token) {
-    console.log('No token found');
+    const url = new URL(AuthRoutes.AUTH, request.url);
+    url.searchParams.set('callbackUrl', pathname);
     return NextResponse.redirect(new URL(AuthRoutes.AUTH, request.url));
   }
 
   const payload: TokenPayload | null = await verifyToken(token);
 
   if (!payload) {
-    return NextResponse.redirect(new URL(AuthRoutes.AUTH, request.url));
+    const url = new URL(AuthRoutes.AUTH, request.url);
+    const response = NextResponse.redirect(url);
+    response.cookies.delete(COOKIE_NAME);
+    return response;
   }
 
   const routeConfig = getRouteConfig(pathname);
@@ -52,5 +59,5 @@ export async function proxy(request: NextRequest): Promise<NextResponse> {
 }
 
 export const config = {
-  matcher: ['/customer/:path*', '/provider/:path*'],
+  matcher: ['/dashboard/:path*', '/customer/:path*', '/provider/:path*'],
 };

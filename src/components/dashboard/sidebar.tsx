@@ -1,22 +1,10 @@
-'use client';
-
-import { TokenPayload } from '@/lib/jwt';
 import { menuItems, ProviderRoutes } from '@/routes/paths';
 import { UserRole } from '@prisma/client';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { Avatar } from '../avatar/avatar';
-import AvatarInfo from '../avatar/avatar-info';
-import AvatarLocation from '../avatar/avatar-location';
-import { DynamicIcon } from '../icons/client-icons';
+import UserAvatar from '../avatar/user-avatar';
+import SidebarItem from './SidebarItem';
 
-interface ISidebar {
-  user: TokenPayload;
-}
-
-export const Sidebar = ({ user }: ISidebar) => {
-  const pathname = usePathname();
-  const initials = `${user?.firstName?.charAt(0)}${user?.lastName?.charAt(0)}`;
+export const Sidebar = async () => {
   const appName = process.env.NEXT_PUBLIC_APP_NAME || 'Tu guia';
   return (
     <aside className="sidebar" id="sidebar">
@@ -37,39 +25,21 @@ export const Sidebar = ({ user }: ISidebar) => {
                   subItem.role.includes(UserRole.provider)
               )
               .map((subItem, subKey) => {
-                const isActive = pathname === subItem.route;
-                const Icon = subItem.icon;
                 return (
-                  <Link
+                  <SidebarItem
                     key={subKey}
-                    href={subItem.route}
-                    className={`nav-item ${isActive ? 'active' : ''}`}
-                  >
-                    <span className="nav-icon">
-                      <DynamicIcon icon={Icon} />
-                    </span>
-                    {subItem.label}
-                  </Link>
+                    route={subItem.route}
+                    label={subItem.label}
+                    icon={subItem.icon}
+                  />
                 );
               })}
           </div>
         );
       })}
+
       <div className="sidebar-bottom">
-        <div className="user-pill">
-          <Avatar
-            className="user-avatar"
-            name={initials}
-            useDefaultStyle={false}
-          />
-          <div>
-            <AvatarInfo
-              name={`${user?.firstName} ${user?.lastName}`}
-              className="user-name"
-            />
-            <AvatarLocation text="Cliente · Villa de Álvarez" />
-          </div>
-        </div>
+        <UserAvatar />
       </div>
     </aside>
   );

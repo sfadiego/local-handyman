@@ -1,21 +1,36 @@
 'use client';
 
-import { LucideProps } from 'lucide-react';
-import { ComponentType, useEffect, useState } from 'react';
+import {
+  Calendar,
+  Clipboard,
+  Gauge,
+  Heart,
+  History,
+  Home,
+  LucideProps,
+  MessageCircle,
+  Search,
+  Settings,
+  User,
+} from 'lucide-react';
+import { ComponentType } from 'react';
 
-export const DynamicIcon = ({
-  icon: Icon,
-}: {
-  icon: ComponentType<LucideProps>;
-}) => {
-  const [mounted, setMounted] = useState(false);
+const iconMap: Record<string, ComponentType<LucideProps>> = {
+  Home,
+  Settings,
+  User,
+  Calendar,
+  Clipboard,
+  Gauge,
+  Heart,
+  History,
+  MessageCircle,
+  Search,
+};
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (!mounted)
+export const DynamicIcon = ({ icon }: { icon: string }) => {
+  const Icon = iconMap[icon];
+  if (!Icon)
     return <span style={{ width: 15, height: 15, display: 'inline-block' }} />;
-
   return <Icon width={15} height={15} />;
 };
