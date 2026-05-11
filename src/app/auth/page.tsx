@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import './auth.css';
+
 import { LoginForm } from './login/login-form';
 import { RegisterForm } from './register/register-form';
 import { SuccessRegister } from './register/success-register';

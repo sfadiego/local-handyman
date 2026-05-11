@@ -6,7 +6,7 @@ import { redirect } from 'next/navigation';
 const DashboardLayout = async ({ children }: { children: React.ReactNode }) => {
   const user = await getUserFromCookie();
   if (!user) redirect(AuthRoutes.AUTH);
-  return <AuthProvider>{children}</AuthProvider>;
+  return <AuthProvider initialUser={user}>{children}</AuthProvider>;
 };
 
 export default DashboardLayout;

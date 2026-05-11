@@ -6,7 +6,6 @@ import { IRegisterValues } from '@/app/auth/register/useRegister';
 import { comparePassword, encryptPassword } from '@/lib/encript';
 import { TokenPayload } from '@/lib/jwt';
 import { AuthRoutes } from '@/routes/paths';
-// import { logger } from '@/lib/logger.plugin';
 import { createUser, searchUser } from '@/services/user/user.service';
 import { User } from '@prisma/client';
 import {

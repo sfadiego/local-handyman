@@ -1,14 +1,32 @@
-import { LogOut, Settings, User } from 'lucide-react';
+'use client';
+
+import { Button } from '@/components/ui/button';
+import { TokenPayload } from '@/lib/jwt';
+
+import { LogOut, Settings, User as UserIcon } from 'lucide-react';
 
 interface NavOptionsProps {
-  user: {
-    firstName: string;
-    lastName: string;
-    email: string;
-  };
+  user: TokenPayload;
+  logout: () => void;
 }
-
-const NavOptions = ({ user }: NavOptionsProps) => {
+const NavOptions = ({ user, logout }: NavOptionsProps) => {
+  const navOptions = [
+    {
+      label: 'Perfil',
+      icon: UserIcon,
+      onClick: () => console.log('Perfil'),
+    },
+    {
+      label: 'Configuración',
+      icon: Settings,
+      onClick: () => console.log('Configuración'),
+    },
+    {
+      label: 'Cerrar sesión',
+      icon: LogOut,
+      onClick: logout,
+    },
+  ];
   return (
     <div
       className="absolute right-0 top-full mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50"
@@ -27,30 +45,26 @@ const NavOptions = ({ user }: NavOptionsProps) => {
           </p>
           <p className="text-xs text-gray-500">{user?.email}</p>
         </div>
-
-        <button
+        <Button
           className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
-          onClick={() => console.log('Perfil')}
-        >
-          <User width={16} height={16} />
-          Perfil
-        </button>
-
-        <button
-          className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
-          onClick={() => console.log('Configuración')}
-        >
-          <Settings width={16} height={16} />
-          Configuración
-        </button>
-
-        <button
-          className="w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50 flex items-center gap-2 border-t border-gray-200"
-          onClick={() => console.log('Cerrar sesión')}
+          onClick={logout}
         >
           <LogOut width={16} height={16} />
           Cerrar sesión
-        </button>
+        </Button>
+        {/* {navOptions.map((item) => {
+          const Icon = item.icon;
+          return (
+            <Button
+              key={item.label}
+              className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
+              onClick={item.onClick}
+            >
+              <Icon width={16} height={16} />
+              {item.label}
+            </Button>
+          );
+        })} */}
       </div>
     </div>
   );

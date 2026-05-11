@@ -2,6 +2,7 @@ import { AuthProvider } from '@/contexts/auth-context';
 import type { Metadata } from 'next';
 import React from 'react';
 import './../globals.css';
+import './auth.css';
 
 export const metadata: Metadata = {
   title: 'Local Handyman - Servicios locales cerca de ti',

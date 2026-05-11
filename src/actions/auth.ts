@@ -7,7 +7,6 @@ const COOKIE_NAME = process.env.AUTH_COOKIE_NAME || 'auth_token';
 const COOKIE_MAX_AGE = 60 * 60 * 24 * 1; // 1 día
 
 export const loginAction = async (user: User): Promise<void> => {
-  console.log(user);
   const token = await signToken({
     id: user.id,
     firstName: user.firstName,

@@ -1,45 +1,16 @@
 'use client';
 
-// import { getUserFromCookie } from '@/actions/auth';
 import { Button } from '@/components/ui/button';
-// import { TokenPayload } from '@/lib/jwt';
 import { Bell, ChevronDown, Menu, MessageCircle, Search } from 'lucide-react';
-// import { useEffect, useState } from 'react';
-import { useState } from 'react';
 import { Avatar } from '../../avatar/avatar';
-// import NavOptions from './navOptions';
+import NavOptions from './navOptions';
+import { useNavbar } from './useNavbar';
 
 const Navbar = () => {
-  // const user = await getUserFromCookie();
-  // const [user, setUser] = useState<TokenPayload | null>(null);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const nav = useNavbar();
+  if (!nav) return null;
 
-  // useEffect(() => {
-  //   const fetchUser = async () => {
-  //     const userData = await getUserFromCookie();
-  //     setUser(userData);
-  //   };
-  //   fetchUser();
-  // }, []);
-
-  // useEffect(() => {
-  //   const handleClickOutside = (event: MouseEvent) => {
-  //     const target = event.target as Element;
-  //     if (!target.closest('.avatar-menu-container')) {
-  //       setIsMenuOpen(false);
-  //     }
-  //   };
-
-  //   if (isMenuOpen) {
-  //     document.addEventListener('click', handleClickOutside);
-  //   }
-
-  //   return () => {
-  //     document.removeEventListener('click', handleClickOutside);
-  //   };
-  // }, [isMenuOpen]);
-
-  // const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+  const { isMenuOpen, toggleMenu, user, logout } = nav;
 
   return (
     <header className="topbar">
@@ -71,7 +42,7 @@ const Navbar = () => {
         </div>
         <div className="relative avatar-menu-container">
           <div
-            // onClick={toggleMenu}
+            onClick={toggleMenu}
             style={{
               display: 'flex',
               alignItems: 'center',
@@ -88,7 +59,7 @@ const Navbar = () => {
             />
           </div>
 
-          {/* {isMenuOpen && <NavOptions user={user} />} */}
+          {isMenuOpen && <NavOptions user={user} logout={logout} />}
         </div>
       </div>
     </header>
