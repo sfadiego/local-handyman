@@ -1,5 +1,6 @@
 'use client';
 import { useAuthContext } from '@/hooks/useAuthContext';
+import { getUserName } from '@/lib/utils';
 
 export type AvatarStyles = 'default' | 'navbar' | 'empty';
 interface AvatarProps {
@@ -40,7 +41,7 @@ export const Avatar = ({ className = '', style = 'default' }: AvatarProps) => {
         ...avatarStylesMap[style],
       }}
     >
-      {user?.firstName?.charAt(0) + user?.lastName?.charAt(0)}
+      {getUserName({ user, format: 'initials' })}
     </div>
   );
 };

@@ -14,7 +14,7 @@ const DashboardLayout = async ({ children }: { children: React.ReactNode }) => {
         <div className="main">
           <Sidebar />
           <Navbar />
-          {children}
+          <div className="content">{children}</div>
         </div>
       </AuthProvider>
     </div>

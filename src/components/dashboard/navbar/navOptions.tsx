@@ -2,6 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 import { TokenPayload } from '@/lib/jwt';
+import { getUserName } from '@/lib/utils';
 import { LogOut, User as UserIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
@@ -37,7 +38,7 @@ const NavOptions = ({ user, logout }: NavOptionsProps) => {
       <div className="py-2">
         <div className="px-4 py-2 border-b border-gray-200">
           <p className="text-sm font-medium text-gray-900">
-            {user?.firstName} {user?.lastName}
+            {getUserName({ user })}
           </p>
           <p className="text-xs text-gray-500">{user?.email}</p>
         </div>

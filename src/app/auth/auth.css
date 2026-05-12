@@ -289,18 +289,16 @@ h3,
   z-index: 1;
 }
 
-.stat-item {
-}
-.stat-num {
+.auth-layout .stat-num {
   font-family: 'Syne', sans-serif;
   font-size: 1.5rem;
   font-weight: 800;
   color: white;
 }
-.stat-num span {
+.auth-layout .stat-num span {
   color: var(--amber);
 }
-.stat-label {
+.auth-layout .stat-label {
   font-size: 0.75rem;
   color: rgba(255, 255, 255, 0.4);
   margin-top: 0.1rem;

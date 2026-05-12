@@ -8,6 +8,7 @@ import { TokenPayload } from '@/lib/jwt';
 import { AuthRoutes } from '@/routes/paths';
 import { createUser, searchUser } from '@/services/user/user.service';
 import { User } from '@prisma/client';
+import { useRouter } from 'next/navigation';
 import {
   createContext,
   ReactNode,
@@ -35,7 +36,7 @@ export function AuthProvider({
   initialUser = null,
 }: AuthProviderProps) {
   const [user, setUser] = useState<TokenPayload | null>(initialUser || null);
-
+  const router = useRouter();
   const login = async ({
     email,
     password,
@@ -84,8 +85,8 @@ export function AuthProvider({
   const logout = useCallback(async () => {
     await logoutAction();
     setUser(null);
-    window.location.replace(AuthRoutes.AUTH);
-  }, []);
+    router.replace(AuthRoutes.AUTH);
+  }, [router]);
 
   const isAuthenticated = !!user;
   const contextValue = useMemo(

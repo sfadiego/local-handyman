@@ -18,11 +18,9 @@ export enum AuthRoutes {
 
 export enum ProviderRoutes {
   DASHBOARD = '/dashboard',
-  USERS = '/users',
   SERVICES = '/services',
   REQUESTS = '/requests',
   MESSAGES = '/messages',
-  HISTORY = '/history',
   FAVORITES = '/favorites',
   PROFILE = '/profile',
   SETTINGS = '/settings',
@@ -60,18 +58,6 @@ export const menuItems: MenuCategories[] = [
         icon: 'MessageCircle',
         label: 'Mensajes',
         route: ProviderRoutes.MESSAGES,
-        role: [UserRole.customer, UserRole.provider],
-      },
-      {
-        icon: 'History',
-        label: 'Historial',
-        route: ProviderRoutes.HISTORY,
-        role: [UserRole.customer, UserRole.provider],
-      },
-      {
-        icon: 'Heart',
-        label: 'Favoritos',
-        route: ProviderRoutes.FAVORITES,
         role: [UserRole.customer, UserRole.provider],
       },
       {

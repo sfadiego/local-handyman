@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import ListButtonItem from './list-button-item';
+import ListButtonItem, { listButtonItem } from './list-button-item';
 
 const masterListItems = [
   {
@@ -8,6 +8,7 @@ const masterListItems = [
     experience: '8 años',
     rating: 2,
     distance: '1.2 km',
+    styleItem: 'yellow',
   },
   {
     name: 'Rosa García',
@@ -15,6 +16,7 @@ const masterListItems = [
     experience: '5 años',
     rating: 4.6,
     distance: '3.5 km',
+    styleItem: 'blue',
   },
   {
     name: 'Carlos Ávila',
@@ -22,6 +24,7 @@ const masterListItems = [
     experience: '12 años',
     rating: 4.9,
     distance: '0.8 km',
+    styleItem: 'green',
   },
   {
     name: 'Miguel Ramos',
@@ -29,6 +32,7 @@ const masterListItems = [
     experience: '6 años',
     rating: 4,
     distance: '2.1 km',
+    styleItem: 'purple',
   },
 ];
 const ListButton = () => {
@@ -46,6 +50,7 @@ const ListButton = () => {
           <ListButtonItem
             rating={Math.floor(master.rating)}
             key={key}
+            styleItem={master.styleItem as listButtonItem}
             name={master.name}
             trade={master.trade}
             experience={master.experience}

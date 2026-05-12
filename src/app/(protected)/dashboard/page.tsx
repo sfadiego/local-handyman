@@ -16,7 +16,7 @@ import {
 import { ActiveRequestList } from './activeRequest/active-request-list';
 import WelcomeCard from './welcome-card';
 
-export default async function Dashboard() {
+export default function Dashboard() {
   const cards: {
     icon: LucideIcon;
     number: string;
@@ -98,8 +98,8 @@ export default async function Dashboard() {
           <div className="right-col">
             {/* Acciones rápidas */}
             <QuickActionList title="Acciones rápidas" />
-            {/* Aviso */}
 
+            {/* Aviso */}
             <WarningCard
               title="¿Eres maestro también?"
               subtitle="Regístrate como proveedor y empieza a recibir clientes en tu zona sin costo inicial."
