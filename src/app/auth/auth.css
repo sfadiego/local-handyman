@@ -13,6 +13,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  font-family: 'Syne', sans-serif;
 }
 
 h1,
@@ -466,10 +467,10 @@ label {
   align-items: center;
 }
 
-input[type='text'],
-input[type='email'],
-input[type='password'],
-input[type='tel'],
+.auth-layout input[type='text'],
+.auth-layout input[type='email'],
+.auth-layout input[type='password'],
+.auth-layout input[type='tel'],
 select {
   width: 100%;
   padding: 0.72rem 0.9rem 0.72rem 2.5rem;

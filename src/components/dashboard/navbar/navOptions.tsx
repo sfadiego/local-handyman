@@ -2,24 +2,20 @@
 
 import { Button } from '@/components/ui/button';
 import { TokenPayload } from '@/lib/jwt';
-
-import { LogOut, Settings, User as UserIcon } from 'lucide-react';
+import { LogOut, User as UserIcon } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 interface NavOptionsProps {
   user: TokenPayload;
   logout: () => void;
 }
 const NavOptions = ({ user, logout }: NavOptionsProps) => {
+  const router = useRouter();
   const navOptions = [
     {
       label: 'Perfil',
       icon: UserIcon,
-      onClick: () => console.log('Perfil'),
-    },
-    {
-      label: 'Configuración',
-      icon: Settings,
-      onClick: () => console.log('Configuración'),
+      onClick: () => router.push('/profile'),
     },
     {
       label: 'Cerrar sesión',
@@ -45,14 +41,7 @@ const NavOptions = ({ user, logout }: NavOptionsProps) => {
           </p>
           <p className="text-xs text-gray-500">{user?.email}</p>
         </div>
-        <Button
-          className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
-          onClick={logout}
-        >
-          <LogOut width={16} height={16} />
-          Cerrar sesión
-        </Button>
-        {/* {navOptions.map((item) => {
+        {navOptions.map((item) => {
           const Icon = item.icon;
           return (
             <Button
@@ -64,7 +53,7 @@ const NavOptions = ({ user, logout }: NavOptionsProps) => {
               {item.label}
             </Button>
           );
-        })} */}
+        })}
       </div>
     </div>
   );

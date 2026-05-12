@@ -1,7 +1,6 @@
 import { AuthProvider } from '@/contexts/auth-context';
 import type { Metadata } from 'next';
 import React from 'react';
-import './../globals.css';
 import './auth.css';
 
 export const metadata: Metadata = {
@@ -16,8 +15,8 @@ export default async function AuthLayout({
   children: React.ReactNode;
 }) {
   return (
-    <>
+    <div className="auth-layout">
       <AuthProvider>{children}</AuthProvider>
-    </>
+    </div>
   );
 }

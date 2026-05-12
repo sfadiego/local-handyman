@@ -1,6 +1,8 @@
 import { ToastProvider } from '@/components/toast/toast-provider';
 import type { Metadata } from 'next';
 import React from 'react';
+import './(protected)/dashboard.css';
+import './auth/auth.css';
 import './globals.css';
 
 export const metadata: Metadata = {

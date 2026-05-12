@@ -1,6 +1,8 @@
 'use client';
 import DashboardCard, { cardVariant } from '@/components/card/dashboard-card';
+import QuickActionList from '@/components/card/quick-actions/quick-action-list';
 import WarningCard from '@/components/card/warning/warning-card';
+import ListButton from '@/components/list/list-button/list-button';
 import SingleList from '@/components/list/single-list/single-list';
 import { Button } from '@/components/ui/button';
 import {
@@ -11,9 +13,10 @@ import {
   Star,
   Wrench,
 } from 'lucide-react';
+import { ActiveRequestList } from './activeRequest/active-request-list';
 import WelcomeCard from './welcome-card';
 
-export const Content = () => {
+export default async function Dashboard() {
   const cards: {
     icon: LucideIcon;
     number: string;
@@ -87,14 +90,14 @@ export const Content = () => {
             style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}
           >
             {/* Solicitudes activas */}
-            {/* <ActiveRequestList title="Solicitudes activas" /> */}
+            <ActiveRequestList title="Solicitudes activas" />
 
             {/* Maestros cerca de ti */}
-            {/* <ListButton /> */}
+            <ListButton />
           </div>
           <div className="right-col">
             {/* Acciones rápidas */}
-            {/* <QuickActionList title="Acciones rápidas" /> */}
+            <QuickActionList title="Acciones rápidas" />
             {/* Aviso */}
 
             <WarningCard
@@ -111,4 +114,4 @@ export const Content = () => {
       </div>
     </>
   );
-};
+}

@@ -1,27 +1,7 @@
-import { Button } from '@/components/ui/button';
-
+import { QuickActionItem } from './quick-action-item';
 interface QuickActionListProps {
   title: string;
 }
-
-const QuickActionItem = ({
-  title,
-  subtitle,
-  icon,
-}: {
-  title: string;
-  subtitle: string;
-  icon: string;
-}) => {
-  return (
-    <Button className="qa-btn" onClick={() => null}>
-      <div className="qa-icon">{icon}</div>
-      <div className="qa-label">{title}</div>
-      <div className="qa-sub">{subtitle}</div>
-    </Button>
-  );
-};
-
 const QuickActionList = ({ title }: QuickActionListProps) => {
   return (
     <div className="card fu d2">
