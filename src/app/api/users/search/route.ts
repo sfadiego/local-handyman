@@ -1,7 +1,8 @@
+import { fail, ok } from '@/lib/api-handlers';
 import { logger } from '@/lib/logger.plugin';
 import { prisma } from '@/lib/prisma';
 import { UserRole } from '@prisma/client';
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 
 export async function GET(request: NextRequest) {
   try {
@@ -35,12 +36,9 @@ export async function GET(request: NextRequest) {
     }
 
     if (Object.keys(whereClause).length === 0) {
-      return NextResponse.json(
-        {
-          error:
-            'At least one search parameter is required (id, email, firstName, lastName, phone, role)',
-        },
-        { status: 400 }
+      return fail(
+        'At least one search parameter is required (id, email, firstName, lastName, phone, role)',
+        400
       );
     }
 
@@ -50,15 +48,12 @@ export async function GET(request: NextRequest) {
 
     // Si se buscó por ID y no hay resultados, retornar null para mantener compatibilidad
     if (id && users.length === 0) {
-      return NextResponse.json(null);
+      return ok(null);
     }
 
-    return NextResponse.json(users.length === 1 ? users[0] : users);
+    return ok(users.length === 1 ? users[0] : users);
   } catch (error: unknown) {
     logger.error(error);
-    return NextResponse.json(
-      { error: 'Error al obtener usuario' },
-      { status: 500 }
-    );
+    return fail('Error al obtener usuario', 500);
   }
 }

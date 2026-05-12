@@ -1,9 +1,9 @@
 import Link from 'next/link';
 
 const FOOTER_LINKS = [
-  { label: 'Privacidad', href: '/#' },
-  { label: 'Términos', href: '/#' },
-  { label: 'Contacto', href: '/#' },
+  { label: 'Privacidad', href: '#privacidad' },
+  { label: 'Términos', href: '#terminos' },
+  { label: 'Contacto', href: '#contacto' },
 ];
 
 export default function Footer() {

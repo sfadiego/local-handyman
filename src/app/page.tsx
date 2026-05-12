@@ -7,7 +7,7 @@ import Navbar from '@/components/landing/Navbar';
 import PopularServices from '@/components/landing/PopularServices';
 import ServicesMarquee from '@/components/landing/ServicesMarquee';
 import UserTypeSection from '@/components/landing/UserTypeSection';
-import Footer from '@/components/layout/footer';
+import Footer from '@/components/landing/footer';
 
 export default function LandPage() {
   return (

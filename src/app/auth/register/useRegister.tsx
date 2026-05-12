@@ -48,7 +48,19 @@ export const useRegister = ({ registerRole }: { registerRole: UserRole }) => {
     firstName: Yup.string().required('Requerido'),
     lastName: Yup.string().required('Requerido'),
     email: Yup.string().email('Correo inválido').required('Correo requerido'),
-    phone: Yup.string().required('Teléfono requerido'),
+    phone: Yup.string()
+      .required('Teléfono requerido')
+      .max(10, 'Máximo 10 dígitos')
+      .test(
+        'unique-phone',
+        'Este teléfono ya está registrado',
+        async (value) => {
+          if (!value) return true;
+          // const exists = await checkPhoneExists(value); //validador utilizando endpoint
+          // return !exists;
+          return true;
+        }
+      ),
     password: Yup.string()
       .min(8, 'Mínimo 8 caracteres')
       .required('Contraseña requerida'),

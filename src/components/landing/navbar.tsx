@@ -1,3 +1,4 @@
+import { AuthRoutes } from '@/routes/paths';
 import Link from 'next/link';
 
 const navItems = [
@@ -8,10 +9,12 @@ const navItems = [
 ];
 
 export default function Navbar() {
+  const appName = process.env.NEXT_PUBLIC_APP_NAME || 'Tu guia';
   return (
     <nav>
       <div className="nav-logo">
-        oficio<span>.</span>
+        {appName}
+        <span>.</span>
       </div>
       <div className="nav-links">
         {navItems.map((link) => (
@@ -28,7 +31,7 @@ export default function Navbar() {
         }}
       >
         <Link
-          href="/auth"
+          href={AuthRoutes.AUTH}
           style={{
             fontSize: '0.875rem',
             fontWeight: 500,
@@ -38,7 +41,7 @@ export default function Navbar() {
         >
           Iniciar sesión
         </Link>
-        <Link href="/auth" className="btn-primary">
+        <Link href={AuthRoutes.AUTH} className="btn-primary">
           Registrarse
         </Link>
       </div>
