@@ -1,5 +1,3 @@
-import React from 'react';
-
 export default function HeroFloatingCards() {
   return (
     <>
@@ -177,7 +175,7 @@ export default function HeroFloatingCards() {
             Reseña nueva ⭐
           </div>
           <div style={{ fontSize: '0.82rem', fontWeight: '500' }}>
-            "Excelente trabajo, muy puntual"
+            Excelente trabajo, muy puntual
           </div>
           <div style={{ marginTop: '0.5rem', display: 'flex', gap: '0.2rem' }}>
             <span style={{ fontSize: '1rem' }}>★★★★★</span>

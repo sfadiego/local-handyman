@@ -1,9 +1,9 @@
 import js from '@eslint/js';
-import globals from 'globals';
-import tseslint from 'typescript-eslint';
+import prettierRecommended from 'eslint-plugin-prettier/recommended';
 import pluginReact from 'eslint-plugin-react';
 import { defineConfig } from 'eslint/config';
-import prettierRecommended from 'eslint-plugin-prettier/recommended';
+import globals from 'globals';
+import tseslint from 'typescript-eslint';
 
 export default defineConfig([
   {
@@ -36,6 +36,9 @@ export default defineConfig([
       'react/react-in-jsx-scope': 'off',
       'react/prop-types': 'off',
       'react/display-name': 'off',
+      // 'prettier/prettier': 'off',
+      // 'react/no-unescaped-entities': 'off',
+      // '@typescript-eslint/no-unused-vars': 'off',
     },
   },
   prettierRecommended,

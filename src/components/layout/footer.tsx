@@ -1,12 +1,15 @@
 import Link from 'next/link';
 
 const FOOTER_LINKS = [
-  { label: 'Privacidad', href: '/privacidad' },
-  { label: 'Términos', href: '/terminos' },
-  { label: 'Contacto', href: '/contacto' },
+  { label: 'Privacidad', href: '/#' },
+  { label: 'Términos', href: '/#' },
+  { label: 'Contacto', href: '/#' },
 ];
 
 export default function Footer() {
+  const currentYear = new Date().getFullYear();
+  const footerText = `© ${currentYear} Oficio. Hecho con ❤️ en México.`;
+  const appName = process.env.NEXT_PUBLIC_APP_NAME || 'Tu guia';
   return (
     <footer
       style={{
@@ -22,7 +25,8 @@ export default function Footer() {
       }}
     >
       <div className="nav-logo">
-        oficio<span>.</span>
+        {appName}
+        <span>.</span>
       </div>
       <div
         style={{
@@ -30,7 +34,7 @@ export default function Footer() {
           color: 'var(--warm-gray)',
         }}
       >
-        © 2025 Oficio. Hecho con ❤️ en México.
+        {footerText}
       </div>
       <div
         style={{
@@ -38,36 +42,19 @@ export default function Footer() {
           gap: '1.5rem',
         }}
       >
-        <a
-          href="#"
-          style={{
-            fontSize: '0.82rem',
-            color: 'var(--warm-gray)',
-            textDecoration: 'none',
-          }}
-        >
-          Privacidad
-        </a>
-        <a
-          href="#"
-          style={{
-            fontSize: '0.82rem',
-            color: 'var(--warm-gray)',
-            textDecoration: 'none',
-          }}
-        >
-          Términos
-        </a>
-        <a
-          href="#"
-          style={{
-            fontSize: '0.82rem',
-            color: 'var(--warm-gray)',
-            textDecoration: 'none',
-          }}
-        >
-          Contacto
-        </a>
+        {FOOTER_LINKS.map((link, key) => (
+          <Link
+            key={key}
+            style={{
+              fontSize: '0.82rem',
+              color: 'var(--warm-gray)',
+              textDecoration: 'none',
+            }}
+            href={link.href}
+          >
+            {link.label}
+          </Link>
+        ))}
       </div>
     </footer>
   );
