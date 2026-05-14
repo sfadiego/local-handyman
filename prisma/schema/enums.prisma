@@ -1,5 +1,5 @@
 enum UserRole {
-  client
+  customer
   provider
   both
 }
@@ -20,9 +20,9 @@ enum RequestStatusEnum {
   accepted // maestro aceptó y precio acordado
   in_progress // trabajo en curso
   completed // trabajo terminado, pendiente de pago
-  paid // pagado y cerrado
+  paid // El pago fue procesado y liberado al maestro. Estado final exitoso
   cancelled
-  disputed
+  disputed // El cliente o maestro abrió una disputa al terminar el trabajo (precio incorrecto, trabajo incompleto, etc.). Requiere intervención de soporte.
 }
 
 enum RequestUrgencyEnum {
@@ -64,4 +64,12 @@ enum NotificationTypeEnum {
   payment_received
   new_message
   new_review
+}
+
+enum ExperienceLevelEnum {
+  less_than_one
+  one_to_three
+  three_to_five
+  five_to_ten
+  more_than_ten
 }

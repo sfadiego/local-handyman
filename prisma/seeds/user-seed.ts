@@ -1,8 +1,10 @@
-import { UserRole } from '@prisma/client';
+import { User, UserRole } from '@prisma/client';
 
-export const userSeed = [
+export const userSeed: User[] = [
   {
-    fullName: 'Admin Tuguiapro',
+    id: '1',
+    firstName: 'Admin',
+    lastName: 'Tuguiapro',
     email: 'admin@tuguiapro.com',
     phone: '+56912345678',
     passwordHash: 'password',
@@ -11,16 +13,26 @@ export const userSeed = [
     lat: null,
     lng: null,
     city: 'Colima',
+    state: 'Colima',
+    address: 'Dirección de ejemplo',
+    createdAt: new Date(),
+    updatedAt: new Date(),
   },
   {
-    fullName: 'Cliente Tuguiapro',
+    id: '2',
+    firstName: 'Cliente',
+    lastName: 'Tuguiapro',
     email: 'cliente@tuguiapro.com',
     phone: '+56912345678',
     passwordHash: 'password',
-    role: UserRole.client,
+    role: UserRole.customer,
     avatarUrl: null,
     lat: null,
     lng: null,
     city: 'Colima',
+    state: 'Colima',
+    address: 'Dirección de ejemplo',
+    createdAt: new Date(),
+    updatedAt: new Date(),
   },
 ];

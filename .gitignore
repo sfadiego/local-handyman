@@ -12,3 +12,8 @@ pnpm-lock.yaml
 /prisma/*.db
 /prisma/*.db-journal
 /generated
+
+next-env.d.ts
+
+combined.log
+error.log

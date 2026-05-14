@@ -1,7 +1,12 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: {
-    // Add experimental features here when needed
+  // Mantiene Prisma y PG fuera del bundle del cliente
+  serverExternalPackages: ['pg', '@prisma/adapter-pg', '@prisma/client'],
+
+  turbopack: {
+    resolveAlias: {
+      '@/*': ['./src/*'],
+    },
   },
 };
 
