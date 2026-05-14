@@ -14,11 +14,14 @@ export function useAuth() {
     console.log(`Integración con ${provider} próximamente.`);
   };
 
+  const appName = process.env.NEXT_PUBLIC_APP_NAME || 'Tu guia';
+
   return {
     currentTab,
     registerRole,
     switchTab,
     selectRegisterRole,
     socialLogin,
+    appName,
   };
 }

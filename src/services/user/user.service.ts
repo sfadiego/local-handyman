@@ -13,9 +13,13 @@ export const searchUser = async (params: {
   lastName?: string;
   phone?: string;
   role?: string;
-}): Promise<ApiResult<User>> => {
+}): Promise<ApiResult<{ success: boolean; data: User }>> => {
   try {
-    const response = await api.get<User>('/users/search', { params });
+    const response = await api.get<{ success: boolean; data: User }>(
+      '/users/search',
+      { params }
+    );
+    // logger.info('User search response:', response.data);
     return handleResponse(response);
   } catch (error) {
     return handleError(error);

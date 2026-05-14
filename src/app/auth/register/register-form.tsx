@@ -1,10 +1,11 @@
 'use client';
 
+import SelectCategory from '@/components/select/category/selectCategory';
+import SelectExperience from '@/components/select/experience/selectExperience';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/form/checkbox';
 import { Input } from '@/components/ui/form/input';
-import Select from '@/components/ui/form/select';
-import { UserRole } from '@/types/auth';
+import { LoginTabs, UserRole } from '@/types/auth';
 import { Form, Formik } from 'formik';
 import { House, Lock, Mail, Phone, Wrench } from 'lucide-react';
 import Link from 'next/link';
@@ -13,11 +14,13 @@ import { IRegisterValues, useRegister } from './useRegister';
 interface RegisterFormProps {
   selectRegisterRole: (role: UserRole) => void;
   registerRole: UserRole;
+  switchTab: (tab: LoginTabs) => void;
 }
 
 export function RegisterForm({
   selectRegisterRole,
   registerRole,
+  switchTab,
 }: RegisterFormProps) {
   const { formikProps } = useRegister({
     registerRole,
@@ -132,46 +135,11 @@ export function RegisterForm({
                 </div>
 
                 <div className="field">
-                  <Select
-                    name="category"
-                    className="input-wrap select-wrap"
-                    formik={formik}
-                    label="Categoría principal"
-                    options={[
-                      { value: '', label: 'Selecciona tu oficio...' },
-                      { value: 'plomeria', label: 'Plomería' },
-                      { value: 'electricidad', label: 'Electricidad' },
-                      { value: 'carpinteria', label: 'Carpintería' },
-                      { value: 'pintura', label: 'Pintura' },
-                      { value: 'albanileria', label: 'Albañilería' },
-                      {
-                        value: 'aire_acondicionado',
-                        label: 'Aire acondicionado',
-                      },
-                      { value: 'cerrajeria', label: 'Cerrajería' },
-                      { value: 'jardineria', label: 'Jardinería' },
-                      { value: 'vidrieria', label: 'Vidriería' },
-                      { value: 'remodelaciones', label: 'Remodelaciones' },
-                      { value: 'otro', label: 'Otro' },
-                    ]}
-                  />
+                  <SelectCategory formik={formik} />
                 </div>
 
                 <div className="field">
-                  <Select
-                    name="experience"
-                    className="input-wrap select-wrap"
-                    formik={formik}
-                    label="Años de experiencia"
-                    options={[
-                      { value: '', label: '¿Cuántos años llevas trabajando?' },
-                      { value: 'less_than_1', label: 'Menos de 1 año' },
-                      { value: '1_3', label: '1-3 años' },
-                      { value: '3_5', label: '3-5 años' },
-                      { value: '5_10', label: '5-10 años' },
-                      { value: 'more_than_10', label: 'Más de 10 años' },
-                    ]}
-                  />
+                  <SelectExperience formik={formik} />
                 </div>
 
                 <div
@@ -214,7 +182,7 @@ export function RegisterForm({
 
       <div className="divider fade-up d5">o regístrate con</div>
 
-      <Button className="btn-social fade-up d6" type="button">
+      <Button disabled={true} className="btn-social fade-up d6" type="button">
         <img
           src="/resources/svg/google.svg"
           alt="Google"
@@ -230,7 +198,7 @@ export function RegisterForm({
           href="#"
           onClick={(e) => {
             e.preventDefault();
-            // switchTab('login');
+            switchTab('login');
           }}
         >
           Iniciar sesión

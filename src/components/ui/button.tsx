@@ -40,6 +40,7 @@ export const Button = ({
   const selectedStyle = configButtonStyle[buttonStyle];
   return (
     <button
+      suppressHydrationWarning
       {...(id ? { id } : {})}
       className={`${className} ${loading ? 'loading' : ''}`}
       type={type}

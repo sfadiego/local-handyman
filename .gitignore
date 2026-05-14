@@ -14,3 +14,6 @@ pnpm-lock.yaml
 /generated
 
 next-env.d.ts
+
+combined.log
+error.log

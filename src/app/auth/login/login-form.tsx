@@ -67,7 +67,7 @@ export function LoginForm({ switchTab }: LoginFormProps) {
 
       <div className="divider fade-up d5">o continúa con</div>
 
-      <Button className="btn-social fade-up d6" type="button">
+      <Button disabled={true} className="btn-social fade-up d6" type="button">
         <img
           src="/resources/svg/google.svg"
           alt="Google"

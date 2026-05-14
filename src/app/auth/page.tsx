@@ -8,7 +8,8 @@ import { SuccessRegister } from './register/success-register';
 import { useAuth } from './useAuth';
 
 export default function AuthPage() {
-  const { switchTab, currentTab, selectRegisterRole, registerRole } = useAuth();
+  const { switchTab, currentTab, selectRegisterRole, registerRole, appName } =
+    useAuth();
   return (
     <>
       <Link href="/" className="back-home">
@@ -21,7 +22,8 @@ export default function AuthPage() {
 
           {/* Logo */}
           <Link href="/" className="logo fade-in">
-            oficio<span>.</span>
+            {appName}
+            <span>.</span>
           </Link>
 
           {/* Main content */}
@@ -139,7 +141,7 @@ export default function AuthPage() {
               id="registerForm"
             >
               <RegisterForm
-                // switchTab={switchTab}
+                switchTab={switchTab}
                 selectRegisterRole={selectRegisterRole}
                 registerRole={registerRole}
               />

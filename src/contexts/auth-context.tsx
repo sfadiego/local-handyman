@@ -41,8 +41,14 @@ export function AuthProvider({
     email,
     password,
   }: ILoginValues): Promise<User | boolean> => {
-    const user = await searchUser({ email });
+    const { data, status } = await searchUser({ email });
+    if (status !== 200) {
+      return false;
+    }
+
+    const user = data?.data;
     const isPasswordValid = comparePassword(password, user?.passwordHash);
+
     if (user && isPasswordValid) {
       await loginAction(user);
       setUser(user);
